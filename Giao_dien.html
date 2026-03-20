@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FloriSys – Quản Lý Cửa Hàng Hoa</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose:#e8394d;--rose-light:#fde8eb;--rose-mid:#f9b8c0;
+    --green:#2d6a4f;--green-light:#d8f3dc;
+    --amber:#f59e0b;--amber-light:#fef3c7;
+    --blue:#1e40af;--blue-light:#dbeafe;
+    --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+    --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;
+    --gray-800:#1f2937;--gray-900:#111827;
+    --sidebar-w:220px;--radius:10px;
+    --shadow:0 2px 12px rgba(0,0,0,.08);--shadow-md:0 4px 20px rgba(0,0,0,.12);
+    --nav-h:52px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Be Vietnam Pro',sans-serif;background:#faf5f6;color:var(--gray-800);font-size:13px}
+
+  /* ===== NAV – SỬA: flex-wrap, bỏ height cố định, bỏ ẩn scrollbar ===== */
+  #main-nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    background:var(--gray-900);
+    padding:6px 14px;
+    display:flex;align-items:center;gap:5px;
+    flex-wrap:wrap;row-gap:4px;
+  }
+  #main-nav .nav-logo{font-family:'Playfair Display',serif;color:var(--rose-mid);font-size:15px;margin-right:8px;flex-shrink:0}
+  .nav-group{display:flex;align-items:center;gap:4px;flex-shrink:0}
+  .nav-label{color:var(--gray-400);font-size:9px;text-transform:uppercase;letter-spacing:.05em;padding:0 3px;flex-shrink:0}
+  .nav-btn{background:none;border:1px solid var(--gray-700);color:var(--gray-300);padding:3px 9px;border-radius:20px;cursor:pointer;font-size:11px;font-family:inherit;transition:all .2s;flex-shrink:0;line-height:1.5}
+  .nav-btn:hover{background:var(--gray-700);color:white}
+  .nav-btn.active{background:var(--rose);border-color:var(--rose);color:white}
+  .nav-sep{width:1px;height:18px;background:var(--gray-700);margin:0 3px;flex-shrink:0}
+
+  /* ===== SCREEN – padding-top động ===== */
+  .screen{display:none;padding-top:var(--nav-h);min-height:100vh}
+  .screen.active{display:block}
+  .layout{display:flex;min-height:calc(100vh - var(--nav-h))}
+  .sidebar{width:var(--sidebar-w);background:white;border-right:1px solid var(--gray-200);padding:20px 0;flex-shrink:0;position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));overflow-y:auto}
+  .sidebar-logo{padding:0 20px 20px;font-family:'Playfair Display',serif;font-size:18px;color:var(--rose);border-bottom:1px solid var(--gray-100);margin-bottom:12px}
+  .sidebar-logo span{display:block;font-family:'Be Vietnam Pro',sans-serif;font-size:10px;color:var(--gray-400);font-weight:400;margin-top:2px}
+  .sidebar-section{padding:8px 20px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);font-weight:600}
+  .sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--gray-600);transition:all .15s;font-size:13px}
+  .sidebar-item:hover{background:var(--gray-50);color:var(--gray-900)}
+  .sidebar-item.active{background:var(--rose-light);color:var(--rose);font-weight:600}
+  .sidebar-item .icon{width:18px;text-align:center;opacity:.7}
+  .sidebar-user{margin-top:auto;padding:16px 20px;border-top:1px solid var(--gray-100);display:flex;align-items:center;gap:10px}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--rose);display:flex;align-items:center;justify-content:center;color:white;font-size:13px;font-weight:700;flex-shrink:0}
+  .user-info{font-size:12px}
+  .user-info strong{display:block;color:var(--gray-800)}
+  .user-info span{color:var(--gray-400);font-size:11px}
+  .content{flex:1;padding:28px 32px;overflow-y:auto}
+  .page-header{margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between}
+  .page-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--gray-900)}
+  .page-subtitle{color:var(--gray-400);font-size:12px;margin-top:4px}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;transition:all .2s}
+  .btn-primary{background:var(--rose);color:white}
+  .btn-primary:hover{background:#c72e40}
+  .btn-secondary{background:white;color:var(--gray-700);border:1px solid var(--gray-200)}
+  .btn-secondary:hover{background:var(--gray-50)}
+  .btn-success{background:var(--green);color:white}
+  .btn-sm{padding:5px 10px;font-size:12px}
+  .card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
+  .card-title{font-weight:600;font-size:14px;color:var(--gray-800);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .stat-card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;border-left:4px solid transparent}
+  .stat-card.rose{border-color:var(--rose)}.stat-card.green{border-color:var(--green)}
+  .stat-card.amber{border-color:var(--amber)}.stat-card.blue{border-color:var(--blue)}
+  .stat-label{font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+  .stat-value{font-size:26px;font-weight:700;color:var(--gray-900);font-family:'Playfair Display',serif}
+  .stat-sub{font-size:11px;color:var(--gray-400);margin-top:4px}
+  .stat-up{color:var(--green)}.stat-down{color:var(--rose)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead tr{background:var(--gray-50)}
+  th{padding:10px 14px;text-align:left;font-weight:600;color:var(--gray-500);font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--gray-200)}
+  td{padding:11px 14px;border-bottom:1px solid var(--gray-100);color:var(--gray-700)}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--gray-50)}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+  .badge-new{background:var(--blue-light);color:var(--blue)}
+  .badge-processing{background:var(--amber-light);color:#92400e}
+  .badge-delivered{background:var(--green-light);color:var(--green)}
+  .badge-done{background:#dcfce7;color:#166534}
+  .badge-cancel{background:#fee2e2;color:#991b1b}
+  .badge-return{background:#f3e8ff;color:#7c3aed}
+  .badge-low{background:#fee2e2;color:#991b1b}
+  .badge-ok{background:var(--green-light);color:var(--green)}
+  .badge-warn{background:var(--amber-light);color:#92400e}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .form-group{display:flex;flex-direction:column;gap:6px}
+  .form-group.full{grid-column:1/-1}
+  label{font-size:12px;font-weight:600;color:var(--gray-600)}
+  input[type=text],input[type=number],input[type=date],input[type=password],input[type=email],select,textarea{padding:9px 12px;border:1px solid var(--gray-200);border-radius:8px;font-family:inherit;font-size:13px;color:var(--gray-800);background:white;transition:border .2s;outline:none;width:100%}
+  input:focus,select:focus,textarea:focus{border-color:var(--rose)}
+  textarea{resize:vertical;min-height:80px}
+  .search-bar{display:flex;gap:10px;margin-bottom:18px;align-items:center}
+  .search-bar input{max-width:280px}.search-bar select{max-width:160px}
+  .filter-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .filter-row input,.filter-row select{max-width:180px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+  .divider{border:none;border-top:1px solid var(--gray-100);margin:20px 0}
+  .info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--gray-100)}
+  .info-row:last-child{border-bottom:none}
+  .info-row .lbl{color:var(--gray-400);font-size:12px}.info-row .val{font-weight:500}
+  .timeline{list-style:none}
+  .timeline li{display:flex;gap:12px;padding:10px 0;position:relative}
+  .timeline li::before{content:'';width:10px;height:10px;border-radius:50%;background:var(--gray-300);flex-shrink:0;margin-top:4px}
+  .timeline li.done::before{background:var(--green)}
+  .timeline li.active-step::before{background:var(--rose)}
+  .timeline-text{font-size:12px;color:var(--gray-600)}
+  .timeline-text strong{display:block;color:var(--gray-800);font-size:13px}
+  .alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+  .alert-warn{background:var(--amber-light);color:#92400e;border-left:3px solid var(--amber)}
+  .alert-err{background:#fee2e2;color:#991b1b;border-left:3px solid #ef4444}
+  .alert-ok{background:var(--green-light);color:var(--green);border-left:3px solid var(--green)}
+  .tabs{display:flex;gap:0;border-bottom:2px solid var(--gray-200);margin-bottom:20px}
+  .tab{padding:10px 20px;cursor:pointer;color:var(--gray-500);font-size:13px;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+  .tab.active{color:var(--rose);border-bottom-color:var(--rose)}
+  .progress-bar{background:var(--gray-200);border-radius:20px;height:6px;overflow:hidden}
+  .progress-fill{height:100%;border-radius:20px;background:var(--rose)}
+  .progress-fill.green{background:var(--green)}
+  .chart-bars{display:flex;align-items:flex-end;gap:8px;height:100px;padding:0 10px}
+  .chart-bar{flex:1;background:var(--rose-mid);border-radius:4px 4px 0 0;opacity:.7}
+  .chart-bar.high{background:var(--rose);opacity:1}
+  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a0a0e 0%,#3d0f19 50%,#1a0a0e 100%)}
+  .login-card{background:white;border-radius:16px;padding:48px 40px;width:400px;box-shadow:0 24px 64px rgba(0,0,0,.3)}
+  .login-logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--rose);text-align:center;margin-bottom:6px}
+  .login-sub{text-align:center;color:var(--gray-400);font-size:13px;margin-bottom:32px}
+  .action-bar{display:flex;gap:10px;margin-top:24px;justify-content:flex-end}
+  .screen-label{position:fixed;bottom:16px;right:16px;z-index:999;background:var(--gray-900);color:var(--gray-400);padding:6px 14px;border-radius:20px;font-size:11px}
+  #screen-login .layout{display:block}
+  #screen-login .content{padding:0}
+  .role-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:11px}
+  .role-admin{background:#fce7f3;color:#9d174d}
+  .role-cashier{background:var(--blue-light);color:var(--blue)}
+  .role-warehouse{background:var(--green-light);color:var(--green)}
+  .role-shipper{background:var(--amber-light);color:#92400e}
+  .order-product-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--gray-100)}
+  .product-thumb{width:40px;height:40px;border-radius:8px;background:var(--rose-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .order-product-row .p-name{font-weight:500;font-size:13px}
+  .order-product-row .p-qty{color:var(--gray-400);font-size:12px}
+  .order-product-row .p-price{margin-left:auto;font-weight:600;color:var(--rose)}
+  .summary-box{background:var(--gray-50);border-radius:8px;padding:16px}
+  .summary-line{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--gray-600)}
+  .summary-line.total{font-weight:700;font-size:15px;color:var(--gray-900);border-top:1px solid var(--gray-200);padding-top:10px;margin-top:4px}
+  .summary-line.total .amount{color:var(--rose)}
+  .delivery-card{border:1px solid var(--gray-200);border-radius:10px;padding:16px;background:white}
+  .delivery-card.urgent{border-color:var(--rose);border-left:4px solid var(--rose)}
+  .delivery-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .delivery-card-body{font-size:12px;color:var(--gray-600);line-height:1.8}
+  .report-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+  .kpi-card{background:white;border-radius:10px;box-shadow:var(--shadow);padding:20px;text-align:center}
+  .kpi-label{font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em}
+  .kpi-value{font-size:28px;font-weight:700;color:var(--gray-900);margin:6px 0;font-family:'Playfair Display',serif}
+  .kpi-change{font-size:12px}
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION – flex-wrap nên hiện đủ 24 nút trên nhiều dòng -->
+<nav id="main-nav">
+  <span class="nav-logo">🌸 FloriSys</span>
+  <div class="nav-group"><span class="nav-label">Auth</span>
+    <button class="nav-btn active" onclick="show('screen-login',this)">1. Đăng nhập</button>
+    <button class="nav-btn" onclick="show('screen-changepw',this)">2. Đổi MK</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group"><span class="nav-label">Dashboard</span>
+    <button class="nav-btn" onclick="show('screen-dashboard',this)">3. Tổng quan</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group"><span class="nav-label">Đơn Hàng</span>
+    <button class="nav-btn" onclick="show('screen-order-list',this)">4. DS Đơn hàng</button>
+    <button class="nav-btn" onclick="show('screen-order-create',this)">5. Tạo đơn</button>
+    <button class="nav-btn" onclick="show('screen-order-detail',this)">6. Chi tiết đơn</button>
+    <button class="nav-btn" onclick="show('screen-order-feedback',this)">7. Phản hồi</button>
+    <button class="nav-btn" onclick="show('screen-order-return',this)">8. Trả hàng</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group"><span class="nav-label">Kho Hàng</span>
+    <button class="nav-btn" onclick="show('screen-inventory',this)">9. Tồn kho</button>
+    <button class="nav-btn" onclick="show('screen-import',this)">10. Nhập kho</button>
+    <button class="nav-btn" onclick="show('screen-export',this)">11. Xuất kho</button>
+    <button class="nav-btn" onclick="show('screen-damaged',this)">12. Hàng hư</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group"><span class="nav-label">Giao Hàng</span>
+    <button class="nav-btn" onclick="show('screen-delivery-list',this)">13. DS Giao hàng</button>
+    <button class="nav-btn" onclick="show('screen-delivery-assign',this)">14. Phân công</button>
+    <button class="nav-btn" onclick="show('screen-delivery-update',this)">15. Cập nhật GH</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group"><span class="nav-label">Nhân Viên</span>
+    <button class="nav-btn" onclick="show('screen-staff-list',this)">16. DS Nhân viên</button>
+    <button class="nav-btn" onclick="show('screen-staff-form',this)">17. Thêm/Sửa NV</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group"><span class="nav-label">Báo Cáo</span>
+    <button class="nav-btn" onclick="show('screen-report-day',this)">18. BC Ngày</button>
+    <button class="nav-btn" onclick="show('screen-report-month',this)">19. BC Tháng</button>
+    <button class="nav-btn" onclick="show('screen-report-product',this)">20. SP Bán chạy</button>
+    <button class="nav-btn" onclick="show('screen-report-stock',this)">21. BC Tồn kho</button>
+    <button class="nav-btn" onclick="show('screen-report-staff',this)">22. BC Nhân viên</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group"><span class="nav-label">Danh Mục</span>
+    <button class="nav-btn" onclick="show('screen-products',this)">23. Sản phẩm</button>
+    <button class="nav-btn" onclick="show('screen-customers',this)">24. Khách hàng</button>
+  </div>
+  <div class="nav-sep"></div>
+  <div class="nav-group"><span class="nav-label">Bổ sung</span>
+    <button class="nav-btn" onclick="show('screen-import-history',this)">25. LS Phiếu nhập</button>
+    <button class="nav-btn" onclick="show('screen-stock-alert',this)">26. Cài báo tồn kho</button>
+    <button class="nav-btn" onclick="show('screen-dashboard-warehouse',this)">27. DB Nhân viên kho</button>
+    <button class="nav-btn" onclick="show('screen-dashboard-shipper',this)">28. DB Shipper</button>
+    <button class="nav-btn" onclick="show('screen-dashboard-cashier',this)">29. DB NV Bán hàng</button>
+    <button class="nav-btn" onclick="show('screen-permissions',this)">30. Phân quyền</button>
+  </div>
+</nav>
+
+<!-- ===== SCREEN 1: ĐĂNG NHẬP ===== -->
+<div id="screen-login" class="screen active">
+  <div class="layout"><div class="content" style="padding:0">
+    <div class="login-wrap"><div class="login-card">
+      <div class="login-logo">🌸 FloriSys</div>
+      <div class="login-sub">Hệ thống Quản lý Cửa hàng Hoa</div>
+      <div class="form-group" style="margin-bottom:16px"><label>Tên đăng nhập</label><input type="text" value="admin"></div>
+      <div class="form-group" style="margin-bottom:24px"><label>Mật khẩu</label><input type="password" value="••••••••"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px">🔐 Đăng nhập</button>
+      <p style="text-align:center;margin-top:16px;font-size:12px;color:var(--gray-400)">Phiên đăng nhập tự động hết hạn sau 60 phút</p>
+    </div></div>
+  </div></div>
+</div>
+
+<!-- ===== SCREEN 2: ĐỔI MẬT KHẨU ===== -->
+<div id="screen-changepw" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Tài khoản</div>
+      <div class="sidebar-item active"><span class="icon">🔑</span> Đổi mật khẩu</div>
+      <div class="sidebar-user"><div class="avatar">NV</div><div class="user-info"><strong>Nguyễn Vũ</strong><span>Admin</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Đổi mật khẩu</div><div class="page-subtitle">Cập nhật mật khẩu cá nhân</div></div></div>
+      <div class="card" style="max-width:480px">
+        <div class="form-group" style="margin-bottom:16px"><label>Mật khẩu hiện tại</label><input type="password" placeholder="Nhập mật khẩu cũ..."></div>
+        <div class="form-group" style="margin-bottom:16px"><label>Mật khẩu mới</label><input type="password" placeholder="Tối thiểu 8 ký tự..."></div>
+        <div class="form-group" style="margin-bottom:24px"><label>Xác nhận mật khẩu mới</label><input type="password" placeholder="Nhập lại mật khẩu mới..."></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-primary">💾 Lưu thay đổi</button><button class="btn btn-secondary">Hủy</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: DASHBOARD ===== -->
+<div id="screen-dashboard" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Tổng quan</div>
+      <div class="sidebar-item active"><span class="icon">📊</span> Dashboard</div>
+      <div class="sidebar-section">Đơn hàng</div>
+      <div class="sidebar-item"><span class="icon">📋</span> Danh sách đơn</div>
+      <div class="sidebar-item"><span class="icon">➕</span> Tạo đơn mới</div>
+      <div class="sidebar-section">Kho hàng</div>
+      <div class="sidebar-item"><span class="icon">📦</span> Tồn kho</div>
+      <div class="sidebar-item"><span class="icon">📥</span> Nhập kho</div>
+      <div class="sidebar-section">Giao hàng</div>
+      <div class="sidebar-item"><span class="icon">🚚</span> Giao hàng</div>
+      <div class="sidebar-section">Quản lý</div>
+      <div class="sidebar-item"><span class="icon">👥</span> Nhân viên</div>
+      <div class="sidebar-item"><span class="icon">📈</span> Báo cáo</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Tổng quan hôm nay</div><div class="page-subtitle">Thứ Tư, 11/03/2026</div></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-secondary">🔔 Cảnh báo (3)</button><button class="btn btn-primary">➕ Tạo đơn mới</button></div>
+      </div>
+      <div class="alert alert-warn">⚠️ <div><strong>3 sản phẩm sắp hết hàng:</strong> Hoa hồng đỏ (còn 5), Ly trắng (còn 8), Cúc vàng (còn 3)</div></div>
+      <div class="stat-grid">
+        <div class="stat-card rose"><div class="stat-label">Đơn hàng hôm nay</div><div class="stat-value">47</div><div class="stat-sub"><span class="stat-up">↑ 12%</span> so với hôm qua</div></div>
+        <div class="stat-card green"><div class="stat-label">Doanh thu hôm nay</div><div class="stat-value">8.4M</div><div class="stat-sub"><span class="stat-up">↑ 8%</span> so với hôm qua</div></div>
+        <div class="stat-card amber"><div class="stat-label">Đơn đang giao</div><div class="stat-value">13</div><div class="stat-sub">4 shipper đang hoạt động</div></div>
+        <div class="stat-card blue"><div class="stat-label">Sản phẩm sắp hết</div><div class="stat-value">3</div><div class="stat-sub"><span class="stat-down">↓ Cần nhập thêm</span></div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">📋 Đơn hàng gần đây</div>
+          <table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead>
+          <tbody>
+            <tr><td>DH2026047</td><td>Nguyễn Thị Lan</td><td>350,000đ</td><td><span class="badge badge-new">Mới</span></td></tr>
+            <tr><td>DH2026046</td><td>Trần Văn Hùng</td><td>580,000đ</td><td><span class="badge badge-processing">Đang xử lý</span></td></tr>
+            <tr><td>DH2026045</td><td>Lê Thị Mai</td><td>220,000đ</td><td><span class="badge badge-delivered">Đã giao</span></td></tr>
+            <tr><td>DH2026044</td><td>Phạm Văn An</td><td>450,000đ</td><td><span class="badge badge-done">Hoàn thành</span></td></tr>
+          </tbody></table>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 Doanh thu 7 ngày qua</div>
+          <div class="chart-bars" style="margin-top:8px;height:120px">
+            <div class="chart-bar" style="height:55%"></div><div class="chart-bar" style="height:70%"></div>
+            <div class="chart-bar" style="height:45%"></div><div class="chart-bar" style="height:80%"></div>
+            <div class="chart-bar" style="height:65%"></div><div class="chart-bar" style="height:90%"></div>
+            <div class="chart-bar high" style="height:75%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gray-400);margin-top:8px">
+            <span>T5</span><span>T6</span><span>T7</span><span>CN</span><span>T2</span><span>T3</span><span>T4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 4: DANH SÁCH ĐƠN HÀNG ===== -->
+<div id="screen-order-list" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Đơn hàng</div>
+      <div class="sidebar-item active"><span class="icon">📋</span> Danh sách đơn</div>
+      <div class="sidebar-item"><span class="icon">➕</span> Tạo đơn mới</div>
+      <div class="sidebar-user"><div class="avatar">H</div><div class="user-info"><strong>Thu Hương</strong><span>Nhân viên bán hàng</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Danh sách đơn hàng</div><div class="page-subtitle">Tất cả đơn hàng trong hệ thống</div></div>
+        <button class="btn btn-primary">➕ Tạo đơn mới</button>
+      </div>
+      <div class="filter-row">
+        <input type="text" placeholder="🔍 Tìm mã đơn, tên khách...">
+        <input type="date" value="2026-03-11">
+        <select><option>Tất cả trạng thái</option><option>Mới</option><option>Đang xử lý</option><option>Đã giao</option><option>Hoàn thành</option><option>Hủy</option></select>
+        <select><option>Tất cả nhân viên</option><option>Thu Hương</option><option>Minh Tuấn</option></select>
+        <button class="btn btn-secondary btn-sm">Lọc</button>
+        <button class="btn btn-secondary btn-sm">↓ Xuất Excel</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>SĐT</th><th>Ngày tạo</th><th>Hình thức</th><th>Tổng tiền</th><th>Trạng thái</th><th>NV tạo</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><strong>DH2026047</strong></td><td>Nguyễn Thị Lan</td><td>0901 234 567</td><td>11/03 09:15</td><td>🚚 Giao tận nơi</td><td><strong>350,000đ</strong></td><td><span class="badge badge-new">Mới</span></td><td>Thu Hương</td><td><button class="btn btn-secondary btn-sm">Xem</button></td></tr>
+          <tr><td><strong>DH2026046</strong></td><td>Trần Văn Hùng</td><td>0912 345 678</td><td>11/03 08:40</td><td>🚚 Giao tận nơi</td><td><strong>580,000đ</strong></td><td><span class="badge badge-processing">Đang xử lý</span></td><td>Minh Tuấn</td><td><button class="btn btn-secondary btn-sm">Xem</button></td></tr>
+          <tr><td><strong>DH2026045</strong></td><td>Lê Thị Mai</td><td>0923 456 789</td><td>11/03 08:20</td><td>🏪 Tại quầy</td><td><strong>220,000đ</strong></td><td><span class="badge badge-done">Hoàn thành</span></td><td>Thu Hương</td><td><button class="btn btn-secondary btn-sm">Xem</button></td></tr>
+          <tr><td><strong>DH2026044</strong></td><td>Phạm Văn An</td><td>0934 567 890</td><td>10/03 17:55</td><td>🚚 Giao tận nơi</td><td><strong>450,000đ</strong></td><td><span class="badge badge-delivered">Đã giao</span></td><td>Thu Hương</td><td><button class="btn btn-secondary btn-sm">Xem</button></td></tr>
+          <tr><td><strong>DH2026043</strong></td><td>Hoàng Thị Bình</td><td>0945 678 901</td><td>10/03 15:30</td><td>🏪 Tại quầy</td><td><strong>180,000đ</strong></td><td><span class="badge badge-cancel">Hủy</span></td><td>Minh Tuấn</td><td><button class="btn btn-secondary btn-sm">Xem</button></td></tr>
+          <tr><td><strong>DH2026042</strong></td><td>Vũ Đình Nam</td><td>0956 789 012</td><td>10/03 14:10</td><td>🚚 Giao tận nơi</td><td><strong>720,000đ</strong></td><td><span class="badge badge-return">Hoàn hàng</span></td><td>Thu Hương</td><td><button class="btn btn-secondary btn-sm">Xem</button></td></tr>
+        </tbody></table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:12px;color:var(--gray-400)">
+        <span>Hiển thị 6 / 47 đơn hàng</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm">← Trước</button>
+          <button class="btn btn-primary btn-sm">1</button>
+          <button class="btn btn-secondary btn-sm">2</button>
+          <button class="btn btn-secondary btn-sm">3</button>
+          <button class="btn btn-secondary btn-sm">Sau →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 5: TẠO ĐƠN HÀNG ===== -->
+<div id="screen-order-create" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Đơn hàng</div>
+      <div class="sidebar-item"><span class="icon">📋</span> Danh sách đơn</div>
+      <div class="sidebar-item active"><span class="icon">➕</span> Tạo đơn mới</div>
+      <div class="sidebar-user"><div class="avatar">H</div><div class="user-info"><strong>Thu Hương</strong><span>Nhân viên bán hàng</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Tạo đơn hàng mới</div><div class="page-subtitle">UC-01 – Nhân viên bán hàng</div></div></div>
+      <div class="two-col">
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title">👤 Thông tin khách hàng</div>
+            <div class="form-grid">
+              <div class="form-group"><label>Họ tên khách hàng</label><input type="text" placeholder="Nguyễn Thị Lan"></div>
+              <div class="form-group"><label>Số điện thoại</label><input type="text" placeholder="0901 234 567"></div>
+              <div class="form-group full"><label>Hình thức nhận hàng</label><select><option>🏪 Nhận tại quầy</option><option>🚚 Giao tận nơi</option></select></div>
+              <div class="form-group full"><label>Địa chỉ giao hàng</label><input type="text" placeholder="Số 12 Nguyễn Huệ, Q.1, TP.HCM"></div>
+              <div class="form-group"><label>Ngày giờ giao</label><input type="date" value="2026-03-11"></div>
+              <div class="form-group"><label>Phương thức thanh toán</label><select><option>COD (Tiền mặt khi nhận)</option><option>Chuyển khoản trước</option></select></div>
+              <div class="form-group full"><label>Ghi chú</label><textarea placeholder="VD: Giao trước 10h sáng, yêu cầu gói quà đẹp..."></textarea></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">🌸 Chọn sản phẩm</div>
+            <div style="display:flex;gap:10px;margin-bottom:14px"><input type="text" placeholder="🔍 Tìm tên hoa..." style="flex:1"><button class="btn btn-secondary btn-sm">Tìm</button></div>
+            <table><thead><tr><th>Sản phẩm</th><th>Giá bán</th><th>Tồn kho</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>🌹 Hoa hồng đỏ (bó 10)</td><td>180,000đ</td><td><span class="badge badge-ok">42 bó</span></td><td><button class="btn btn-primary btn-sm">+ Thêm</button></td></tr>
+              <tr><td>🌷 Tulip hồng (bó 5)</td><td>220,000đ</td><td><span class="badge badge-ok">28 bó</span></td><td><button class="btn btn-primary btn-sm">+ Thêm</button></td></tr>
+              <tr><td>🌻 Hoa cúc vàng (bó 10)</td><td>80,000đ</td><td><span class="badge badge-low">3 bó ⚠️</span></td><td><button class="btn btn-primary btn-sm">+ Thêm</button></td></tr>
+              <tr><td>🌺 Ly trắng (bó 5)</td><td>150,000đ</td><td><span class="badge badge-warn">8 bó</span></td><td><button class="btn btn-primary btn-sm">+ Thêm</button></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-title">🛒 Giỏ hàng</div>
+            <div class="order-product-row"><div class="product-thumb">🌹</div><div><div class="p-name">Hoa hồng đỏ (bó 10)</div><div class="p-qty">2 bó × 180,000đ</div></div><div class="p-price">360,000đ</div><button style="background:none;border:none;cursor:pointer;color:var(--gray-400);margin-left:8px">✕</button></div>
+            <div class="order-product-row"><div class="product-thumb">🌷</div><div><div class="p-name">Tulip hồng (bó 5)</div><div class="p-qty">1 bó × 220,000đ</div></div><div class="p-price">220,000đ</div><button style="background:none;border:none;cursor:pointer;color:var(--gray-400);margin-left:8px">✕</button></div>
+            <hr class="divider">
+            <div class="summary-box">
+              <div class="summary-line"><span>Tạm tính</span><span>580,000đ</span></div>
+              <div class="summary-line"><span>Phí giao hàng</span><span>30,000đ</span></div>
+              <div class="summary-line total"><span>Tổng cộng</span><span class="amount">610,000đ</span></div>
+            </div>
+            <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+              <button class="btn btn-primary" style="justify-content:center;padding:12px">✅ Xác nhận tạo đơn</button>
+              <button class="btn btn-secondary" style="justify-content:center">Hủy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 6: CHI TIẾT ĐƠN HÀNG ===== -->
+<div id="screen-order-detail" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Đơn hàng</div>
+      <div class="sidebar-item active"><span class="icon">📋</span> Danh sách đơn</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div>
+          <div style="font-size:13px;color:var(--gray-400);margin-bottom:4px">← Quay lại danh sách</div>
+          <div class="page-title">Đơn hàng DH2026046</div>
+          <div style="display:flex;gap:10px;margin-top:8px;align-items:center"><span class="badge badge-processing">Đang xử lý</span><span style="font-size:12px;color:var(--gray-400)">11/03/2026 08:40 – NV: Thu Hương</span></div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-secondary">📝 Ghi nhận phản hồi</button>
+          <button class="btn btn-primary">▶ Chuyển trạng thái</button>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title">👤 Thông tin khách hàng</div>
+            <div class="info-row"><span class="lbl">Họ tên</span><span class="val">Trần Văn Hùng</span></div>
+            <div class="info-row"><span class="lbl">Số điện thoại</span><span class="val">0912 345 678</span></div>
+            <div class="info-row"><span class="lbl">Hình thức</span><span class="val">🚚 Giao tận nơi</span></div>
+            <div class="info-row"><span class="lbl">Địa chỉ</span><span class="val">45 Lê Lợi, Q.1, TP.HCM</span></div>
+            <div class="info-row"><span class="lbl">Giờ giao yêu cầu</span><span class="val">Trước 14:00 ngày 11/03</span></div>
+            <div class="info-row"><span class="lbl">Thanh toán</span><span class="val">COD – Chưa thu tiền</span></div>
+            <div class="info-row"><span class="lbl">Ghi chú</span><span class="val">Gói quà đẹp, có thiệp</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">🌸 Sản phẩm đặt</div>
+            <div class="order-product-row"><div class="product-thumb">🌹</div><div><div class="p-name">Hoa hồng đỏ (bó 20)</div><div class="p-qty">1 bó × 350,000đ</div></div><div class="p-price">350,000đ</div></div>
+            <div class="order-product-row"><div class="product-thumb">🌷</div><div><div class="p-name">Tulip hồng (bó 5)</div><div class="p-qty">1 bó × 220,000đ</div></div><div class="p-price">220,000đ</div></div>
+            <hr class="divider">
+            <div class="summary-box">
+              <div class="summary-line"><span>Tạm tính</span><span>570,000đ</span></div>
+              <div class="summary-line"><span>Phí giao hàng</span><span>30,000đ</span></div>
+              <div class="summary-line total"><span>Tổng cộng</span><span class="amount">600,000đ</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title">🚀 Tiến trình xử lý</div>
+            <ul class="timeline">
+              <li class="done"><div class="timeline-text"><strong>Đơn mới được tạo</strong>11/03/2026 08:40 – NV: Thu Hương</div></li>
+              <li class="active-step"><div class="timeline-text"><strong>Đang xử lý / Chuẩn bị hàng</strong>11/03/2026 09:00 – NV Kho: Minh Tuấn</div></li>
+              <li><div class="timeline-text"><strong>Xuất kho</strong><span style="color:var(--gray-300)">Chờ xác nhận</span></div></li>
+              <li><div class="timeline-text"><strong>Phân công giao hàng</strong><span style="color:var(--gray-300)">Chờ phân công</span></div></li>
+              <li><div class="timeline-text"><strong>Giao hàng thành công</strong><span style="color:var(--gray-300)">Chờ giao</span></div></li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-title">🔄 Cập nhật trạng thái</div>
+            <div class="form-group" style="margin-bottom:12px"><label>Chuyển sang trạng thái</label><select><option>Đang xử lý (hiện tại)</option><option>Đã giao</option><option>Hoàn thành</option><option>Hủy đơn</option></select></div>
+            <div class="form-group" style="margin-bottom:16px"><label>Ghi chú cập nhật</label><textarea placeholder="Nhập ghi chú..."></textarea></div>
+            <button class="btn btn-primary">Cập nhật trạng thái</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 7: PHẢN HỒI ===== -->
+<div id="screen-order-feedback" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Đơn hàng</div>
+      <div class="sidebar-item active"><span class="icon">💬</span> Phản hồi khiếu nại</div>
+      <div class="sidebar-user"><div class="avatar">H</div><div class="user-info"><strong>Thu Hương</strong><span>Nhân viên bán hàng</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Ghi nhận phản hồi</div><div class="page-subtitle">Đơn hàng DH2026044</div></div></div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">📝 Ghi nhận phản hồi mới</div>
+          <div class="form-group" style="margin-bottom:14px"><label>Đơn hàng liên quan</label><input type="text" value="DH2026044 – Phạm Văn An" readonly style="background:var(--gray-50)"></div>
+          <div class="form-group" style="margin-bottom:14px"><label>Nội dung phản hồi</label><textarea>Khách phản hồi hoa hồng bị héo sau 1 ngày, không đúng cam kết 3 ngày tươi</textarea></div>
+          <div class="form-group" style="margin-bottom:14px"><label>Loại phản hồi</label><select><option>Chất lượng sản phẩm</option><option>Giao hàng chậm</option><option>Giao sai sản phẩm</option><option>Khác</option></select></div>
+          <button class="btn btn-primary">💾 Ghi nhận</button>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Lịch sử phản hồi</div>
+          <div style="border:1px solid var(--gray-200);border-radius:8px;padding:14px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px"><strong>Hoa héo sớm</strong><span class="badge badge-processing">Đang xử lý</span></div>
+            <p style="font-size:12px;color:var(--gray-600);margin-bottom:8px">Hoa hồng bị héo sau 1 ngày, không đúng cam kết 3 ngày tươi...</p>
+            <div style="font-size:11px;color:var(--gray-400)">10/03/2026 – NV: Thu Hương</div>
+            <div style="margin-top:12px"><label style="font-size:12px">Kết quả xử lý (Admin)</label><select style="margin-top:6px"><option>Chưa xử lý</option><option>Đổi hàng mới</option><option>Hoàn tiền một phần</option><option>Hoàn tiền toàn bộ</option></select></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 8: TRẢ HÀNG ===== -->
+<div id="screen-order-return" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Đơn hàng</div>
+      <div class="sidebar-item active"><span class="icon">↩️</span> Trả hàng hoàn tiền</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Xử lý trả hàng</div><div class="page-subtitle">DH-06 – Chỉ Admin mới có quyền</div></div></div>
+      <div class="card" style="max-width:640px">
+        <div class="card-title">↩️ Tạo đơn trả hàng</div>
+        <div class="form-group" style="margin-bottom:14px"><label>Đơn hàng gốc</label><input type="text" value="DH2026042 – Vũ Đình Nam – 720,000đ" readonly style="background:var(--gray-50)"></div>
+        <div class="form-group" style="margin-bottom:14px"><label>Lý do trả hàng</label><select><option>Hoa héo/hỏng</option><option>Giao sai sản phẩm</option><option>Giao trễ dịp lễ</option><option>Khách đổi ý</option></select></div>
+        <div class="form-group" style="margin-bottom:14px">
+          <label>Sản phẩm trả lại</label>
+          <table style="margin-top:8px"><thead><tr><th>Sản phẩm</th><th>Số lượng trả</th><th>Có thể tái sử dụng</th></tr></thead>
+          <tbody><tr><td>🌹 Hoa hồng đỏ (bó 20)</td><td><input type="number" value="1" style="width:70px"></td><td><input type="checkbox" checked> Nhập lại kho</td></tr></tbody></table>
+        </div>
+        <div class="form-group" style="margin-bottom:14px"><label>Hình thức hoàn tiền</label><select><option>Hoàn tiền toàn bộ (350,000đ)</option><option>Hoàn tiền một phần</option><option>Không hoàn tiền</option></select></div>
+        <div class="form-group" style="margin-bottom:20px"><label>Ghi chú nội bộ</label><textarea placeholder="Ghi chú cho kế toán..."></textarea></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-primary">✅ Duyệt trả hàng</button><button class="btn btn-secondary">Hủy</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 9: TỒN KHO ===== -->
+<div id="screen-inventory" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Kho hàng</div>
+      <div class="sidebar-item active"><span class="icon">📦</span> Xem tồn kho</div>
+      <div class="sidebar-item"><span class="icon">📥</span> Nhập kho</div>
+      <div class="sidebar-item"><span class="icon">🗑️</span> Hàng hư hỏng</div>
+      <div class="sidebar-user"><div class="avatar">K</div><div class="user-info"><strong>Minh Kho</strong><span>Nhân viên kho</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Tồn kho hiện tại</div><div class="page-subtitle">Cập nhật lúc 09:30 – 11/03/2026</div></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-secondary">↓ Xuất báo cáo</button><button class="btn btn-primary">📥 Nhập kho mới</button></div>
+      </div>
+      <div class="alert alert-warn">⚠️ 3 sản phẩm đang ở mức tồn kho thấp cần nhập thêm ngay!</div>
+      <div class="search-bar">
+        <input type="text" placeholder="🔍 Tìm tên sản phẩm...">
+        <select><option>Tất cả trạng thái</option><option>Đủ hàng</option><option>Sắp hết</option><option>Hết hàng</option></select>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table><thead><tr><th>Mã SP</th><th>Tên sản phẩm</th><th>Loại</th><th>Tồn kho</th><th>Tối thiểu</th><th>Ngày nhập cuối</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>SP001</td><td>🌹 Hoa hồng đỏ (bó 10)</td><td>Hoa tươi</td><td><strong>42</strong></td><td>10</td><td>10/03/2026</td><td><span class="badge badge-ok">Đủ hàng</span></td><td><button class="btn btn-secondary btn-sm">Nhập thêm</button></td></tr>
+          <tr><td>SP002</td><td>🌷 Tulip hồng (bó 5)</td><td>Hoa tươi</td><td><strong>28</strong></td><td>10</td><td>09/03/2026</td><td><span class="badge badge-ok">Đủ hàng</span></td><td><button class="btn btn-secondary btn-sm">Nhập thêm</button></td></tr>
+          <tr style="background:#fff8f8"><td>SP003</td><td>🌻 Cúc vàng (bó 10)</td><td>Hoa tươi</td><td><strong style="color:var(--rose)">3</strong></td><td>10</td><td>08/03/2026</td><td><span class="badge badge-low">⚠️ Sắp hết</span></td><td><button class="btn btn-primary btn-sm">Nhập thêm</button></td></tr>
+          <tr style="background:#fff8f8"><td>SP004</td><td>🌺 Ly trắng (bó 5)</td><td>Hoa tươi</td><td><strong style="color:var(--amber)">8</strong></td><td>10</td><td>09/03/2026</td><td><span class="badge badge-warn">Sắp hết</span></td><td><button class="btn btn-primary btn-sm">Nhập thêm</button></td></tr>
+          <tr><td>SP005</td><td>🌸 Hoa anh đào (bó 7)</td><td>Hoa tươi</td><td><strong>15</strong></td><td>5</td><td>11/03/2026</td><td><span class="badge badge-ok">Đủ hàng</span></td><td><button class="btn btn-secondary btn-sm">Nhập thêm</button></td></tr>
+          <tr style="background:#fff8f8"><td>SP006</td><td>🎋 Lá decor xanh</td><td>Phụ kiện</td><td><strong style="color:var(--rose)">0</strong></td><td>5</td><td>05/03/2026</td><td><span class="badge badge-cancel">Hết hàng</span></td><td><button class="btn btn-primary btn-sm">Nhập thêm</button></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 10: NHẬP KHO ===== -->
+<div id="screen-import" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Kho hàng</div>
+      <div class="sidebar-item"><span class="icon">📦</span> Xem tồn kho</div>
+      <div class="sidebar-item active"><span class="icon">📥</span> Nhập kho</div>
+      <div class="sidebar-user"><div class="avatar">K</div><div class="user-info"><strong>Minh Kho</strong><span>Nhân viên kho</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Nhập kho mới</div><div class="page-subtitle">KH-01 – Tạo phiếu nhập kho</div></div></div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">📋 Thông tin phiếu nhập</div>
+          <div class="form-grid">
+            <div class="form-group"><label>Ngày nhập</label><input type="date" value="2026-03-11"></div>
+            <div class="form-group"><label>Nhà cung cấp</label><input type="text" placeholder="Vựa hoa Đà Lạt..."></div>
+            <div class="form-group full"><label>Ghi chú</label><textarea placeholder="Ghi chú phiếu nhập..."></textarea></div>
+          </div>
+          <hr class="divider">
+          <div class="card-title">🌸 Danh sách sản phẩm nhập</div>
+          <table><thead><tr><th>Sản phẩm</th><th>Số lượng</th><th>Giá nhập</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><select style="width:160px"><option>🌹 Hoa hồng đỏ</option><option>🌷 Tulip hồng</option><option>🌻 Cúc vàng</option></select></td><td><input type="number" value="50" style="width:70px"></td><td><input type="text" value="120,000" style="width:100px"></td><td><button style="background:none;border:none;cursor:pointer;color:var(--rose)">✕</button></td></tr>
+            <tr><td><select style="width:160px"><option>🌻 Cúc vàng</option></select></td><td><input type="number" value="30" style="width:70px"></td><td><input type="text" value="45,000" style="width:100px"></td><td><button style="background:none;border:none;cursor:pointer;color:var(--rose)">✕</button></td></tr>
+          </tbody></table>
+          <button class="btn btn-secondary btn-sm" style="margin-top:12px">+ Thêm sản phẩm</button>
+          <div class="action-bar"><button class="btn btn-secondary">Hủy</button><button class="btn btn-primary">💾 Lưu phiếu nhập</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📜 Lịch sử nhập kho gần đây</div>
+          <table><thead><tr><th>Phiếu</th><th>Ngày nhập</th><th>SP</th><th>Trạng thái</th></tr></thead>
+          <tbody>
+            <tr><td>PNK2026015</td><td>10/03/2026</td><td>3 loại</td><td><span class="badge badge-ok">Đã nhập</span></td></tr>
+            <tr><td>PNK2026014</td><td>09/03/2026</td><td>2 loại</td><td><span class="badge badge-ok">Đã nhập</span></td></tr>
+            <tr><td>PNK2026013</td><td>08/03/2026</td><td>5 loại</td><td><span class="badge badge-ok">Đã nhập</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 11: XUẤT KHO ===== -->
+<div id="screen-export" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Kho hàng</div>
+      <div class="sidebar-item active"><span class="icon">📤</span> Xuất kho theo đơn</div>
+      <div class="sidebar-user"><div class="avatar">K</div><div class="user-info"><strong>Minh Kho</strong><span>Nhân viên kho</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Xác nhận xuất kho</div><div class="page-subtitle">KH-02 – Xuất kho theo đơn hàng</div></div></div>
+      <div class="alert alert-ok">✅ Hệ thống tự động giảm tồn kho khi đơn chuyển sang "Đang xử lý"</div>
+      <div class="card">
+        <div class="card-title">📋 Đơn hàng chờ xuất kho</div>
+        <table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Sản phẩm</th><th>Số lượng</th><th>Tồn hiện tại</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>DH2026047</td><td>Nguyễn Thị Lan</td><td>🌹 Hồng đỏ bó 10</td><td>2 bó</td><td>42</td><td><span class="badge badge-ok">Đủ hàng</span></td><td><button class="btn btn-success btn-sm">✅ Xác nhận xuất</button></td></tr>
+          <tr><td>DH2026047</td><td>Nguyễn Thị Lan</td><td>🌷 Tulip hồng</td><td>1 bó</td><td>28</td><td><span class="badge badge-ok">Đủ hàng</span></td><td><button class="btn btn-success btn-sm">✅ Xác nhận xuất</button></td></tr>
+          <tr><td>DH2026046</td><td>Trần Văn Hùng</td><td>🌻 Cúc vàng bó 10</td><td>5 bó</td><td style="color:var(--rose)"><strong>3</strong></td><td><span class="badge badge-low">⚠️ Không đủ</span></td><td><button class="btn btn-secondary btn-sm" disabled>Không đủ hàng</button></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 12: HÀNG HƯ HỎNG ===== -->
+<div id="screen-damaged" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Kho hàng</div>
+      <div class="sidebar-item active"><span class="icon">🗑️</span> Ghi nhận hàng hư</div>
+      <div class="sidebar-user"><div class="avatar">K</div><div class="user-info"><strong>Minh Kho</strong><span>Nhân viên kho</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Ghi nhận hàng hư hỏng</div><div class="page-subtitle">KH-05 – Hủy hàng, giảm tồn kho</div></div></div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">🗑️ Ghi nhận hàng hư mới</div>
+          <div class="form-group" style="margin-bottom:14px"><label>Sản phẩm bị hư</label><select><option>🌹 Hoa hồng đỏ (bó 10)</option><option>🌷 Tulip hồng</option><option>🌻 Cúc vàng</option></select></div>
+          <div class="form-group" style="margin-bottom:14px"><label>Số lượng hủy</label><input type="number" value="5"></div>
+          <div class="form-group" style="margin-bottom:14px"><label>Lý do</label><select><option>Hoa héo/chết</option><option>Hư hỏng do vận chuyển</option><option>Quá hạn sử dụng</option><option>Khác</option></select></div>
+          <div class="form-group" style="margin-bottom:16px"><label>Ngày ghi nhận</label><input type="date" value="2026-03-11"></div>
+          <div class="form-group" style="margin-bottom:20px"><label>Ghi chú</label><textarea placeholder="Mô tả tình trạng hàng hư..."></textarea></div>
+          <button class="btn btn-primary">💾 Ghi nhận hủy hàng</button>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 Lịch sử hàng hư tháng này</div>
+          <table><thead><tr><th>Ngày</th><th>Sản phẩm</th><th>SL hủy</th><th>Lý do</th></tr></thead>
+          <tbody>
+            <tr><td>10/03</td><td>🌹 Hoa hồng</td><td>8 bó</td><td>Héo</td></tr>
+            <tr><td>09/03</td><td>🌺 Ly trắng</td><td>3 bó</td><td>Hư vận chuyển</td></tr>
+            <tr><td>08/03</td><td>🌷 Tulip</td><td>5 bó</td><td>Quá hạn</td></tr>
+            <tr><td>07/03</td><td>🌻 Cúc vàng</td><td>12 bó</td><td>Héo</td></tr>
+          </tbody></table>
+          <div style="margin-top:16px;padding:14px;background:var(--rose-light);border-radius:8px;font-size:13px">
+            <strong>Tổng thiệt hại tháng 3/2026:</strong><br>
+            <span style="color:var(--rose);font-size:20px;font-weight:700">28 bó / 1,240,000đ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 13: DS GIAO HÀNG ===== -->
+<div id="screen-delivery-list" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Giao hàng</div>
+      <div class="sidebar-item active"><span class="icon">🚚</span> Danh sách giao hàng</div>
+      <div class="sidebar-item"><span class="icon">👤</span> Phân công shipper</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Theo dõi giao hàng</div><div class="page-subtitle">GH-04 – Tất cả chuyến giao hôm nay</div></div>
+        <button class="btn btn-primary">👤 Phân công shipper</button>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card rose"><div class="stat-label">Chờ phân công</div><div class="stat-value">5</div></div>
+        <div class="stat-card amber"><div class="stat-label">Đang giao</div><div class="stat-value">8</div></div>
+        <div class="stat-card green"><div class="stat-label">Giao thành công</div><div class="stat-value">24</div></div>
+        <div class="stat-card blue"><div class="stat-label">Hoàn hàng</div><div class="stat-value">2</div></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Địa chỉ</th><th>Giờ yêu cầu</th><th>Shipper</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>DH2026047</td><td>Nguyễn Thị Lan</td><td>12 Lê Lợi, Q.1</td><td>Trước 10:00</td><td>Hùng Shipper</td><td><span class="badge badge-processing">Đang giao</span></td><td><button class="btn btn-secondary btn-sm">Chi tiết</button></td></tr>
+          <tr><td>DH2026046</td><td>Trần Văn Hùng</td><td>45 Nguyễn Huệ, Q.1</td><td>Trước 14:00</td><td>—</td><td><span class="badge badge-new">Chờ phân công</span></td><td><button class="btn btn-primary btn-sm">Phân công</button></td></tr>
+          <tr><td>DH2026040</td><td>Lê Thị Mai</td><td>78 Trần Phú, Q.5</td><td>Bất kỳ</td><td>Nam Shipper</td><td><span class="badge badge-done">Giao thành công</span></td><td><button class="btn btn-secondary btn-sm">Chi tiết</button></td></tr>
+          <tr><td>DH2026038</td><td>Hoàng Văn Tú</td><td>22 Đinh Tiên Hoàng</td><td>Trước 09:00</td><td>Hùng Shipper</td><td><span class="badge badge-return">Hoàn hàng</span></td><td><button class="btn btn-secondary btn-sm">Chi tiết</button></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 14: PHÂN CÔNG SHIPPER ===== -->
+<div id="screen-delivery-assign" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Giao hàng</div>
+      <div class="sidebar-item"><span class="icon">🚚</span> Danh sách giao hàng</div>
+      <div class="sidebar-item active"><span class="icon">👤</span> Phân công shipper</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Phân công giao hàng</div><div class="page-subtitle">UC-02 – GH-01</div></div></div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">📦 Đơn cần giao – DH2026046</div>
+          <div class="info-row"><span class="lbl">Khách hàng</span><span class="val">Trần Văn Hùng</span></div>
+          <div class="info-row"><span class="lbl">Địa chỉ giao</span><span class="val">45 Nguyễn Huệ, Q.1, TP.HCM</span></div>
+          <div class="info-row"><span class="lbl">Thời gian yêu cầu</span><span class="val">Trước 14:00 ngày 11/03</span></div>
+          <div class="info-row"><span class="lbl">Sản phẩm</span><span class="val">🌹 Hồng đỏ ×1, 🌷 Tulip ×1</span></div>
+          <div class="info-row"><span class="lbl">Ghi chú</span><span class="val">Có thiệp "Chúc mừng sinh nhật"</span></div>
+          <hr class="divider">
+          <div class="form-group" style="margin-bottom:16px"><label>Chọn Shipper phân công</label>
+            <select><option>-- Chọn shipper --</option><option>Hùng Shipper (2 đơn hiện tại)</option><option>Nam Shipper (1 đơn hiện tại)</option><option>Tuấn Shipper (0 đơn hiện tại) ⭐</option></select>
+          </div>
+          <div class="form-group" style="margin-bottom:16px"><label>Ghi chú cho shipper</label><textarea placeholder="Hướng dẫn đặc biệt cho shipper..."></textarea></div>
+          <div style="display:flex;gap:10px"><button class="btn btn-primary">✅ Xác nhận phân công</button><button class="btn btn-secondary">Hủy</button></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🏍️ Danh sách Shipper hôm nay</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="delivery-card"><div class="delivery-card-header"><strong>Hùng Shipper</strong><span class="badge badge-processing">2 đơn</span></div><div class="delivery-card-body">📍 Đang tại Q.1 – Online<br>Đơn đang giao: DH2026047, DH2026044</div></div>
+            <div class="delivery-card"><div class="delivery-card-header"><strong>Nam Shipper</strong><span class="badge badge-ok">1 đơn</span></div><div class="delivery-card-body">📍 Đang tại Q.5 – Online<br>Đơn đang giao: DH2026040</div></div>
+            <div class="delivery-card"><div class="delivery-card-header"><strong>Tuấn Shipper</strong><span class="badge badge-done">Rảnh</span></div><div class="delivery-card-body">📍 Tại cửa hàng – Online<br>Chưa có đơn nào hôm nay</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 15: CẬP NHẬT GH (Shipper) ===== -->
+<div id="screen-delivery-update" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Giao hàng của tôi</div>
+      <div class="sidebar-item active"><span class="icon">🏍️</span> Đơn cần giao hôm nay</div>
+      <div class="sidebar-user"><div class="avatar">S</div><div class="user-info"><strong>Tuấn Shipper</strong><span>Nhân viên giao hàng</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Đơn hàng cần giao</div><div class="page-subtitle">GH-02, GH-03 – 11/03/2026</div></div></div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="delivery-card urgent">
+          <div class="delivery-card-header"><div><strong>DH2026046</strong> – Trần Văn Hùng</div><span class="badge badge-processing">Đang giao</span></div>
+          <div class="delivery-card-body">📍 45 Nguyễn Huệ, Quận 1, TP.HCM<br>⏰ Giao trước: <strong>14:00</strong> (Còn 2 tiếng)<br>💰 COD: 600,000đ<br>📝 Ghi chú: Có thiệp "Chúc mừng sinh nhật"</div>
+          <div style="display:flex;gap:8px;margin-top:14px">
+            <button class="btn btn-success btn-sm">✅ Giao thành công</button>
+            <button class="btn btn-secondary btn-sm">🔄 Giao lại</button>
+            <button class="btn btn-secondary btn-sm" style="color:var(--rose)">↩️ Hoàn hàng</button>
+          </div>
+        </div>
+        <div class="delivery-card">
+          <div class="delivery-card-header"><div><strong>DH2026049</strong> – Phạm Ngọc Yến</div><span class="badge badge-new">Chờ giao</span></div>
+          <div class="delivery-card-body">📍 118 Phan Đình Phùng, Quận Phú Nhuận<br>⏰ Giao trước: <strong>17:00</strong><br>💰 Đã thanh toán online<br>📝 Ghi chú: Nhấn chuông, không gọi điện</div>
+          <div style="margin-top:14px"><button class="btn btn-primary btn-sm">▶ Bắt đầu giao</button></div>
+        </div>
+        <div class="delivery-card" style="opacity:.6">
+          <div class="delivery-card-header"><div><strong>DH2026045</strong> – Lê Thị Mai</div><span class="badge badge-done">Đã giao xong</span></div>
+          <div class="delivery-card-body">📍 78 Trần Phú, Q.5 – ✅ Giao thành công lúc 09:45</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 16: DS NHÂN VIÊN ===== -->
+<div id="screen-staff-list" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Nhân viên</div>
+      <div class="sidebar-item active"><span class="icon">👥</span> Danh sách nhân viên</div>
+      <div class="sidebar-item"><span class="icon">➕</span> Thêm nhân viên</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Quản lý nhân viên</div><div class="page-subtitle">NV-01 đến NV-04</div></div>
+        <button class="btn btn-primary">➕ Thêm nhân viên</button>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="🔍 Tìm tên, SĐT...">
+        <select><option>Tất cả vai trò</option><option>Admin</option><option>Nhân viên bán hàng</option><option>Nhân viên kho</option><option>Shipper</option></select>
+        <select><option>Tất cả trạng thái</option><option>Đang làm</option><option>Đã nghỉ</option></select>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table><thead><tr><th>Nhân viên</th><th>Chức vụ</th><th>SĐT</th><th>Tài khoản</th><th>Ngày vào</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:28px;height:28px;font-size:11px">A</div><strong>Nguyễn Lê Minh Vũ</strong></div></td><td><span class="role-badge role-admin">Admin</span></td><td>0901 111 222</td><td>admin</td><td>01/01/2024</td><td><span class="badge badge-ok">Đang làm</span></td><td><button class="btn btn-secondary btn-sm">Sửa</button></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#3b82f6">H</div><strong>Trần Thu Hương</strong></div></td><td><span class="role-badge role-cashier">Nhân viên bán hàng</span></td><td>0912 333 444</td><td>thuhuong</td><td>15/03/2024</td><td><span class="badge badge-ok">Đang làm</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm">Sửa</button><button class="btn btn-secondary btn-sm" style="color:var(--rose)">Khóa</button></div></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:var(--green)">K</div><strong>Lê Minh Kho</strong></div></td><td><span class="role-badge role-warehouse">Nhân viên kho</span></td><td>0923 555 666</td><td>minhkho</td><td>01/06/2024</td><td><span class="badge badge-ok">Đang làm</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm">Sửa</button><button class="btn btn-secondary btn-sm" style="color:var(--rose)">Khóa</button></div></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:var(--amber)">S</div><strong>Nguyễn Văn Shipper</strong></div></td><td><span class="role-badge role-shipper">Shipper</span></td><td>0934 777 888</td><td>shipper1</td><td>15/08/2024</td><td><span class="badge badge-ok">Đang làm</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm">Sửa</button><button class="btn btn-secondary btn-sm" style="color:var(--rose)">Khóa</button></div></td></tr>
+          <tr style="opacity:.5"><td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:var(--gray-400)">X</div><strong>Hoàng Thị Xuân</strong></div></td><td><span class="role-badge role-cashier">Nhân viên bán hàng</span></td><td>0945 999 000</td><td>xuanxuan</td><td>01/04/2024</td><td><span class="badge badge-cancel">Đã nghỉ</span></td><td><div style="display:flex;gap:6px"><button class="btn btn-secondary btn-sm">Xem</button><button class="btn btn-secondary btn-sm">Kích hoạt</button></div></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 17: THÊM/SỬA NV ===== -->
+<div id="screen-staff-form" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Nhân viên</div>
+      <div class="sidebar-item"><span class="icon">👥</span> Danh sách nhân viên</div>
+      <div class="sidebar-item active"><span class="icon">➕</span> Thêm nhân viên</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Thêm nhân viên mới</div><div class="page-subtitle">NV-01, NV-02, NV-03</div></div></div>
+      <div class="card" style="max-width:600px">
+        <div class="form-grid">
+          <div class="form-group"><label>Họ và tên</label><input type="text" placeholder="Nguyễn Văn A"></div>
+          <div class="form-group"><label>Số điện thoại</label><input type="text" placeholder="0901 234 567"></div>
+          <div class="form-group"><label>Email</label><input type="email" placeholder="nhanvien@florishop.vn"></div>
+          <div class="form-group"><label>Chức vụ / Vai trò</label>
+            <select><option>-- Chọn vai trò --</option><option>Quản lý (Admin)</option><option>Nhân viên bán hàng (Cashier)</option><option>Nhân viên kho (Warehouse)</option><option>Nhân viên giao hàng (Shipper)</option></select>
+          </div>
+          <div class="form-group"><label>Tên đăng nhập</label><input type="text" placeholder="username..."></div>
+          <div class="form-group"><label>Mật khẩu khởi tạo</label><input type="password" placeholder="••••••••"></div>
+          <div class="form-group"><label>Ngày bắt đầu</label><input type="date" value="2026-03-11"></div>
+          <div class="form-group"><label>Trạng thái</label><select><option>Đang làm việc</option><option>Tạm khóa</option></select></div>
+          <div class="form-group full"><label>Ghi chú</label><textarea placeholder="Ghi chú về nhân viên..."></textarea></div>
+        </div>
+        <div class="action-bar"><button class="btn btn-secondary">Hủy</button><button class="btn btn-primary">💾 Lưu nhân viên</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 18: BC NGÀY ===== -->
+<div id="screen-report-day" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Báo cáo</div>
+      <div class="sidebar-item active"><span class="icon">📅</span> BC theo ngày</div>
+      <div class="sidebar-item"><span class="icon">📆</span> BC theo tháng</div>
+      <div class="sidebar-item"><span class="icon">🏆</span> SP bán chạy</div>
+      <div class="sidebar-item"><span class="icon">📦</span> BC tồn kho</div>
+      <div class="sidebar-item"><span class="icon">👤</span> BC nhân viên</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Báo cáo theo ngày</div><div class="page-subtitle">BC-01 – 11/03/2026</div></div>
+        <div style="display:flex;gap:10px;align-items:center"><input type="date" value="2026-03-11" style="width:160px"><button class="btn btn-secondary">↓ Xuất Excel</button></div>
+      </div>
+      <div class="report-kpi">
+        <div class="kpi-card"><div class="kpi-label">Tổng đơn hàng</div><div class="kpi-value">47</div><div class="kpi-change"><span class="stat-up">↑ 12%</span> so với hôm qua</div></div>
+        <div class="kpi-card"><div class="kpi-label">Doanh thu</div><div class="kpi-value" style="color:var(--rose)">8.4M</div><div class="kpi-change"><span class="stat-up">↑ 8%</span> so với hôm qua</div></div>
+        <div class="kpi-card"><div class="kpi-label">Sản phẩm bán ra</div><div class="kpi-value">142</div><div class="kpi-change"><span class="stat-up">↑ 5%</span> so với hôm qua</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">📊 Doanh thu theo giờ</div>
+          <div class="chart-bars" style="height:140px;margin-top:10px">
+            <div class="chart-bar" style="height:30%"></div><div class="chart-bar" style="height:50%"></div>
+            <div class="chart-bar" style="height:40%"></div><div class="chart-bar high" style="height:90%"></div>
+            <div class="chart-bar" style="height:70%"></div><div class="chart-bar" style="height:55%"></div>
+            <div class="chart-bar" style="height:75%"></div><div class="chart-bar" style="height:60%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-top:6px">
+            <span>7h</span><span>8h</span><span>9h</span><span>10h</span><span>11h</span><span>12h</span><span>13h</span><span>14h</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🌸 Top sản phẩm bán trong ngày</div>
+          <table><thead><tr><th>Sản phẩm</th><th>SL bán</th><th>Doanh thu</th></tr></thead>
+          <tbody>
+            <tr><td>🌹 Hoa hồng đỏ</td><td>28 bó</td><td><strong>5,040,000đ</strong></td></tr>
+            <tr><td>🌷 Tulip hồng</td><td>15 bó</td><td><strong>3,300,000đ</strong></td></tr>
+            <tr><td>🌻 Cúc vàng</td><td>20 bó</td><td><strong>1,600,000đ</strong></td></tr>
+            <tr><td>🌺 Ly trắng</td><td>10 bó</td><td><strong>1,500,000đ</strong></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 19: BC THÁNG ===== -->
+<div id="screen-report-month" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Báo cáo</div>
+      <div class="sidebar-item"><span class="icon">📅</span> BC theo ngày</div>
+      <div class="sidebar-item active"><span class="icon">📆</span> BC theo tháng</div>
+      <div class="sidebar-item"><span class="icon">🏆</span> SP bán chạy</div>
+      <div class="sidebar-item"><span class="icon">📦</span> BC tồn kho</div>
+      <div class="sidebar-item"><span class="icon">👤</span> BC nhân viên</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Báo cáo theo tháng</div><div class="page-subtitle">BC-02 – Tháng 3/2026</div></div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <select style="width:180px"><option>Tháng 3 / 2026</option><option>Tháng 2 / 2026</option><option>Tháng 1 / 2026</option></select>
+          <button class="btn btn-secondary">↓ Xuất Excel</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card rose"><div class="stat-label">Tổng đơn tháng này</div><div class="stat-value">412</div><div class="stat-sub"><span class="stat-up">↑ 18%</span> so với T2</div></div>
+        <div class="stat-card green"><div class="stat-label">Doanh thu tháng này</div><div class="stat-value">86.4M</div><div class="stat-sub"><span class="stat-up">↑ 22%</span> so với T2</div></div>
+        <div class="stat-card amber"><div class="stat-label">Tổng đơn tháng trước</div><div class="stat-value">349</div><div class="stat-sub">Tháng 2/2026</div></div>
+        <div class="stat-card blue"><div class="stat-label">DT tháng trước</div><div class="stat-value">70.8M</div><div class="stat-sub">Tháng 2/2026</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📈 Doanh thu từng ngày trong tháng</div>
+        <div class="chart-bars" style="height:160px">
+          <div class="chart-bar" style="height:45%"></div><div class="chart-bar" style="height:55%"></div>
+          <div class="chart-bar" style="height:40%"></div><div class="chart-bar high" style="height:95%"></div>
+          <div class="chart-bar" style="height:85%"></div><div class="chart-bar" style="height:60%"></div>
+          <div class="chart-bar" style="height:50%"></div><div class="chart-bar" style="height:65%"></div>
+          <div class="chart-bar" style="height:70%"></div><div class="chart-bar" style="height:55%"></div>
+          <div class="chart-bar" style="height:48%"></div>
+        </div>
+        <div style="font-size:11px;color:var(--gray-300);text-align:center;margin-top:6px">Ngày 1 – 11 tháng 3/2026 (đang cập nhật)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 20: SP BÁN CHẠY ===== -->
+<div id="screen-report-product" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Báo cáo</div>
+      <div class="sidebar-item"><span class="icon">📅</span> BC theo ngày</div>
+      <div class="sidebar-item"><span class="icon">📆</span> BC theo tháng</div>
+      <div class="sidebar-item active"><span class="icon">🏆</span> SP bán chạy</div>
+      <div class="sidebar-item"><span class="icon">📦</span> BC tồn kho</div>
+      <div class="sidebar-item"><span class="icon">👤</span> BC nhân viên</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Sản phẩm bán chạy</div><div class="page-subtitle">BC-03 – Top sản phẩm theo doanh số</div></div>
+        <div style="display:flex;gap:10px"><select style="width:160px"><option>Tháng 3 / 2026</option><option>Tuần này</option><option>Hôm nay</option></select><button class="btn btn-secondary">↓ Xuất Excel</button></div>
+      </div>
+      <div class="card">
+        <div class="card-title">🏆 Top 10 sản phẩm</div>
+        <table><thead><tr><th>#</th><th>Sản phẩm</th><th>Loại</th><th>SL bán</th><th>Doanh thu</th><th>% tổng DT</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--amber)">🥇 1</strong></td><td>🌹 Hoa hồng đỏ (bó 10)</td><td>Hoa tươi</td><td>284 bó</td><td><strong>51,120,000đ</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:59%"></div></div><span>59%</span></div></td></tr>
+          <tr><td><strong style="color:var(--gray-400)">🥈 2</strong></td><td>🌷 Tulip hồng (bó 5)</td><td>Hoa tươi</td><td>142 bó</td><td><strong>31,240,000đ</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:36%"></div></div><span>36%</span></div></td></tr>
+          <tr><td>3</td><td>🌺 Ly trắng (bó 5)</td><td>Hoa tươi</td><td>98 bó</td><td><strong>14,700,000đ</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:17%"></div></div><span>17%</span></div></td></tr>
+          <tr><td>4</td><td>🌻 Hoa cúc vàng</td><td>Hoa tươi</td><td>156 bó</td><td><strong>12,480,000đ</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:14%"></div></div><span>14%</span></div></td></tr>
+          <tr><td>5</td><td>🌸 Hoa anh đào</td><td>Hoa tươi</td><td>67 bó</td><td><strong>10,720,000đ</strong></td><td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:12%"></div></div><span>12%</span></div></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 21: BC TỒN KHO ===== -->
+<div id="screen-report-stock" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Báo cáo</div>
+      <div class="sidebar-item"><span class="icon">📅</span> BC theo ngày</div>
+      <div class="sidebar-item"><span class="icon">📆</span> BC theo tháng</div>
+      <div class="sidebar-item"><span class="icon">🏆</span> SP bán chạy</div>
+      <div class="sidebar-item active"><span class="icon">📦</span> BC tồn kho</div>
+      <div class="sidebar-item"><span class="icon">👤</span> BC nhân viên</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Báo cáo tồn kho</div><div class="page-subtitle">BC-04 – Tại thời điểm 11/03/2026 09:30</div></div>
+        <button class="btn btn-secondary">↓ Xuất Excel</button>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card green"><div class="stat-label">Tổng sản phẩm</div><div class="stat-value">24</div><div class="stat-sub">loại hoa & phụ kiện</div></div>
+        <div class="stat-card amber"><div class="stat-label">Giá trị tồn kho</div><div class="stat-value">12.4M</div><div class="stat-sub">tính theo giá nhập</div></div>
+        <div class="stat-card rose"><div class="stat-label">Sắp hết hàng</div><div class="stat-value">3</div><div class="stat-sub">cần nhập thêm</div></div>
+        <div class="stat-card blue"><div class="stat-label">Hết hàng</div><div class="stat-value">1</div><div class="stat-sub">không còn tồn kho</div></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table><thead><tr><th>Sản phẩm</th><th>Tồn kho</th><th>Tối thiểu</th><th>Giá nhập</th><th>Giá trị tồn</th><th>Trạng thái</th></tr></thead>
+        <tbody>
+          <tr><td>🌹 Hoa hồng đỏ (bó 10)</td><td>42</td><td>10</td><td>120,000đ</td><td>5,040,000đ</td><td><span class="badge badge-ok">Đủ hàng</span></td></tr>
+          <tr><td>🌷 Tulip hồng (bó 5)</td><td>28</td><td>10</td><td>160,000đ</td><td>4,480,000đ</td><td><span class="badge badge-ok">Đủ hàng</span></td></tr>
+          <tr style="background:#fff8f8"><td>🌻 Cúc vàng (bó 10)</td><td><strong style="color:var(--rose)">3</strong></td><td>10</td><td>45,000đ</td><td>135,000đ</td><td><span class="badge badge-low">⚠️ Sắp hết</span></td></tr>
+          <tr style="background:#fff8f8"><td>🌺 Ly trắng (bó 5)</td><td><strong style="color:var(--amber)">8</strong></td><td>10</td><td>100,000đ</td><td>800,000đ</td><td><span class="badge badge-warn">Sắp hết</span></td></tr>
+          <tr style="background:#fff8f8"><td>🎋 Lá decor xanh</td><td><strong style="color:var(--rose)">0</strong></td><td>5</td><td>20,000đ</td><td>0đ</td><td><span class="badge badge-cancel">Hết hàng</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 22: BC NHÂN VIÊN ===== -->
+<div id="screen-report-staff" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Báo cáo</div>
+      <div class="sidebar-item"><span class="icon">📅</span> BC theo ngày</div>
+      <div class="sidebar-item"><span class="icon">📆</span> BC theo tháng</div>
+      <div class="sidebar-item"><span class="icon">🏆</span> SP bán chạy</div>
+      <div class="sidebar-item"><span class="icon">📦</span> BC tồn kho</div>
+      <div class="sidebar-item active"><span class="icon">👤</span> BC nhân viên</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Báo cáo theo nhân viên</div><div class="page-subtitle">BC-05 – Tháng 3/2026</div></div>
+        <div style="display:flex;gap:10px"><select style="width:160px"><option>Tháng 3 / 2026</option></select><button class="btn btn-secondary">↓ Xuất Excel</button></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table><thead><tr><th>#</th><th>Nhân viên</th><th>Vai trò</th><th>Số đơn tạo</th><th>Doanh thu</th><th>Trung bình/đơn</th><th>Đơn hủy</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:#3b82f6">H</div>Trần Thu Hương</div></td><td><span class="role-badge role-cashier">Cashier</span></td><td><strong>187</strong></td><td><strong style="color:var(--green)">48,620,000đ</strong></td><td>260,000đ</td><td>5</td></tr>
+          <tr><td>2</td><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:10px">T</div>Lê Minh Tuấn</div></td><td><span class="role-badge role-cashier">Cashier</span></td><td><strong>142</strong></td><td><strong style="color:var(--green)">37,940,000đ</strong></td><td>267,000đ</td><td>8</td></tr>
+          <tr><td>3</td><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:10px">P</div>Phạm Ngọc Phương</div></td><td><span class="role-badge role-cashier">Cashier</span></td><td><strong>83</strong></td><td><strong style="color:var(--green)">19,090,000đ</strong></td><td>230,000đ</td><td>3</td></tr>
+        </tbody></table>
+      </div>
+      <div class="two-col" style="margin-top:20px">
+        <div class="card">
+          <div class="card-title">📊 So sánh doanh thu nhân viên</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Thu Hương</span><span>48.6M</span></div><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Minh Tuấn</span><span>37.9M</span></div><div class="progress-bar"><div class="progress-fill" style="width:78%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Ngọc Phương</span><span>19.1M</span></div><div class="progress-bar"><div class="progress-fill" style="width:39%"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📋 Số đơn hàng</div>
+          <div class="chart-bars" style="height:100px;margin-top:12px">
+            <div class="chart-bar high" style="height:100%"></div>
+            <div class="chart-bar" style="height:76%"></div>
+            <div class="chart-bar" style="height:44%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-around;font-size:11px;color:var(--gray-400);margin-top:8px">
+            <span>T. Hương</span><span>M. Tuấn</span><span>N. Phương</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 23: SẢN PHẨM ===== -->
+<div id="screen-products" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Danh mục</div>
+      <div class="sidebar-item active"><span class="icon">🌸</span> Sản phẩm</div>
+      <div class="sidebar-item"><span class="icon">👤</span> Khách hàng</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Danh mục sản phẩm</div><div class="page-subtitle">Quản lý tất cả sản phẩm hoa và phụ kiện</div></div>
+        <button class="btn btn-primary">➕ Thêm sản phẩm</button>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="🔍 Tìm tên sản phẩm...">
+        <select><option>Tất cả loại</option><option>Hoa tươi</option><option>Hoa giả</option><option>Phụ kiện</option></select>
+        <select><option>Đang bán</option><option>Ngừng bán</option><option>Tất cả</option></select>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table><thead><tr><th>Mã SP</th><th>Tên sản phẩm</th><th>Loại</th><th>Giá bán</th><th>Giá nhập</th><th>Tồn kho</th><th>Tối thiểu</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>SP001</td><td>🌹 Hoa hồng đỏ (bó 10)</td><td>Hoa tươi</td><td>180,000đ</td><td>120,000đ</td><td>42</td><td>10</td><td><span class="badge badge-ok">Đang bán</span></td><td><button class="btn btn-secondary btn-sm">Sửa</button></td></tr>
+          <tr><td>SP002</td><td>🌷 Tulip hồng (bó 5)</td><td>Hoa tươi</td><td>220,000đ</td><td>160,000đ</td><td>28</td><td>10</td><td><span class="badge badge-ok">Đang bán</span></td><td><button class="btn btn-secondary btn-sm">Sửa</button></td></tr>
+          <tr><td>SP003</td><td>🌻 Cúc vàng (bó 10)</td><td>Hoa tươi</td><td>80,000đ</td><td>45,000đ</td><td>3</td><td>10</td><td><span class="badge badge-ok">Đang bán</span></td><td><button class="btn btn-secondary btn-sm">Sửa</button></td></tr>
+          <tr><td>SP007</td><td>🎀 Ruy băng trang trí</td><td>Phụ kiện</td><td>15,000đ</td><td>8,000đ</td><td>200</td><td>50</td><td><span class="badge badge-ok">Đang bán</span></td><td><button class="btn btn-secondary btn-sm">Sửa</button></td></tr>
+          <tr><td>SP008</td><td>🌼 Hoa lay ơn (bó 10)</td><td>Hoa tươi</td><td>90,000đ</td><td>55,000đ</td><td>0</td><td>10</td><td><span class="badge badge-cancel">Ngừng bán</span></td><td><button class="btn btn-secondary btn-sm">Sửa</button></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 24: KHÁCH HÀNG ===== -->
+<div id="screen-customers" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys</div>
+      <div class="sidebar-section">Danh mục</div>
+      <div class="sidebar-item"><span class="icon">🌸</span> Sản phẩm</div>
+      <div class="sidebar-item active"><span class="icon">👤</span> Khách hàng</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header"><div><div class="page-title">Danh sách khách hàng</div><div class="page-subtitle">Khách hàng đã từng đặt hàng</div></div></div>
+      <div class="search-bar">
+        <input type="text" placeholder="🔍 Tìm tên, SĐT, email...">
+        <button class="btn btn-secondary btn-sm">Lọc</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table><thead><tr><th>Mã KH</th><th>Họ tên</th><th>SĐT</th><th>Email</th><th>Địa chỉ</th><th>Tổng đơn</th><th>Ngày đầu tiên</th></tr></thead>
+        <tbody>
+          <tr><td>KH001</td><td>Nguyễn Thị Lan</td><td>0901 234 567</td><td>lan.nt@gmail.com</td><td>12 Lê Lợi, Q.1</td><td><strong>14 đơn</strong></td><td>15/06/2025</td></tr>
+          <tr><td>KH002</td><td>Trần Văn Hùng</td><td>0912 345 678</td><td>hung.tv@gmail.com</td><td>45 Nguyễn Huệ, Q.1</td><td><strong>8 đơn</strong></td><td>01/09/2025</td></tr>
+          <tr><td>KH003</td><td>Lê Thị Mai</td><td>0923 456 789</td><td>—</td><td>—</td><td><strong>3 đơn</strong></td><td>20/01/2026</td></tr>
+          <tr><td>KH004</td><td>Phạm Văn An</td><td>0934 567 890</td><td>an.pv@email.com</td><td>78 Trần Phú, Q.5</td><td><strong>22 đơn</strong></td><td>10/03/2025</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN LABEL -->
+<div class="screen-label" id="screen-label">Màn hình 1 / 29</div>
+
+<!-- ===== SCREEN 25: LỊCH SỬ PHIẾU NHẬP KHO ===== -->
+<div id="screen-import-history" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Kho hàng</div>
+      <div class="sidebar-item"><span class="icon">📦</span> Tồn kho</div>
+      <div class="sidebar-item"><span class="icon">📥</span> Nhập kho mới</div>
+      <div class="sidebar-item"><span class="icon">📤</span> Xuất kho</div>
+      <div class="sidebar-item"><span class="icon">🗑️</span> Hàng hư hỏng</div>
+      <div class="sidebar-item active"><span class="icon">📋</span> Lịch sử nhập kho</div>
+      <div class="sidebar-user"><div class="avatar">K</div><div class="user-info"><strong>Minh Khoa</strong><span>Nhân viên kho</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Lịch sử phiếu nhập kho</div><div class="page-subtitle">Tra cứu và đối soát tất cả phiếu nhập hàng</div></div>
+        <button class="btn btn-secondary">↓ Xuất Excel</button>
+      </div>
+      <div class="filter-row">
+        <input type="text" placeholder="🔍 Tìm mã phiếu, tên sản phẩm...">
+        <input type="date" value="2026-03-01" style="width:150px">
+        <span style="color:var(--gray-400);font-size:12px">đến</span>
+        <input type="date" value="2026-03-11" style="width:150px">
+        <select style="width:160px"><option>Tất cả nhân viên</option><option>Minh Khoa</option><option>Thanh Tú</option></select>
+        <button class="btn btn-secondary btn-sm">Lọc</button>
+      </div>
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+        <div class="stat-card green"><div class="stat-label">Tổng phiếu nhập tháng này</div><div class="stat-value">18</div><div class="stat-sub">01/03 – 11/03/2026</div></div>
+        <div class="stat-card blue"><div class="stat-label">Tổng sản phẩm đã nhập</div><div class="stat-value">642</div><div class="stat-sub">đơn vị / bó</div></div>
+        <div class="stat-card amber"><div class="stat-label">Tổng chi phí nhập</div><div class="stat-value">28.4M</div><div class="stat-sub">tính theo giá nhập</div></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <table>
+          <thead><tr><th>Mã phiếu</th><th>Ngày nhập</th><th>Sản phẩm nhập</th><th>Tổng SL</th><th>Tổng tiền nhập</th><th>Nhân viên</th><th>Ghi chú</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>PN2026018</strong></td><td>11/03/2026 07:30</td>
+              <td>🌹 Hồng đỏ, 🌷 Tulip hồng</td><td>120 bó</td>
+              <td><strong>18,400,000đ</strong></td><td>Minh Khoa</td>
+              <td>Hàng từ vựa Bình Điền</td>
+              <td><button class="btn btn-secondary btn-sm">Xem</button></td>
+            </tr>
+            <tr>
+              <td><strong>PN2026017</strong></td><td>09/03/2026 08:00</td>
+              <td>🌻 Cúc vàng, 🌺 Ly trắng</td><td>80 bó</td>
+              <td><strong>9,600,000đ</strong></td><td>Thanh Tú</td>
+              <td>Nhập bổ sung ngày lễ</td>
+              <td><button class="btn btn-secondary btn-sm">Xem</button></td>
+            </tr>
+            <tr>
+              <td><strong>PN2026016</strong></td><td>07/03/2026 07:15</td>
+              <td>🌸 Anh đào, 🎀 Ruy băng</td><td>65 bó</td>
+              <td><strong>7,250,000đ</strong></td><td>Minh Khoa</td>
+              <td>—</td>
+              <td><button class="btn btn-secondary btn-sm">Xem</button></td>
+            </tr>
+            <tr>
+              <td><strong>PN2026015</strong></td><td>05/03/2026 08:30</td>
+              <td>🌹 Hồng đỏ, 🌷 Tulip, 🌻 Cúc</td><td>150 bó</td>
+              <td><strong>22,500,000đ</strong></td><td>Minh Khoa</td>
+              <td>Nhập lớn trước 8/3</td>
+              <td><button class="btn btn-secondary btn-sm">Xem</button></td>
+            </tr>
+            <tr>
+              <td><strong>PN2026014</strong></td><td>03/03/2026 09:00</td>
+              <td>🌺 Ly trắng, 🎋 Lá decor</td><td>55 bó</td>
+              <td><strong>6,050,000đ</strong></td><td>Thanh Tú</td>
+              <td>—</td>
+              <td><button class="btn btn-secondary btn-sm">Xem</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:12px;color:var(--gray-400)">
+        <span>Hiển thị 5 / 18 phiếu nhập</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm">← Trước</button>
+          <button class="btn btn-primary btn-sm">1</button>
+          <button class="btn btn-secondary btn-sm">2</button>
+          <button class="btn btn-secondary btn-sm">3</button>
+          <button class="btn btn-secondary btn-sm">Sau →</button>
+        </div>
+      </div>
+      <!-- Chi tiết phiếu nhập (dạng expand) -->
+      <div class="card" style="margin-top:24px">
+        <div class="card-title">📄 Chi tiết phiếu PN2026018 <span style="font-size:11px;color:var(--gray-400);font-weight:400">– Click "Xem" để tải chi tiết</span></div>
+        <div class="two-col" style="margin-bottom:16px">
+          <div>
+            <div class="info-row"><span class="lbl">Mã phiếu</span><span class="val">PN2026018</span></div>
+            <div class="info-row"><span class="lbl">Ngày nhập</span><span class="val">11/03/2026 07:30</span></div>
+            <div class="info-row"><span class="lbl">Nhân viên lập phiếu</span><span class="val">Minh Khoa</span></div>
+          </div>
+          <div>
+            <div class="info-row"><span class="lbl">Nhà cung cấp</span><span class="val">Vựa hoa Bình Điền</span></div>
+            <div class="info-row"><span class="lbl">Tổng tiền nhập</span><span class="val" style="color:var(--rose);font-weight:700">18,400,000đ</span></div>
+            <div class="info-row"><span class="lbl">Ghi chú</span><span class="val">Hàng từ vựa Bình Điền, đã kiểm đếm đủ</span></div>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Sản phẩm</th><th>Số lượng nhập</th><th>Đơn giá nhập</th><th>Thành tiền</th><th>Hạn dùng ước tính</th></tr></thead>
+          <tbody>
+            <tr><td>🌹 Hoa hồng đỏ (bó 10)</td><td>80 bó</td><td>120,000đ</td><td><strong>9,600,000đ</strong></td><td>18/03/2026</td></tr>
+            <tr><td>🌷 Tulip hồng (bó 5)</td><td>40 bó</td><td>160,000đ</td><td><strong>6,400,000đ</strong></td><td>20/03/2026</td></tr>
+            <tr><td>🎀 Ruy băng trang trí</td><td>200 cuộn</td><td>12,000đ</td><td><strong>2,400,000đ</strong></td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 26: CÀI ĐẶT NGƯỠNG CẢNH BÁO TỒN KHO ===== -->
+<div id="screen-stock-alert" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Kho hàng</div>
+      <div class="sidebar-item"><span class="icon">📦</span> Tồn kho</div>
+      <div class="sidebar-item"><span class="icon">📥</span> Nhập kho mới</div>
+      <div class="sidebar-item active"><span class="icon">🔔</span> Cài báo tồn kho</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Cài đặt cảnh báo tồn kho</div><div class="page-subtitle">Thiết lập ngưỡng tối thiểu để hệ thống gửi cảnh báo tự động</div></div>
+        <button class="btn btn-primary">💾 Lưu tất cả thay đổi</button>
+      </div>
+      <div class="alert alert-warn">⚠️ <div><strong>3 sản phẩm đang dưới ngưỡng tối thiểu:</strong> Hoa cúc vàng (còn 3 / tối thiểu 10), Ly trắng (còn 8 / tối thiểu 10), Lá decor (còn 0 / tối thiểu 5)</div></div>
+      <div class="two-col" style="margin-bottom:24px">
+        <div class="card">
+          <div class="card-title">⚙️ Cài đặt chung</div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Phương thức nhận cảnh báo</label>
+            <select>
+              <option>Hiển thị trên Dashboard</option>
+              <option>Hiển thị + Ghi log hệ thống</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Tần suất kiểm tra tồn kho</label>
+            <select><option>Kiểm tra sau mỗi giao dịch (thời gian thực)</option><option>Mỗi 30 phút</option><option>Mỗi 1 giờ</option></select>
+          </div>
+          <div class="form-group">
+            <label>Ngưỡng cảnh báo mặc định (nếu chưa cài từng sản phẩm)</label>
+            <input type="number" value="10" placeholder="10">
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 Tổng quan cảnh báo hiện tại</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--green-light);border-radius:8px">
+              <span style="color:var(--green);font-weight:600">✅ Đủ hàng</span>
+              <strong style="color:var(--green);font-size:22px">20</strong>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--amber-light);border-radius:8px">
+              <span style="color:#92400e;font-weight:600">⚠️ Sắp hết</span>
+              <strong style="color:#92400e;font-size:22px">2</strong>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:#fee2e2;border-radius:8px">
+              <span style="color:#991b1b;font-weight:600">🚨 Đã hết / Dưới ngưỡng</span>
+              <strong style="color:#991b1b;font-size:22px">1</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between">
+          <div style="font-weight:600;font-size:14px">🌸 Ngưỡng tối thiểu từng sản phẩm</div>
+          <div class="search-bar" style="margin:0"><input type="text" placeholder="🔍 Tìm sản phẩm..." style="max-width:220px"></div>
+        </div>
+        <table>
+          <thead><tr><th>Sản phẩm</th><th>Loại</th><th>Tồn kho hiện tại</th><th>Ngưỡng tối thiểu</th><th>Trạng thái</th><th>Cập nhật</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>🌹 Hoa hồng đỏ (bó 10)</td><td>Hoa tươi</td><td><strong>42</strong></td>
+              <td><input type="number" value="10" style="width:80px;padding:5px 8px"></td>
+              <td><span class="badge badge-ok">✅ Đủ hàng</span></td>
+              <td><button class="btn btn-secondary btn-sm">Lưu</button></td>
+            </tr>
+            <tr>
+              <td>🌷 Tulip hồng (bó 5)</td><td>Hoa tươi</td><td><strong>28</strong></td>
+              <td><input type="number" value="10" style="width:80px;padding:5px 8px"></td>
+              <td><span class="badge badge-ok">✅ Đủ hàng</span></td>
+              <td><button class="btn btn-secondary btn-sm">Lưu</button></td>
+            </tr>
+            <tr style="background:#fff8f8">
+              <td>🌻 Cúc vàng (bó 10)</td><td>Hoa tươi</td><td><strong style="color:var(--rose)">3</strong></td>
+              <td><input type="number" value="10" style="width:80px;padding:5px 8px;border-color:var(--rose)"></td>
+              <td><span class="badge badge-low">🚨 Dưới ngưỡng</span></td>
+              <td><button class="btn btn-secondary btn-sm">Lưu</button></td>
+            </tr>
+            <tr style="background:#fffbf0">
+              <td>🌺 Ly trắng (bó 5)</td><td>Hoa tươi</td><td><strong style="color:var(--amber)">8</strong></td>
+              <td><input type="number" value="10" style="width:80px;padding:5px 8px;border-color:var(--amber)"></td>
+              <td><span class="badge badge-warn">⚠️ Sắp hết</span></td>
+              <td><button class="btn btn-secondary btn-sm">Lưu</button></td>
+            </tr>
+            <tr style="background:#fff8f8">
+              <td>🎋 Lá decor xanh</td><td>Phụ kiện</td><td><strong style="color:var(--rose)">0</strong></td>
+              <td><input type="number" value="5" style="width:80px;padding:5px 8px;border-color:var(--rose)"></td>
+              <td><span class="badge badge-cancel">🚨 Hết hàng</span></td>
+              <td><button class="btn btn-secondary btn-sm">Lưu</button></td>
+            </tr>
+            <tr>
+              <td>🎀 Ruy băng trang trí</td><td>Phụ kiện</td><td><strong>200</strong></td>
+              <td><input type="number" value="50" style="width:80px;padding:5px 8px"></td>
+              <td><span class="badge badge-ok">✅ Đủ hàng</span></td>
+              <td><button class="btn btn-secondary btn-sm">Lưu</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 27: DASHBOARD NHÂN VIÊN KHO ===== -->
+<div id="screen-dashboard-warehouse" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Tổng quan</div>
+      <div class="sidebar-item active"><span class="icon">📊</span> Dashboard</div>
+      <div class="sidebar-section">Kho hàng</div>
+      <div class="sidebar-item"><span class="icon">📦</span> Tồn kho</div>
+      <div class="sidebar-item"><span class="icon">📥</span> Nhập kho mới</div>
+      <div class="sidebar-item"><span class="icon">📤</span> Xuất kho</div>
+      <div class="sidebar-item"><span class="icon">🗑️</span> Hàng hư hỏng</div>
+      <div class="sidebar-item"><span class="icon">📋</span> Lịch sử nhập kho</div>
+      <div class="sidebar-user"><div class="avatar">K</div><div class="user-info"><strong>Minh Khoa</strong><span>Nhân viên kho</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Xin chào, Minh Khoa 👋</div><div class="page-subtitle">Thứ Tư, 11/03/2026 – Nhân viên kho</div></div>
+        <button class="btn btn-primary">📥 Tạo phiếu nhập kho</button>
+      </div>
+      <div class="alert alert-err">🚨 <div><strong>Cần xử lý ngay:</strong> 3 sản phẩm dưới mức tồn kho tối thiểu — Cúc vàng (còn 3), Ly trắng (còn 8), Lá decor (hết hàng). Vui lòng báo quản lý để nhập thêm.</div></div>
+      <div class="stat-grid">
+        <div class="stat-card rose"><div class="stat-label">Đơn chờ xuất kho</div><div class="stat-value">7</div><div class="stat-sub">cần chuẩn bị hàng hôm nay</div></div>
+        <div class="stat-card amber"><div class="stat-label">Sản phẩm sắp hết</div><div class="stat-value">3</div><div class="stat-sub">dưới ngưỡng tối thiểu</div></div>
+        <div class="stat-card green"><div class="stat-label">Đã xuất kho hôm nay</div><div class="stat-value">14</div><div class="stat-sub">đơn hàng đã xử lý</div></div>
+        <div class="stat-card blue"><div class="stat-label">Phiếu nhập tháng này</div><div class="stat-value">18</div><div class="stat-sub">tổng 642 sản phẩm nhập</div></div>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title">📋 Đơn hàng chờ xuất kho</div>
+          <table>
+            <thead><tr><th>Mã đơn</th><th>Sản phẩm</th><th>Số lượng</th><th>Ưu tiên</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>DH2026047</strong></td><td>🌹 Hồng đỏ ×2, 🌷 Tulip ×1</td><td>3 bó</td><td><span class="badge badge-new">Giao hôm nay</span></td><td><button class="btn btn-success btn-sm">Xuất</button></td></tr>
+              <tr><td><strong>DH2026046</strong></td><td>🌷 Tulip hồng ×3</td><td>3 bó</td><td><span class="badge badge-processing">Đang xử lý</span></td><td><button class="btn btn-success btn-sm">Xuất</button></td></tr>
+              <tr><td><strong>DH2026050</strong></td><td>🌺 Ly trắng ×5</td><td>5 bó</td><td><span class="badge badge-warn">⚠️ Sắp hết SP</span></td><td><button class="btn btn-success btn-sm">Xuất</button></td></tr>
+              <tr><td><strong>DH2026051</strong></td><td>🌹 Hồng đỏ ×4, 🌸 Anh đào ×2</td><td>6 bó</td><td><span class="badge badge-new">Giao hôm nay</span></td><td><button class="btn btn-success btn-sm">Xuất</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title">🚨 Cảnh báo tồn kho thấp</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:#fee2e2;border-radius:8px">
+                <div><div style="font-weight:600;color:#991b1b">🌻 Cúc vàng (bó 10)</div><div style="font-size:11px;color:#991b1b">Còn 3 / ngưỡng tối thiểu: 10</div></div>
+                <div class="progress-bar" style="width:80px"><div class="progress-fill" style="width:30%;background:#ef4444"></div></div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--amber-light);border-radius:8px">
+                <div><div style="font-weight:600;color:#92400e">🌺 Ly trắng (bó 5)</div><div style="font-size:11px;color:#92400e">Còn 8 / ngưỡng tối thiểu: 10</div></div>
+                <div class="progress-bar" style="width:80px"><div class="progress-fill" style="width:80%;background:var(--amber)"></div></div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:#fee2e2;border-radius:8px">
+                <div><div style="font-weight:600;color:#991b1b">🎋 Lá decor xanh</div><div style="font-size:11px;color:#991b1b">Còn 0 / ngưỡng tối thiểu: 5</div></div>
+                <div class="progress-bar" style="width:80px"><div class="progress-fill" style="width:0%;background:#ef4444"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">📅 Hoạt động hôm nay</div>
+            <ul class="timeline">
+              <li class="done"><div class="timeline-text"><strong>07:30 – Nhập kho PN2026018</strong>Hồng đỏ 80 bó, Tulip 40 bó từ vựa Bình Điền</div></li>
+              <li class="done"><div class="timeline-text"><strong>08:15 – Xuất kho DH2026045</strong>Ly trắng ×3 – Giao tận nơi</div></li>
+              <li class="active-step"><div class="timeline-text"><strong>09:20 – Đang xử lý DH2026047</strong>Chuẩn bị 3 bó hàng cho khách Nguyễn Thị Lan</div></li>
+              <li><div class="timeline-text"><strong>Chờ xử lý – 4 đơn còn lại</strong>theo lịch giao hàng buổi chiều</div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 28: DASHBOARD SHIPPER ===== -->
+<div id="screen-dashboard-shipper" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Tổng quan</div>
+      <div class="sidebar-item active"><span class="icon">📊</span> Dashboard</div>
+      <div class="sidebar-section">Giao hàng</div>
+      <div class="sidebar-item"><span class="icon">📋</span> Đơn được phân công</div>
+      <div class="sidebar-item"><span class="icon">✅</span> Cập nhật kết quả</div>
+      <div class="sidebar-user"><div class="avatar">S</div><div class="user-info"><strong>Văn Sơn</strong><span>Shipper</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Xin chào, Văn Sơn 🛵</div><div class="page-subtitle">Thứ Tư, 11/03/2026 – Danh sách giao hàng trong ngày</div></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card rose"><div class="stat-label">Đơn cần giao hôm nay</div><div class="stat-value">6</div><div class="stat-sub">được phân công cho bạn</div></div>
+        <div class="stat-card green"><div class="stat-label">Đã giao thành công</div><div class="stat-value">2</div><div class="stat-sub">hoàn thành sáng nay</div></div>
+        <div class="stat-card amber"><div class="stat-label">Đang trên đường</div><div class="stat-value">1</div><div class="stat-sub">đơn DH2026046</div></div>
+        <div class="stat-card blue"><div class="stat-label">Chưa giao</div><div class="stat-value">3</div><div class="stat-sub">ca chiều hôm nay</div></div>
+      </div>
+      <!-- Đơn đang giao -->
+      <div class="card" style="margin-bottom:16px;border-left:4px solid var(--rose)">
+        <div class="card-title">🔴 Đơn đang giao – DH2026046</div>
+        <div class="two-col">
+          <div>
+            <div class="info-row"><span class="lbl">Khách hàng</span><span class="val">Trần Văn Hùng</span></div>
+            <div class="info-row"><span class="lbl">Số điện thoại</span><span class="val"><a href="tel:0912345678" style="color:var(--blue)">0912 345 678</a></span></div>
+            <div class="info-row"><span class="lbl">Địa chỉ</span><span class="val">45 Nguyễn Huệ, Q.1</span></div>
+            <div class="info-row"><span class="lbl">Yêu cầu</span><span class="val">Giao trước 11h, không gọi cửa</span></div>
+          </div>
+          <div>
+            <div class="info-row"><span class="lbl">Sản phẩm</span><span class="val">🌷 Tulip hồng ×3 bó</span></div>
+            <div class="info-row"><span class="lbl">Tổng tiền</span><span class="val" style="color:var(--rose);font-weight:700">580,000đ</span></div>
+            <div class="info-row"><span class="lbl">Thanh toán</span><span class="val">💵 COD – Thu tiền khi giao</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn btn-success">✅ Giao thành công</button>
+          <button class="btn btn-secondary">👤 Khách vắng mặt</button>
+          <button class="btn" style="background:#fee2e2;color:#991b1b;border:none">↩️ Hoàn hàng</button>
+        </div>
+      </div>
+      <!-- Danh sách đơn còn lại -->
+      <div class="card">
+        <div class="card-title">📋 Tất cả đơn trong ngày</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="delivery-card">
+            <div class="delivery-card-header">
+              <strong>DH2026045</strong>
+              <span class="badge badge-done">✅ Đã giao thành công</span>
+            </div>
+            <div class="delivery-card-body">
+              👤 Lê Thị Mai &nbsp;|&nbsp; 📍 22 Đinh Tiên Hoàng &nbsp;|&nbsp; 💰 220,000đ &nbsp;|&nbsp; ⏰ Giao lúc 08:45
+            </div>
+          </div>
+          <div class="delivery-card">
+            <div class="delivery-card-header">
+              <strong>DH2026041</strong>
+              <span class="badge badge-done">✅ Đã giao thành công</span>
+            </div>
+            <div class="delivery-card-body">
+              👤 Phạm Thị Thu &nbsp;|&nbsp; 📍 78 Trần Phú, Q.5 &nbsp;|&nbsp; 💰 340,000đ &nbsp;|&nbsp; ⏰ Giao lúc 09:10
+            </div>
+          </div>
+          <div class="delivery-card urgent">
+            <div class="delivery-card-header">
+              <strong>DH2026046</strong>
+              <span class="badge badge-processing">🛵 Đang giao</span>
+            </div>
+            <div class="delivery-card-body">
+              👤 Trần Văn Hùng &nbsp;|&nbsp; 📍 45 Nguyễn Huệ, Q.1 &nbsp;|&nbsp; 💰 580,000đ &nbsp;|&nbsp; ⏰ Yêu cầu trước 11h
+            </div>
+          </div>
+          <div class="delivery-card">
+            <div class="delivery-card-header">
+              <strong>DH2026047</strong>
+              <span class="badge badge-new">📦 Chờ lấy hàng</span>
+            </div>
+            <div class="delivery-card-body">
+              👤 Nguyễn Thị Lan &nbsp;|&nbsp; 📍 12 Lê Lợi, Q.1 &nbsp;|&nbsp; 💰 350,000đ &nbsp;|&nbsp; ⏰ Ca chiều – 14:00
+            </div>
+          </div>
+          <div class="delivery-card">
+            <div class="delivery-card-header">
+              <strong>DH2026052</strong>
+              <span class="badge badge-new">📦 Chờ lấy hàng</span>
+            </div>
+            <div class="delivery-card-body">
+              👤 Hoàng Minh Anh &nbsp;|&nbsp; 📍 99 Cách Mạng Tháng 8 &nbsp;|&nbsp; 💰 480,000đ &nbsp;|&nbsp; ⏰ Ca chiều – 15:00
+            </div>
+          </div>
+          <div class="delivery-card">
+            <div class="delivery-card-header">
+              <strong>DH2026053</strong>
+              <span class="badge badge-new">📦 Chờ lấy hàng</span>
+            </div>
+            <div class="delivery-card-body">
+              👤 Vũ Bảo Châu &nbsp;|&nbsp; 📍 55 Võ Văn Tần, Q.3 &nbsp;|&nbsp; 💰 620,000đ &nbsp;|&nbsp; ⏰ Ca chiều – 16:30
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 29: DASHBOARD NHÂN VIÊN BÁN HÀNG ===== -->
+<div id="screen-dashboard-cashier" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Tổng quan</div>
+      <div class="sidebar-item active"><span class="icon">📊</span> Dashboard</div>
+      <div class="sidebar-section">Đơn hàng</div>
+      <div class="sidebar-item"><span class="icon">📋</span> Danh sách đơn</div>
+      <div class="sidebar-item"><span class="icon">➕</span> Tạo đơn mới</div>
+      <div class="sidebar-section">Danh mục</div>
+      <div class="sidebar-item"><span class="icon">🌸</span> Sản phẩm</div>
+      <div class="sidebar-item"><span class="icon">👤</span> Khách hàng</div>
+      <div class="sidebar-user"><div class="avatar">H</div><div class="user-info"><strong>Thu Hương</strong><span>Nhân viên bán hàng</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Xin chào, Thu Hương 👋</div><div class="page-subtitle">Thứ Tư, 11/03/2026 – Ca làm việc: 08:00 – 17:00</div></div>
+        <button class="btn btn-primary">➕ Tạo đơn hàng mới</button>
+      </div>
+
+      <!-- Cảnh báo tồn kho thấp (chỉ đọc, không cài đặt được) -->
+      <div class="alert alert-warn">⚠️ <div><strong>Lưu ý tồn kho thấp:</strong> Hoa cúc vàng chỉ còn <strong>3 bó</strong>, Ly trắng còn <strong>8 bó</strong>. Vui lòng thông báo khách nếu chọn các sản phẩm này.</div></div>
+
+      <!-- KPI cá nhân hôm nay -->
+      <div class="stat-grid">
+        <div class="stat-card rose"><div class="stat-label">Đơn tôi tạo hôm nay</div><div class="stat-value">12</div><div class="stat-sub"><span class="stat-up">↑ 3</span> so với hôm qua</div></div>
+        <div class="stat-card green"><div class="stat-label">Doanh thu của tôi</div><div class="stat-value">2.8M</div><div class="stat-sub">từ 12 đơn hàng</div></div>
+        <div class="stat-card amber"><div class="stat-label">Đơn đang xử lý</div><div class="stat-value">4</div><div class="stat-sub">chờ kho chuẩn bị hàng</div></div>
+        <div class="stat-card blue"><div class="stat-label">Đơn hoàn thành</div><div class="stat-value">8</div><div class="stat-sub">đã giao / nhận tại quầy</div></div>
+      </div>
+
+      <div class="two-col">
+        <!-- Đơn hàng gần đây của tôi -->
+        <div class="card">
+          <div class="card-title">📋 Đơn hàng tôi tạo hôm nay</div>
+          <table>
+            <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Tổng tiền</th><th>Hình thức</th><th>Trạng thái</th></tr></thead>
+            <tbody>
+              <tr><td><strong>DH2026047</strong></td><td>Nguyễn Thị Lan</td><td>350,000đ</td><td>🚚 Giao</td><td><span class="badge badge-new">Mới</span></td></tr>
+              <tr><td><strong>DH2026045</strong></td><td>Lê Thị Mai</td><td>220,000đ</td><td>🏪 Quầy</td><td><span class="badge badge-done">Hoàn thành</span></td></tr>
+              <tr><td><strong>DH2026044</strong></td><td>Phạm Văn An</td><td>450,000đ</td><td>🚚 Giao</td><td><span class="badge badge-delivered">Đã giao</span></td></tr>
+              <tr><td><strong>DH2026042</strong></td><td>Vũ Đình Nam</td><td>720,000đ</td><td>🚚 Giao</td><td><span class="badge badge-return">Hoàn hàng</span></td></tr>
+              <tr><td><strong>DH2026039</strong></td><td>Bùi Thị Hoa</td><td>180,000đ</td><td>🏪 Quầy</td><td><span class="badge badge-done">Hoàn thành</span></td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top:12px;text-align:right"><button class="btn btn-secondary btn-sm">Xem tất cả đơn của tôi →</button></div>
+        </div>
+
+        <div>
+          <!-- Hiệu suất cá nhân tháng này -->
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-title">📈 Hiệu suất tháng 3/2026</div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Số đơn (187 / mục tiêu 200)</span><span style="color:var(--rose);font-weight:600">94%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:94%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Doanh thu (48.6M / mục tiêu 50M)</span><span style="color:var(--green);font-weight:600">97%</span></div>
+                <div class="progress-bar"><div class="progress-fill green" style="width:97%"></div></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;padding-top:6px;border-top:1px solid var(--gray-100)">
+                <span style="color:var(--gray-500)">Xếp hạng tháng này</span>
+                <strong style="color:var(--rose)">🥇 #1 / 3 nhân viên</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tra cứu nhanh sản phẩm -->
+          <div class="card">
+            <div class="card-title">🌸 Tra cứu nhanh tồn kho</div>
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+              <input type="text" placeholder="🔍 Nhập tên sản phẩm..." style="flex:1">
+              <button class="btn btn-secondary btn-sm">Tìm</button>
+            </div>
+            <table>
+              <thead><tr><th>Sản phẩm</th><th>Giá bán</th><th>Tồn kho</th></tr></thead>
+              <tbody>
+                <tr><td>🌹 Hoa hồng đỏ (bó 10)</td><td>180,000đ</td><td><span class="badge badge-ok">42 bó</span></td></tr>
+                <tr><td>🌷 Tulip hồng (bó 5)</td><td>220,000đ</td><td><span class="badge badge-ok">28 bó</span></td></tr>
+                <tr><td>🌻 Cúc vàng (bó 10)</td><td>80,000đ</td><td><span class="badge badge-low">3 bó ⚠️</span></td></tr>
+                <tr><td>🌺 Ly trắng (bó 5)</td><td>150,000đ</td><td><span class="badge badge-warn">8 bó</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 30: PHÂN QUYỀN CHI TIẾT ===== -->
+<div id="screen-permissions" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-logo">🌸 FloriSys <span>Quản lý cửa hàng hoa</span></div>
+      <div class="sidebar-section">Quản lý hệ thống</div>
+      <div class="sidebar-item"><span class="icon">👥</span> Nhân viên</div>
+      <div class="sidebar-item active"><span class="icon">🔐</span> Phân quyền</div>
+      <div class="sidebar-user"><div class="avatar">A</div><div class="user-info"><strong>Admin</strong><span>Quản lý</span></div></div>
+    </aside>
+    <div class="content">
+      <div class="page-header">
+        <div><div class="page-title">Phân quyền hệ thống</div><div class="page-subtitle">Quản lý quyền truy cập theo từng vai trò (Role-based Access Control)</div></div>
+        <button class="btn btn-primary">💾 Lưu thay đổi</button>
+      </div>
+      <div class="alert alert-ok">✅ <div><strong>Chỉ Quản lý (Admin) mới có quyền chỉnh sửa phân quyền.</strong> Mỗi thay đổi được ghi lại vào nhật ký hệ thống.</div></div>
+
+      <!-- Tabs vai trò -->
+      <div class="tabs">
+        <div class="tab active" style="color:var(--rose);border-bottom-color:var(--rose)">👑 Quản lý (Admin)</div>
+        <div class="tab">🛍️ NV Bán hàng (Cashier)</div>
+        <div class="tab">📦 NV Kho (Warehouse)</div>
+        <div class="tab">🛵 Shipper</div>
+      </div>
+
+      <!-- Ma trận quyền cho Admin -->
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px">
+        <div style="padding:14px 20px;background:var(--rose-light);font-weight:600;color:var(--rose);display:flex;align-items:center;gap:8px">
+          👑 Vai trò: Quản lý (Admin) – Quyền cao nhất, truy cập toàn bộ hệ thống
+        </div>
+        <table>
+          <thead><tr><th>Phân hệ</th><th>Chức năng</th><th>Xem</th><th>Thêm mới</th><th>Chỉnh sửa</th><th>Xóa</th><th>Xuất báo cáo</th></tr></thead>
+          <tbody>
+            <tr>
+              <td rowspan="3" style="font-weight:600;color:var(--gray-700)">📋 Đơn hàng</td>
+              <td>Xem danh sách đơn hàng</td>
+              <td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td>
+            </tr>
+            <tr>
+              <td>Tạo / Cập nhật trạng thái đơn</td>
+              <td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td>
+            </tr>
+            <tr>
+              <td>Ghi nhận phản hồi / trả hàng</td>
+              <td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td>
+            </tr>
+            <tr>
+              <td rowspan="2" style="font-weight:600;color:var(--gray-700)">📦 Kho hàng</td>
+              <td>Xem tồn kho, nhập/xuất kho</td>
+              <td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td>
+            </tr>
+            <tr>
+              <td>Cài đặt ngưỡng cảnh báo tồn kho</td>
+              <td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center">—</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--gray-700)">🚚 Giao hàng</td>
+              <td>Phân công shipper, theo dõi</td>
+              <td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--gray-700)">👥 Nhân viên</td>
+              <td>Quản lý tài khoản, phân quyền</td>
+              <td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center">—</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;color:var(--gray-700)">📈 Báo cáo</td>
+              <td>Tất cả báo cáo doanh thu</td>
+              <td style="text-align:center"><span style="color:var(--green)">✅</span></td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center">—</td><td style="text-align:center"><span style="color:var(--green)">✅</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tóm tắt 4 vai trò -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <div class="card" style="border-top:3px solid var(--rose)">
+          <div style="font-weight:700;color:var(--rose);margin-bottom:10px">👑 Admin</div>
+          <div style="font-size:12px;color:var(--gray-600);line-height:2">
+            ✅ Toàn bộ chức năng<br>✅ Quản lý nhân viên<br>✅ Phân quyền<br>✅ Tất cả báo cáo<br>✅ Cài đặt hệ thống
+          </div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--blue)">
+          <div style="font-weight:700;color:var(--blue);margin-bottom:10px">🛍️ Cashier</div>
+          <div style="font-size:12px;color:var(--gray-600);line-height:2">
+            ✅ Tạo & xem đơn hàng<br>✅ Cập nhật trạng thái<br>✅ Ghi nhận phản hồi<br>✅ Tra cứu sản phẩm<br>❌ Không xem báo cáo
+          </div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green)">
+          <div style="font-weight:700;color:var(--green);margin-bottom:10px">📦 Warehouse</div>
+          <div style="font-size:12px;color:var(--gray-600);line-height:2">
+            ✅ Xem & cập nhật tồn kho<br>✅ Nhập kho / lịch sử phiếu<br>✅ Xác nhận xuất kho<br>✅ Ghi nhận hàng hư<br>❌ Không tạo đơn hàng
+          </div>
+        </div>
+        <div class="card" style="border-top:3px solid var(--amber)">
+          <div style="font-weight:700;color:#92400e;margin-bottom:10px">🛵 Shipper</div>
+          <div style="font-size:12px;color:var(--gray-600);line-height:2">
+            ✅ Xem đơn được phân công<br>✅ Cập nhật kết quả GH<br>❌ Không tạo/sửa đơn<br>❌ Không xem kho<br>❌ Không xem báo cáo
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const screens = [
+  {id:'screen-login',label:'1. Đăng nhập'},
+  {id:'screen-changepw',label:'2. Đổi mật khẩu'},
+  {id:'screen-dashboard',label:'3. Dashboard (Admin)'},
+  {id:'screen-order-list',label:'4. DS Đơn hàng'},
+  {id:'screen-order-create',label:'5. Tạo đơn hàng'},
+  {id:'screen-order-detail',label:'6. Chi tiết đơn'},
+  {id:'screen-order-feedback',label:'7. Phản hồi'},
+  {id:'screen-order-return',label:'8. Trả hàng'},
+  {id:'screen-inventory',label:'9. Tồn kho'},
+  {id:'screen-import',label:'10. Nhập kho'},
+  {id:'screen-export',label:'11. Xuất kho'},
+  {id:'screen-damaged',label:'12. Hàng hư'},
+  {id:'screen-delivery-list',label:'13. DS Giao hàng'},
+  {id:'screen-delivery-assign',label:'14. Phân công Shipper'},
+  {id:'screen-delivery-update',label:'15. Cập nhật GH'},
+  {id:'screen-staff-list',label:'16. DS Nhân viên'},
+  {id:'screen-staff-form',label:'17. Thêm/Sửa NV'},
+  {id:'screen-report-day',label:'18. BC Ngày'},
+  {id:'screen-report-month',label:'19. BC Tháng'},
+  {id:'screen-report-product',label:'20. SP Bán chạy'},
+  {id:'screen-report-stock',label:'21. BC Tồn kho'},
+  {id:'screen-report-staff',label:'22. BC Nhân viên'},
+  {id:'screen-products',label:'23. Sản phẩm'},
+  {id:'screen-customers',label:'24. Khách hàng'},
+  {id:'screen-import-history',label:'25. Lịch sử phiếu nhập kho'},
+  {id:'screen-stock-alert',label:'26. Cài đặt cảnh báo tồn kho'},
+  {id:'screen-dashboard-warehouse',label:'27. Dashboard NV Kho'},
+  {id:'screen-dashboard-shipper',label:'28. Dashboard Shipper'},
+  {id:'screen-dashboard-cashier',label:'29. Dashboard NV Bán hàng'},
+  {id:'screen-permissions',label:'30. Phân quyền chi tiết'}
+];
+
+// ===== FIX CHÍNH: Đo chiều cao nav và cập nhật CSS var --nav-h =====
+function updateNavHeight(){
+  const nav = document.getElementById('main-nav');
+  const h = nav.getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--nav-h', h + 'px');
+}
+
+function show(id, btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  const idx = screens.findIndex(s=>s.id===id);
+  document.getElementById('screen-label').textContent = `Màn hình ${idx+1} / ${screens.length}: ${screens[idx].label}`;
+  window.scrollTo(0,0);
+  updateNavHeight(); // cập nhật lại sau khi nav có thể reflow
+}
+
+// Khởi động
+window.addEventListener('load', ()=>{
+  updateNavHeight();
+});
+window.addEventListener('resize', updateNavHeight);
+</script>
+</body>
+</html>

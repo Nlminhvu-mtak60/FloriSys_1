@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1434F89A-49A9-46B7-8446-E68B038B7E9B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>FloriSys</RootNamespace>
+    <AssemblyName>FloriSys</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- ===== 1_DangNhap ===== -->
+    <Compile Include="1_DangNhap\frmDangNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="1_DangNhap\frmDangNhap.Designer.cs">
+      <DependentUpon>frmDangNhap.cs</DependentUpon>
+    </Compile>
+    <!-- ===== 2_QuanLy ===== -->
+    <Compile Include="2_QuanLy\frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="2_QuanLy\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="2_QuanLy\ucDashboard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="2_QuanLy\ucDashboard.Designer.cs">
+      <DependentUpon>ucDashboard.cs</DependentUpon>
+    </Compile>
+    <!-- ===== 3_BanHang ===== -->
+    <Compile Include="3_BanHang\ucDanhSachDon.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="3_BanHang\ucDanhSachDon.Designer.cs">
+      <DependentUpon>ucDanhSachDon.cs</DependentUpon>
+    </Compile>
+    <Compile Include="3_BanHang\ucTaoDon.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="3_BanHang\ucTaoDon.Designer.cs">
+      <DependentUpon>ucTaoDon.cs</DependentUpon>
+    </Compile>
+    <!-- ===== 4_KhoHang ===== -->
+    <Compile Include="4_KhoHang\ucTonKho.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="4_KhoHang\ucTonKho.Designer.cs">
+      <DependentUpon>ucTonKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="4_KhoHang\ucNhapKho.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="4_KhoHang\ucNhapKho.Designer.cs">
+      <DependentUpon>ucNhapKho.cs</DependentUpon>
+    </Compile>
+    <!-- ===== 5_GiaoHang ===== -->
+    <Compile Include="5_GiaoHang\ucCapNhatGH.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="5_GiaoHang\ucCapNhatGH.Designer.cs">
+      <DependentUpon>ucCapNhatGH.cs</DependentUpon>
+    </Compile>
+    <Compile Include="5_GiaoHang\ucGiaoHang.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="5_GiaoHang\ucGiaoHang.Designer.cs">
+      <DependentUpon>ucGiaoHang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="5_GiaoHang\ucPhanCong.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="5_GiaoHang\ucPhanCong.Designer.cs">
+      <DependentUpon>ucPhanCong.cs</DependentUpon>
+    </Compile>
+    <!-- ===== 6_BaoCao ===== -->
+    <Compile Include="6_BaoCao\ucBaoCao.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCao.Designer.cs">
+      <DependentUpon>ucBaoCao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoNgay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoNgay.Designer.cs">
+      <DependentUpon>ucBaoCaoNgay.cs</DependentUpon>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoThang.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoThang.Designer.cs">
+      <DependentUpon>ucBaoCaoThang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoSanPham.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoSanPham.Designer.cs">
+      <DependentUpon>ucBaoCaoSanPham.cs</DependentUpon>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoTonKho.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoTonKho.Designer.cs">
+      <DependentUpon>ucBaoCaoTonKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoNhanVien.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="6_BaoCao\ucBaoCaoNhanVien.Designer.cs">
+      <DependentUpon>ucBaoCaoNhanVien.cs</DependentUpon>
+    </Compile>
+    <!-- ===== DataAccess ===== -->
+    <Compile Include="DataAccess\DatabaseHelper.cs" />
+    <Compile Include="DataAccess\NhanVienDAO.cs" />
+    <Compile Include="DataAccess\SanPhamDAO.cs" />
+    <Compile Include="DataAccess\KhachHangDAO.cs" />
+    <Compile Include="DataAccess\DonHangDAO.cs" />
+    <Compile Include="DataAccess\GiaoHangDAO.cs" />
+    <Compile Include="DataAccess\PhieuNhapKhoDAO.cs" />
+    <Compile Include="DataAccess\PhanHoiDAO.cs" />
+    <Compile Include="DataAccess\BaoCaoDAO.cs" />
+    <!-- ===== Services ===== -->
+    <Compile Include="Services\SessionManager.cs" />
+    <!-- ===== Shared ===== -->
+    <Compile Include="Shared\ucThanhMenu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shared\ucThanhMenu.Designer.cs">
+      <DependentUpon>ucThanhMenu.cs</DependentUpon>
+    </Compile>
+    <!-- ===== Program & Properties ===== -->
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="1_DangNhap\frmDangNhap.resx">
+      <DependentUpon>frmDangNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2_QuanLy\frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="2_QuanLy\ucDashboard.resx">
+      <DependentUpon>ucDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5_GiaoHang\ucCapNhatGH.resx">
+      <DependentUpon>ucCapNhatGH.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5_GiaoHang\ucGiaoHang.resx">
+      <DependentUpon>ucGiaoHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5_GiaoHang\ucPhanCong.resx">
+      <DependentUpon>ucPhanCong.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6_BaoCao\ucBaoCao.resx">
+      <DependentUpon>ucBaoCao.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6_BaoCao\ucBaoCaoNgay.resx">
+      <DependentUpon>ucBaoCaoNgay.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6_BaoCao\ucBaoCaoThang.resx">
+      <DependentUpon>ucBaoCaoThang.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6_BaoCao\ucBaoCaoSanPham.resx">
+      <DependentUpon>ucBaoCaoSanPham.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6_BaoCao\ucBaoCaoTonKho.resx">
+      <DependentUpon>ucBaoCaoTonKho.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="6_BaoCao\ucBaoCaoNhanVien.resx">
+      <DependentUpon>ucBaoCaoNhanVien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shared\ucThanhMenu.resx">
+      <DependentUpon>ucThanhMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
