@@ -30,6 +30,7 @@ namespace FloriSys.Shared
             btnDanhSachGiao.Click += (s, ev) => Navigate("DanhSachGiao", btnDanhSachGiao);
             btnPhanCong.Click += (s, ev) => Navigate("PhanCong", btnPhanCong);
             btnNhanVien.Click += (s, ev) => Navigate("NhanVien", btnNhanVien);
+            btnPhanQuyen.Click += (s, ev) => Navigate("PhanQuyen", btnPhanQuyen);
             btnSanPham.Click += (s, ev) => Navigate("SanPham", btnSanPham);
             btnKhachHang.Click += (s, ev) => Navigate("KhachHang", btnKhachHang);
             btnBaoCao.Click += (s, ev) => Navigate("BaoCao", btnBaoCao);
@@ -102,6 +103,7 @@ namespace FloriSys.Shared
             // Nhóm quản lý - chỉ Admin
             lblNhomQuanLy.Visible = isAdmin;
             btnNhanVien.Visible = isAdmin;
+            btnPhanQuyen.Visible = isAdmin;
             btnSanPham.Visible = isAdmin || chucVu == "Cashier";
             btnKhachHang.Visible = isAdmin || chucVu == "Cashier";
 

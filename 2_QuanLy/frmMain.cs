@@ -33,7 +33,14 @@ namespace FloriSys._2_QuanLy
             switch (menuName)
             {
                 case "Dashboard":
-                    uc = new ucDashboard();
+                    if (SessionManager.ChucVu == "Warehouse")
+                        uc = new _4_KhoHang.ucDashboardKho();
+                    else if (SessionManager.ChucVu == "Shipper")
+                        uc = new _5_GiaoHang.ucDashboardShipper();
+                    else if (SessionManager.ChucVu == "Cashier")
+                        uc = new _3_BanHang.ucDashboardBanHang();
+                    else
+                        uc = new ucDashboard(); // Admin Dashboard
                     break;
                 case "DanhSachDon":
                     var ucDS = new _3_BanHang.ucDanhSachDon();
@@ -46,7 +53,6 @@ namespace FloriSys._2_QuanLy
                     uc = ucTD;
                     break;
                 case "PhanHoi":
-                    // placeholder
                     uc = CreatePlaceholder("Phản hồi khiếu nại");
                     break;
                 case "TraHang":
@@ -54,6 +60,9 @@ namespace FloriSys._2_QuanLy
                     break;
                 case "TonKho":
                     uc = new _4_KhoHang.ucTonKho();
+                    break;
+                case "CauHinhTonKho":
+                    uc = new _4_KhoHang.ucCauHinhTonKho();
                     break;
                 case "NhapKho":
                     uc = new _4_KhoHang.ucNhapKho();
@@ -65,7 +74,7 @@ namespace FloriSys._2_QuanLy
                     uc = CreatePlaceholder("Ghi nhận hàng hư hỏng");
                     break;
                 case "LichSuNhapKho":
-                    uc = CreatePlaceholder("Lịch sử phiếu nhập kho");
+                    uc = new _4_KhoHang.ucLichSuNhapKho();
                     break;
                 case "DanhSachGiao":
                     uc = new _5_GiaoHang.ucGiaoHang();
@@ -78,6 +87,9 @@ namespace FloriSys._2_QuanLy
                     break;
                 case "NhanVien":
                     uc = CreatePlaceholder("Quản lý nhân viên");
+                    break;
+                case "PhanQuyen":
+                    uc = new Shared.ucPhanQuyen();
                     break;
                 case "SanPham":
                     uc = CreatePlaceholder("Danh mục sản phẩm");

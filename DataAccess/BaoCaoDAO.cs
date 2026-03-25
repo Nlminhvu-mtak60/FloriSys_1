@@ -85,11 +85,34 @@ namespace FloriSys.DataAccess
             return DatabaseHelper.ExecuteRawQuery(sql);
         }
 
-        public static DataTable SPCanhBaoNhanh()
+        public static DataTable ThongKeKho()
         {
-            string sql = @"SELECT TenSP, SoLuongTon FROM SAN_PHAM 
-                          WHERE TrangThai=N'DangBan' AND SoLuongTon <= MucTonToiThieu ORDER BY SoLuongTon";
+            string sql = @"SELECT 
+                (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'ChoXuatKho') AS DonChoXuat,
+                (SELECT COUNT(*) FROM SAN_PHAM WHERE SoLuongTon <= MucTonToiThieu) AS SPSapHet,
+                (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Moi', N'ChoXuatKho', N'Huy')) AS DaXuatHomNay,
+                (SELECT COUNT(*) FROM PHIEU_NHAP_KHO WHERE MONTH(NgayNhap)=MONTH(GETDATE()) AND YEAR(NgayNhap)=YEAR(GETDATE())) AS PhieuNhapThang";
             return DatabaseHelper.ExecuteRawQuery(sql);
+        }
+
+        public static DataTable ThongKeBanHang(string maNV)
+        {
+            string sql = @"SELECT 
+                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_Lap=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHomNay,
+                (SELECT ISNULL(SUM(TongTien),0) FROM DON_HANG WHERE MaNV_Lap=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Huy', N'HoanHang')) AS DoanhThuHomNay,
+                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_Lap=@MaNV AND TrangThai IN (N'Moi', N'ChoXuatKho', N'DangGiao')) AS DonDangXuLy,
+                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_Lap=@MaNV AND TrangThai=N'HoanThanh' AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHoanThanh";
+            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
+        }
+
+        public static DataTable DonHangCuaNV(string maNV, int top = 10)
+        {
+            string sql = string.Format(@"SELECT TOP {0} dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.NgayTao, dh.TrangThai
+                          FROM DON_HANG dh
+                          INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
+                          WHERE dh.MaNV_Lap = @MaNV
+                          ORDER BY dh.NgayTao DESC", top);
+            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
         }
     }
 }

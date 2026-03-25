@@ -5,7 +5,7 @@ namespace FloriSys.DataAccess
 {
     public class PhieuNhapKhoDAO
     {
-        public static DataTable LayDanhSach(string keyword = "", string maNV = "")
+        public static DataTable LayDanhSach(string keyword = "", string maNV = "", System.DateTime? fromDate = null, System.DateTime? toDate = null)
         {
             string sql = @"SELECT pn.MaPhieu, pn.NgayNhap, nv.HoTen AS TenNV, pn.GhiChu,
                           (SELECT COUNT(*) FROM CT_NHAP_KHO WHERE MaPhieu=pn.MaPhieu) AS SoLoaiSP,
@@ -17,13 +17,23 @@ namespace FloriSys.DataAccess
             var parms = new System.Collections.Generic.List<SqlParameter>();
             if (!string.IsNullOrEmpty(keyword))
             {
-                sql += " AND pn.MaPhieu LIKE @Key";
+                sql += " AND (pn.MaPhieu LIKE @Key OR pn.GhiChu LIKE @Key)";
                 parms.Add(new SqlParameter("@Key", "%" + keyword + "%"));
             }
             if (!string.IsNullOrEmpty(maNV))
             {
                 sql += " AND pn.MaNV = @MaNV";
                 parms.Add(new SqlParameter("@MaNV", maNV));
+            }
+            if (fromDate.HasValue)
+            {
+                sql += " AND pn.NgayNhap >= @FromDate";
+                parms.Add(new SqlParameter("@FromDate", fromDate.Value.Date));
+            }
+            if (toDate.HasValue)
+            {
+                sql += " AND pn.NgayNhap <= @ToDate";
+                parms.Add(new SqlParameter("@ToDate", toDate.Value.Date.AddDays(1).AddTicks(-1)));
             }
             sql += " ORDER BY pn.NgayNhap DESC";
             return DatabaseHelper.ExecuteRawQuery(sql, parms.ToArray());

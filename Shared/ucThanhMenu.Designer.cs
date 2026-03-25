@@ -45,6 +45,7 @@ namespace FloriSys.Shared
             this.btnDanhSachDon = new System.Windows.Forms.Button();
             this.btnDashboard = new System.Windows.Forms.Button();
             this.btnNhanVien = new System.Windows.Forms.Button();
+            this.btnPhanQuyen = new System.Windows.Forms.Button();
             this.lblNhomTaiKhoan = new System.Windows.Forms.Label();
             this.lblNhomQuanLy = new System.Windows.Forms.Label();
             this.lblNhomGiaoHang = new System.Windows.Forms.Label();
@@ -124,6 +125,7 @@ namespace FloriSys.Shared
             this.pnlMenu.Controls.Add(this.lblNhomDonHang);
             this.pnlMenu.Controls.Add(this.btnDashboard);
             this.pnlMenu.Controls.Add(this.lblNhomTongQuan);
+            this.pnlMenu.Controls.Add(this.btnPhanQuyen);
             this.pnlMenu.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.pnlMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
             this.pnlMenu.Location = new System.Drawing.Point(0, 82);
@@ -593,8 +595,27 @@ namespace FloriSys.Shared
             this.lblDuongKeUser.TabIndex = 0;
             this.lblDuongKeUser.Text = "label1";
             // 
+            // btnPhanQuyen
+            // 
+            this.btnPhanQuyen.Cursor = System.Windows.Forms.Cursors.Hand;
+ Perez size:             this.btnPhanQuyen.FlatAppearance.BorderSize = 0;
+            this.btnPhanQuyen.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnPhanQuyen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPhanQuyen.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnPhanQuyen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnPhanQuyen.Location = new System.Drawing.Point(0, 576);
+            this.btnPhanQuyen.Name = "btnPhanQuyen";
+            this.btnPhanQuyen.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnPhanQuyen.Size = new System.Drawing.Size(220, 38);
+            this.btnPhanQuyen.TabIndex = 15;
+            this.btnPhanQuyen.TabStop = false;
+            this.btnPhanQuyen.Text = "🔐  Phân quyền";
+            this.btnPhanQuyen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPhanQuyen.UseVisualStyleBackColor = true;
+            // 
             // ucThanhMenu
             // 
+ Perez size: 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
@@ -648,5 +669,6 @@ namespace FloriSys.Shared
         private System.Windows.Forms.Button btnDoiMatKhau;
         private System.Windows.Forms.Button btnKhachHang;
         private System.Windows.Forms.Button btnSanPham;
+        private System.Windows.Forms.Button btnPhanQuyen;
     }
 }
