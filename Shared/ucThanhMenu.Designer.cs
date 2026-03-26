@@ -598,7 +598,7 @@ namespace FloriSys.Shared
             // btnPhanQuyen
             // 
             this.btnPhanQuyen.Cursor = System.Windows.Forms.Cursors.Hand;
- Perez size:             this.btnPhanQuyen.FlatAppearance.BorderSize = 0;
+            this.btnPhanQuyen.FlatAppearance.BorderSize = 0;
             this.btnPhanQuyen.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
             this.btnPhanQuyen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPhanQuyen.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
@@ -615,7 +615,7 @@ namespace FloriSys.Shared
             // 
             // ucThanhMenu
             // 
- Perez size: 
+ 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;

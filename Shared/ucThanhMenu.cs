@@ -34,6 +34,7 @@ namespace FloriSys.Shared
             btnSanPham.Click += (s, ev) => Navigate("SanPham", btnSanPham);
             btnKhachHang.Click += (s, ev) => Navigate("KhachHang", btnKhachHang);
             btnBaoCao.Click += (s, ev) => Navigate("BaoCao", btnBaoCao);
+            btnDoiMatKhau.Click += (s, ev) => Navigate("DoiMatKhau", btnDoiMatKhau);
             btnDangXuat.Click += (s, ev) => MenuClicked?.Invoke("DangXuat");
 
             // Set Dashboard active by default
@@ -83,7 +84,7 @@ namespace FloriSys.Shared
             btnDanhSachDon.Visible = showDonHang;
             btnTaoDon.Visible = showDonHang;
             btnPhanHoi.Visible = showDonHang;
-            btnTraHang.Visible = showDonHang;
+            btnTraHang.Visible = isAdmin; // Chỉ Admin mới có quyền trả hàng (DH-06)
 
             // Nhóm kho hàng - Admin + Warehouse
             bool showKhoHang = isAdmin || chucVu == "Warehouse";

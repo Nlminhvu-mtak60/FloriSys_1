@@ -92,7 +92,7 @@ namespace FloriSys._4_KhoHang
                 BackColor = Color.Gainsboro
             };
             Panel fill = new Panel {
-                Size = new Point(0, 10),
+                Size = new Size(0, 10),
                 BackColor = (ton == 0) ? Color.Red : Color.Orange
             };
             

@@ -1,4 +1,4 @@
-﻿namespace FloriSys._2_QuanLy
+namespace FloriSys._2_QuanLy
 {
     partial class ucDashboard
     {
@@ -191,7 +191,6 @@
             this.lblStat4Value.Size = new System.Drawing.Size(45, 46);
             this.lblStat4Value.TabIndex = 15;
             this.lblStat4Value.Text = "3";
-            this.lblStat4Value.Click += new System.EventHandler(this.lblStat4Value_Click);
             // 
             // pnlStat3
             // 

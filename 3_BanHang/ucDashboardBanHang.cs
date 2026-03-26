@@ -7,7 +7,7 @@ namespace FloriSys._3_BanHang
 {
     public partial class ucDashboardBanHang : UserControl
     {
-        private string currentUserMaNV = Program.MaNhanVien;
+        private string currentUserMaNV = FloriSys.Services.SessionManager.MaNV;
 
         public ucDashboardBanHang()
         {

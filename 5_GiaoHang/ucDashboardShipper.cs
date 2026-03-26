@@ -7,7 +7,7 @@ namespace FloriSys._5_GiaoHang
 {
     public partial class ucDashboardShipper : UserControl
     {
-        private string currentUserMaNV = Program.MaNhanVien;
+        private string currentUserMaNV = FloriSys.Services.SessionManager.MaNV;
         private string currentMaGH = "";
 
         public ucDashboardShipper()

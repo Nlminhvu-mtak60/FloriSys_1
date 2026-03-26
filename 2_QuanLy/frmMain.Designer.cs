@@ -1,4 +1,4 @@
-﻿namespace FloriSys._2_QuanLy
+namespace FloriSys._2_QuanLy
 {
     partial class frmMain
     {
@@ -56,8 +56,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(245)))), ((int)(((byte)(246)))));
             this.ClientSize = new System.Drawing.Size(1006, 553);
-            this.Controls.Add(this.ucThanhMenu1);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.ucThanhMenu1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.MinimumSize = new System.Drawing.Size(1024, 600);
             this.Name = "frmMain";
@@ -72,6 +72,6 @@
         #endregion
 
         private System.Windows.Forms.Panel panel1;
-        private Shared.ucThanhMenu ucThanhMenu1;
+        private FloriSys.Shared.ucThanhMenu ucThanhMenu1;
     }
 }

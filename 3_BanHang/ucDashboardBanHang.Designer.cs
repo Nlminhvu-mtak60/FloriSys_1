@@ -294,10 +294,9 @@ namespace FloriSys._3_BanHang
             this.pnlLeft.Location = new System.Drawing.Point(15, 15);
             this.pnlLeft.Name = "pnlLeft";
             this.pnlLeft.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlLeft.Size = Perez size: new System.Drawing.Size(582, 490);
+            this.pnlLeft.Size = new System.Drawing.Size(582, 490);
             this.pnlLeft.TabIndex = 0;
             // 
- Perez size: this.pnlLeft.Size = new System.Drawing.Size(582, 490);
             // lblTableTitle
             // 
             this.lblTableTitle.AutoSize = true;

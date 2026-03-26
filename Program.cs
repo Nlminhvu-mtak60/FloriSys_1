@@ -14,7 +14,7 @@ namespace FloriSys
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //frmDangNhap loginForm = new frmDangNhap();
+            frmDangNhap loginForm = new frmDangNhap();
             if (loginForm.ShowDialog() == DialogResult.OK)
             {
                 Application.Run(new frmMain());

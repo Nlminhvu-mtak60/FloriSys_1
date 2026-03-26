@@ -3,6 +3,10 @@ using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.Services;
 using FloriSys.Shared;
+using FloriSys._1_DangNhap;
+using FloriSys._3_BanHang;
+using FloriSys._4_KhoHang;
+using FloriSys._5_GiaoHang;
 using FloriSys._6_BaoCao;
 
 namespace FloriSys._2_QuanLy
@@ -45,6 +49,7 @@ namespace FloriSys._2_QuanLy
                 case "DanhSachDon":
                     var ucDS = new _3_BanHang.ucDanhSachDon();
                     ucDS.TaoDonMoi += () => OnMenuClicked("TaoDon");
+                    ucDS.XemChiTiet += (maDon) => LoadChiTietDon(maDon);
                     uc = ucDS;
                     break;
                 case "TaoDon":
@@ -53,10 +58,10 @@ namespace FloriSys._2_QuanLy
                     uc = ucTD;
                     break;
                 case "PhanHoi":
-                    uc = CreatePlaceholder("Phản hồi khiếu nại");
+                    uc = new _3_BanHang.ucPhanHoi();
                     break;
                 case "TraHang":
-                    uc = CreatePlaceholder("Xử lý trả hàng");
+                    uc = new _3_BanHang.ucTraHang();
                     break;
                 case "TonKho":
                     uc = new _4_KhoHang.ucTonKho();
@@ -71,7 +76,7 @@ namespace FloriSys._2_QuanLy
                     uc = CreatePlaceholder("Xác nhận xuất kho");
                     break;
                 case "HangHu":
-                    uc = CreatePlaceholder("Ghi nhận hàng hư hỏng");
+                    uc = new _4_KhoHang.ucHangHu();
                     break;
                 case "LichSuNhapKho":
                     uc = new _4_KhoHang.ucLichSuNhapKho();
@@ -86,22 +91,22 @@ namespace FloriSys._2_QuanLy
                     uc = new _5_GiaoHang.ucCapNhatGH();
                     break;
                 case "NhanVien":
-                    uc = CreatePlaceholder("Quản lý nhân viên");
+                    uc = new ucNhanVien();
                     break;
                 case "PhanQuyen":
                     uc = new Shared.ucPhanQuyen();
                     break;
                 case "SanPham":
-                    uc = CreatePlaceholder("Danh mục sản phẩm");
+                    uc = new _7_DanhMuc.ucSanPham();
                     break;
                 case "KhachHang":
-                    uc = CreatePlaceholder("Danh sách khách hàng");
+                    uc = new _7_DanhMuc.ucKhachHang();
                     break;
                 case "BaoCao":
                     uc = new ucBaoCao();
                     break;
                 case "DoiMatKhau":
-                    uc = CreatePlaceholder("Đổi mật khẩu");
+                    uc = new ucDoiMatKhau();
                     break;
                 case "DangXuat":
                     if (MessageBox.Show("Bạn có muốn đăng xuất?", "Xác nhận",
@@ -114,6 +119,13 @@ namespace FloriSys._2_QuanLy
             }
 
             if (uc != null) LoadUC(uc);
+        }
+
+        private void LoadChiTietDon(string maDon)
+        {
+            var uc = new _3_BanHang.ucChiTietDonHang();
+            uc.SetMaDon(maDon);
+            LoadUC(uc);
         }
 
         private void LoadUC(UserControl uc)

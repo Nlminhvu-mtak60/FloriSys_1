@@ -71,7 +71,7 @@ namespace FloriSys._5_GiaoHang
             this.lblSubTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblSubTitle.Location = new System.Drawing.Point(20, 45);
             this.lblSubTitle.Name = "lblSubTitle";
-            this.lblSubTitle.Size = new System.Drawing.Size(252, 20);
+            this.lblSubTitle.Size = new System.Drawing.Size(280, 20);
             this.lblSubTitle.TabIndex = 1;
             this.lblSubTitle.Text = "Danh sách giao hàng trong ngày của bạn";
             // 
@@ -81,7 +81,7 @@ namespace FloriSys._5_GiaoHang
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(15, 10);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(250, 37);
+            this.lblTitle.Size = new System.Drawing.Size(247, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Xin chào, Shipper ";
             // 
@@ -135,7 +135,7 @@ namespace FloriSys._5_GiaoHang
             this.lblTitleTongDon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(27)))), ((int)(((byte)(27)))));
             this.lblTitleTongDon.Location = new System.Drawing.Point(10, 10);
             this.lblTitleTongDon.Name = "lblTitleTongDon";
-            this.lblTitleTongDon.Size = new System.Drawing.Size(163, 20);
+            this.lblTitleTongDon.Size = new System.Drawing.Size(165, 20);
             this.lblTitleTongDon.TabIndex = 0;
             this.lblTitleTongDon.Text = "Đơn cần giao hôm nay";
             // 
@@ -169,7 +169,7 @@ namespace FloriSys._5_GiaoHang
             this.lblTitleDaGiao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(21)))), ((int)(((byte)(128)))), ((int)(((byte)(61)))));
             this.lblTitleDaGiao.Location = new System.Drawing.Point(10, 10);
             this.lblTitleDaGiao.Name = "lblTitleDaGiao";
-            this.lblTitleDaGiao.Size = new System.Drawing.Size(147, 20);
+            this.lblTitleDaGiao.Size = new System.Drawing.Size(145, 20);
             this.lblTitleDaGiao.TabIndex = 0;
             this.lblTitleDaGiao.Text = "Đã giao thành công";
             // 
@@ -203,7 +203,7 @@ namespace FloriSys._5_GiaoHang
             this.lblTitleDangGiao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(146)))), ((int)(((byte)(64)))), ((int)(((byte)(14)))));
             this.lblTitleDangGiao.Location = new System.Drawing.Point(10, 10);
             this.lblTitleDangGiao.Name = "lblTitleDangGiao";
-            this.lblTitleDangGiao.Size = new System.Drawing.Size(117, 20);
+            this.lblTitleDangGiao.Size = new System.Drawing.Size(129, 20);
             this.lblTitleDangGiao.TabIndex = 0;
             this.lblTitleDangGiao.Text = "Đang trên đường";
             // 
@@ -237,7 +237,7 @@ namespace FloriSys._5_GiaoHang
             this.lblTitleChuaGiao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(175)))));
             this.lblTitleChuaGiao.Location = new System.Drawing.Point(10, 10);
             this.lblTitleChuaGiao.Name = "lblTitleChuaGiao";
-            this.lblTitleChuaGiao.Size = new System.Drawing.Size(77, 20);
+            this.lblTitleChuaGiao.Size = new System.Drawing.Size(79, 20);
             this.lblTitleChuaGiao.TabIndex = 0;
             this.lblTitleChuaGiao.Text = "Chưa giao";
             // 
@@ -309,7 +309,7 @@ namespace FloriSys._5_GiaoHang
             this.lblCurAddress.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblCurAddress.Location = new System.Drawing.Point(25, 100);
             this.lblCurAddress.Name = "lblCurAddress";
-            this.lblCurAddress.Size = new System.Drawing.Size(262, 23);
+            this.lblCurAddress.Size = new System.Drawing.Size(253, 23);
             this.lblCurAddress.TabIndex = 3;
             this.lblCurAddress.Text = "📍 Địa chỉ: 45 Nguyễn Huệ, Q.1";
             // 
@@ -320,7 +320,7 @@ namespace FloriSys._5_GiaoHang
             this.lblCurPhone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(99)))), ((int)(((byte)(235)))));
             this.lblCurPhone.Location = new System.Drawing.Point(25, 75);
             this.lblCurPhone.Name = "lblCurPhone";
-            this.lblCurPhone.Size = new System.Drawing.Size(189, 23);
+            this.lblCurPhone.Size = new System.Drawing.Size(192, 23);
             this.lblCurPhone.TabIndex = 2;
             this.lblCurPhone.Text = "📞 SĐT: 0912 345 678";
             // 
@@ -330,7 +330,7 @@ namespace FloriSys._5_GiaoHang
             this.lblCurCustomer.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblCurCustomer.Location = new System.Drawing.Point(20, 45);
             this.lblCurCustomer.Name = "lblCurCustomer";
-            this.lblCurCustomer.Size = new System.Drawing.Size(260, 28);
+            this.lblCurCustomer.Size = new System.Drawing.Size(273, 28);
             this.lblCurCustomer.TabIndex = 1;
             this.lblCurCustomer.Text = "Khách hàng: Trần Văn Hùng";
             // 
@@ -341,7 +341,7 @@ namespace FloriSys._5_GiaoHang
             this.lblCurTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
             this.lblCurTitle.Location = new System.Drawing.Point(10, 10);
             this.lblCurTitle.Name = "lblCurTitle";
-            this.lblCurTitle.Size = new System.Drawing.Size(236, 23);
+            this.lblCurTitle.Size = new System.Drawing.Size(244, 23);
             this.lblCurTitle.TabIndex = 0;
             this.lblCurTitle.Text = "🔴 Đơn đang giao – DH0046";
             // 
@@ -352,11 +352,11 @@ namespace FloriSys._5_GiaoHang
             this.dgvAllDon.BackgroundColor = System.Drawing.Color.White;
             this.dgvAllDon.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAllDon.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvAllDon.Location = new System.Drawing.Point(0, 440);
+            this.dgvAllDon.Location = new System.Drawing.Point(0, 433);
             this.dgvAllDon.Name = "dgvAllDon";
             this.dgvAllDon.RowHeadersVisible = false;
             this.dgvAllDon.RowHeadersWidth = 51;
-            this.dgvAllDon.Size = new System.Drawing.Size(1000, 280);
+            this.dgvAllDon.Size = new System.Drawing.Size(1000, 287);
             this.dgvAllDon.TabIndex = 3;
             this.dgvAllDon.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAllDon_CellClick);
             // 
@@ -368,7 +368,7 @@ namespace FloriSys._5_GiaoHang
             this.lblListTitle.Location = new System.Drawing.Point(0, 400);
             this.lblListTitle.Name = "lblListTitle";
             this.lblListTitle.Padding = new System.Windows.Forms.Padding(10, 10, 0, 0);
-            this.lblListTitle.Size = new System.Drawing.Size(217, 40);
+            this.lblListTitle.Size = new System.Drawing.Size(228, 33);
             this.lblListTitle.TabIndex = 4;
             this.lblListTitle.Text = "📋 Tất cả đơn trong ngày";
             // 

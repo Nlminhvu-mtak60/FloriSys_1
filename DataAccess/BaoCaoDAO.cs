@@ -114,5 +114,15 @@ namespace FloriSys.DataAccess
                           ORDER BY dh.NgayTao DESC", top);
             return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
         }
+
+        public static DataTable DonHangChoXuat()
+        {
+            string sql = @"SELECT dh.MaDon, kh.HoTen AS TenKH, dh.NgayTao, dh.TrangThai
+                          FROM DON_HANG dh
+                          INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
+                          WHERE dh.TrangThai = N'ChoXuatKho'
+                          ORDER BY dh.NgayTao ASC";
+            return DatabaseHelper.ExecuteRawQuery(sql);
+        }
     }
 }
