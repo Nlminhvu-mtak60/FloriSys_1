@@ -39,6 +39,7 @@ namespace FloriSys.Shared
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1000, 80);
             this.pnlHeader.TabIndex = 0;
+            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
             // 
             // btnLuu
             // 
@@ -62,7 +63,7 @@ namespace FloriSys.Shared
             this.lblSubTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblSubTitle.Location = new System.Drawing.Point(20, 45);
             this.lblSubTitle.Name = "lblSubTitle";
-            this.lblSubTitle.Size = new System.Drawing.Size(434, 20);
+            this.lblSubTitle.Size = new System.Drawing.Size(435, 20);
             this.lblSubTitle.TabIndex = 1;
             this.lblSubTitle.Text = "Quản lý quyền truy cập hệ thống theo từng vai trò (RBAC matrix)";
             // 
@@ -72,7 +73,7 @@ namespace FloriSys.Shared
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(15, 10);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(268, 37);
+            this.lblTitle.Size = new System.Drawing.Size(263, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Phân quyền chi tiết";
             // 

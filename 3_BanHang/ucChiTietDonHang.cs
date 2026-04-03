@@ -80,6 +80,10 @@ namespace FloriSys._3_BanHang
 
             dgvChiTiet.Columns["DonGia"].DefaultCellStyle.Format = "#,##0";
             dgvChiTiet.Columns["ThanhTien"].DefaultCellStyle.Format = "#,##0";
+            
+            dgvChiTiet.ReadOnly = true;
+            dgvChiTiet.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvChiTiet.MultiSelect = false;
         }
 
         private void LoadTimeline()
@@ -126,6 +130,11 @@ namespace FloriSys._3_BanHang
                 var frm = parent as Form;
                 // Search for the method to switch uc
             }
+        }
+
+        private void pnlHeader_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

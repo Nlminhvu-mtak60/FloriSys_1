@@ -67,6 +67,7 @@ namespace FloriSys._3_BanHang
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1100, 100);
             this.pnlHeader.TabIndex = 0;
+            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
             // 
             // lblStatusBadge
             // 
@@ -77,7 +78,7 @@ namespace FloriSys._3_BanHang
             this.lblStatusBadge.Location = new System.Drawing.Point(20, 65);
             this.lblStatusBadge.Name = "lblStatusBadge";
             this.lblStatusBadge.Padding = new System.Windows.Forms.Padding(10, 3, 10, 3);
-            this.lblStatusBadge.Size = new System.Drawing.Size(100, 26);
+            this.lblStatusBadge.Size = new System.Drawing.Size(104, 26);
             this.lblStatusBadge.TabIndex = 2;
             this.lblStatusBadge.Text = "Đang xử lý";
             // 
@@ -87,7 +88,7 @@ namespace FloriSys._3_BanHang
             this.lblMaDon.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
             this.lblMaDon.Location = new System.Drawing.Point(15, 25);
             this.lblMaDon.Name = "lblMaDon";
-            this.lblMaDon.Size = new System.Drawing.Size(325, 41);
+            this.lblMaDon.Size = new System.Drawing.Size(328, 41);
             this.lblMaDon.TabIndex = 1;
             this.lblMaDon.Text = "Đơn hàng DH2026046";
             // 
@@ -99,7 +100,7 @@ namespace FloriSys._3_BanHang
             this.lblBack.ForeColor = System.Drawing.Color.Gray;
             this.lblBack.Location = new System.Drawing.Point(20, 5);
             this.lblBack.Name = "lblBack";
-            this.lblBack.Size = new System.Drawing.Size(147, 20);
+            this.lblBack.Size = new System.Drawing.Size(150, 20);
             this.lblBack.TabIndex = 0;
             this.lblBack.Text = "← Quay lại danh sách";
             this.lblBack.Click += new System.EventHandler(this.lblBack_Click);
@@ -152,7 +153,7 @@ namespace FloriSys._3_BanHang
             this.dgvChiTiet.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(242)))), ((int)(((byte)(244)))));
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
@@ -186,7 +187,7 @@ namespace FloriSys._3_BanHang
             this.lblTongTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
             this.lblTongTien.Location = new System.Drawing.Point(450, 20);
             this.lblTongTien.Name = "lblTongTien";
-            this.lblTongTien.Size = new System.Drawing.Size(148, 37);
+            this.lblTongTien.Size = new System.Drawing.Size(137, 37);
             this.lblTongTien.TabIndex = 1;
             this.lblTongTien.Text = "600,000đ";
             // 
@@ -196,7 +197,7 @@ namespace FloriSys._3_BanHang
             this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.label6.Location = new System.Drawing.Point(20, 25);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(114, 28);
+            this.label6.Size = new System.Drawing.Size(112, 28);
             this.label6.TabIndex = 0;
             this.label6.Text = "Tổng cộng";
             // 
@@ -222,7 +223,7 @@ namespace FloriSys._3_BanHang
             this.lblGhiChu.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblGhiChu.Location = new System.Drawing.Point(15, 180);
             this.lblGhiChu.Name = "lblGhiChu";
-            this.lblGhiChu.Size = new System.Drawing.Size(221, 23);
+            this.lblGhiChu.Size = new System.Drawing.Size(243, 23);
             this.lblGhiChu.TabIndex = 4;
             this.lblGhiChu.Text = "Ghi chú: Gói quà đẹp, có thiệp";
             // 
@@ -232,7 +233,7 @@ namespace FloriSys._3_BanHang
             this.lblDiaChi.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblDiaChi.Location = new System.Drawing.Point(15, 145);
             this.lblDiaChi.Name = "lblDiaChi";
-            this.lblDiaChi.Size = new System.Drawing.Size(215, 23);
+            this.lblDiaChi.Size = new System.Drawing.Size(220, 23);
             this.lblDiaChi.TabIndex = 3;
             this.lblDiaChi.Text = "Địa chỉ: 45 Lê Lợi, Q.1, HCM";
             // 
@@ -242,7 +243,7 @@ namespace FloriSys._3_BanHang
             this.lblHinhThuc.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblHinhThuc.Location = new System.Drawing.Point(15, 110);
             this.lblHinhThuc.Name = "lblHinhThuc";
-            this.lblHinhThuc.Size = new System.Drawing.Size(193, 23);
+            this.lblHinhThuc.Size = new System.Drawing.Size(188, 23);
             this.lblHinhThuc.TabIndex = 2;
             this.lblHinhThuc.Text = "Hình thức: Giao tận nơi";
             // 
@@ -252,7 +253,7 @@ namespace FloriSys._3_BanHang
             this.lblSDT.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.lblSDT.Location = new System.Drawing.Point(15, 75);
             this.lblSDT.Name = "lblSDT";
-            this.lblSDT.Size = new System.Drawing.Size(161, 23);
+            this.lblSDT.Size = new System.Drawing.Size(149, 23);
             this.lblSDT.TabIndex = 1;
             this.lblSDT.Text = "SĐT: 0912 345 678";
             // 
@@ -262,7 +263,7 @@ namespace FloriSys._3_BanHang
             this.lblTenKH.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblTenKH.Location = new System.Drawing.Point(15, 40);
             this.lblTenKH.Name = "lblTenKH";
-            this.lblTenKH.Size = new System.Drawing.Size(160, 28);
+            this.lblTenKH.Size = new System.Drawing.Size(151, 28);
             this.lblTenKH.TabIndex = 0;
             this.lblTenKH.Text = "Trần Văn Hùng";
             // 
@@ -271,10 +272,10 @@ namespace FloriSys._3_BanHang
             this.pnlRight.Controls.Add(this.grpAction);
             this.pnlRight.Controls.Add(this.grpTimeline);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlRight.Location = new System.Drawing.Point(720, 10);
+            this.pnlRight.Location = new System.Drawing.Point(725, 10);
             this.pnlRight.Margin = new System.Windows.Forms.Padding(10);
             this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Size = new System.Drawing.Size(370, 680);
+            this.pnlRight.Size = new System.Drawing.Size(365, 680);
             this.pnlRight.TabIndex = 1;
             // 
             // grpAction
@@ -288,7 +289,7 @@ namespace FloriSys._3_BanHang
             this.grpAction.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.grpAction.Location = new System.Drawing.Point(0, 350);
             this.grpAction.Name = "grpAction";
-            this.grpAction.Size = new System.Drawing.Size(370, 280);
+            this.grpAction.Size = new System.Drawing.Size(365, 280);
             this.grpAction.TabIndex = 1;
             this.grpAction.TabStop = false;
             this.grpAction.Text = "🔄 Cập nhật trạng thái";
@@ -322,7 +323,7 @@ namespace FloriSys._3_BanHang
             this.label8.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label8.Location = new System.Drawing.Point(15, 95);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(126, 20);
+            this.label8.Size = new System.Drawing.Size(122, 20);
             this.label8.TabIndex = 2;
             this.label8.Text = "Ghi chú cập nhật:";
             // 
@@ -342,7 +343,7 @@ namespace FloriSys._3_BanHang
             this.label7.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label7.Location = new System.Drawing.Point(15, 35);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(158, 20);
+            this.label7.Size = new System.Drawing.Size(163, 20);
             this.label7.TabIndex = 0;
             this.label7.Text = "Chuyển sang trạng thái:";
             // 
@@ -353,7 +354,7 @@ namespace FloriSys._3_BanHang
             this.grpTimeline.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.grpTimeline.Location = new System.Drawing.Point(0, 0);
             this.grpTimeline.Name = "grpTimeline";
-            this.grpTimeline.Size = new System.Drawing.Size(370, 350);
+            this.grpTimeline.Size = new System.Drawing.Size(365, 350);
             this.grpTimeline.TabIndex = 0;
             this.grpTimeline.TabStop = false;
             this.grpTimeline.Text = "🚀 Tiến trình xử lý";
@@ -365,7 +366,7 @@ namespace FloriSys._3_BanHang
             this.pnlTimeline.Location = new System.Drawing.Point(3, 26);
             this.pnlTimeline.Name = "pnlTimeline";
             this.pnlTimeline.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlTimeline.Size = new System.Drawing.Size(364, 321);
+            this.pnlTimeline.Size = new System.Drawing.Size(359, 321);
             this.pnlTimeline.TabIndex = 0;
             // 
             // ucChiTietDonHang

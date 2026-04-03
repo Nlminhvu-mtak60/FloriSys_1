@@ -87,14 +87,19 @@ namespace FloriSys._2_QuanLy
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(1024, 720);
             this.pnlContent.TabIndex = 3;
+            this.pnlContent.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlContent_Paint);
+            // 
             // 
             // pnlBieuDo
             // 
+            this.pnlBieuDo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlBieuDo.BackColor = System.Drawing.Color.White;
             this.pnlBieuDo.Controls.Add(this.lblTitleBieuDo);
             this.pnlBieuDo.Location = new System.Drawing.Point(548, 264);
             this.pnlBieuDo.Name = "pnlBieuDo";
-            this.pnlBieuDo.Size = new System.Drawing.Size(380, 220);
+            this.pnlBieuDo.Size = new System.Drawing.Size(436, 420);
             this.pnlBieuDo.TabIndex = 16;
             // 
             // lblTitleBieuDo
@@ -110,16 +115,21 @@ namespace FloriSys._2_QuanLy
             // 
             // pnlDonHang
             // 
+            this.pnlDonHang.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.pnlDonHang.BackColor = System.Drawing.Color.White;
             this.pnlDonHang.Controls.Add(this.dgvDonHang);
             this.pnlDonHang.Controls.Add(this.lblTitleDonHang);
             this.pnlDonHang.Location = new System.Drawing.Point(32, 264);
             this.pnlDonHang.Name = "pnlDonHang";
-            this.pnlDonHang.Size = new System.Drawing.Size(500, 220);
+            this.pnlDonHang.Size = new System.Drawing.Size(500, 420);
             this.pnlDonHang.TabIndex = 15;
             // 
             // dgvDonHang
             // 
+            this.dgvDonHang.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvDonHang.AllowUserToAddRows = false;
             this.dgvDonHang.AllowUserToDeleteRows = false;
             this.dgvDonHang.AllowUserToResizeRows = false;
@@ -137,7 +147,7 @@ namespace FloriSys._2_QuanLy
             this.dgvDonHang.RowHeadersWidth = 51;
             this.dgvDonHang.RowTemplate.Height = 34;
             this.dgvDonHang.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvDonHang.Size = new System.Drawing.Size(468, 172);
+            this.dgvDonHang.Size = new System.Drawing.Size(468, 360);
             this.dgvDonHang.TabIndex = 1;
             // 
             // lblTitleDonHang

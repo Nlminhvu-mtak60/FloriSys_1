@@ -1,3 +1,4 @@
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -36,10 +37,36 @@ namespace FloriSys.DataAccess
                 new SqlParameter("@MaKH", maKH),
                 new SqlParameter("@HoTen", hoTen),
                 new SqlParameter("@SDT", sdt),
-                new SqlParameter("@DiaChi", (object)diaChi ?? System.DBNull.Value),
-                new SqlParameter("@Email", (object)email ?? System.DBNull.Value)
+                new SqlParameter("@DiaChi", (object)diaChi ?? DBNull.Value),
+                new SqlParameter("@Email", (object)email ?? DBNull.Value)
             });
             return maKH;
+        }
+
+        public static void CapNhatKhachHang(string maKH, string hoTen, string sdt, string diaChi, string email)
+        {
+            string sql = @"UPDATE KHACH_HANG SET HoTen=@HoTen, SoDienThoai=@SDT, DiaChi=@DiaChi, Email=@Email 
+                          WHERE MaKH=@MaKH";
+            DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
+            {
+                new SqlParameter("@MaKH", maKH),
+                new SqlParameter("@HoTen", hoTen),
+                new SqlParameter("@SDT", sdt),
+                new SqlParameter("@DiaChi", (object)diaChi ?? DBNull.Value),
+                new SqlParameter("@Email", (object)email ?? DBNull.Value)
+            });
+        }
+
+        public static void XoaKhachHang(string maKH)
+        {
+            // Check if customer has orders
+            string sqlCheck = "SELECT COUNT(*) FROM DON_HANG WHERE MaKH=@MaKH";
+            DataTable dt = DatabaseHelper.ExecuteRawQuery(sqlCheck, new SqlParameter[] { new SqlParameter("@MaKH", maKH) });
+            if (dt.Rows.Count > 0 && Convert.ToInt32(dt.Rows[0][0]) > 0)
+                throw new Exception("Không thể xóa khách hàng đã có đơn hàng.");
+
+            string sql = "DELETE FROM KHACH_HANG WHERE MaKH=@MaKH";
+            DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[] { new SqlParameter("@MaKH", maKH) });
         }
     }
 }

@@ -101,8 +101,8 @@ namespace FloriSys.Shared
             btnDanhSachGiao.Visible = showGiaoHang;
             btnPhanCong.Visible = isAdmin; // Chỉ Admin phân công
             
-            // Nhóm quản lý - chỉ Admin
-            lblNhomQuanLy.Visible = isAdmin;
+            // Nhóm quản lý
+            lblNhomQuanLy.Visible = isAdmin || chucVu == "Cashier";
             btnNhanVien.Visible = isAdmin;
             btnPhanQuyen.Visible = isAdmin;
             btnSanPham.Visible = isAdmin || chucVu == "Cashier";

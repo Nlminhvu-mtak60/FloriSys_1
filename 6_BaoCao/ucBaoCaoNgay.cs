@@ -3,6 +3,7 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FloriSys._6_BaoCao
 {
@@ -51,8 +52,48 @@ namespace FloriSys._6_BaoCao
                     dgvTopSP.Columns["DoanhThu"].DefaultCellStyle.Format = "N0";
                 }
 
-                // Mock Chart (Optional: adjust bar heights based on data if available)
-                // In a real app, we'd use a Chart control or custom drawing.
+                // Vẽ biểu đồ Pie 3D cho Top Sản Phẩm
+                pnlChartMock.Controls.Clear();
+                Chart chart = new Chart();
+                chart.Dock = DockStyle.Fill;
+                chart.BackColor = Color.White;
+                
+                ChartArea area = new ChartArea("MainArea");
+                area.Area3DStyle.Enable3D = true;
+                area.Area3DStyle.Inclination = 45;
+                area.Area3DStyle.Rotation = 0;
+                chart.ChartAreas.Add(area);
+                
+                Series series = new Series("TopSP");
+                series.ChartType = SeriesChartType.Pie;
+                series.IsValueShownAsLabel = true;
+                series.Label = "#VALX: #PERCENT{P0}";
+                series.Font = new Font("Segoe UI", 8f, FontStyle.Regular);
+                series["PieLabelStyle"] = "Outside";
+                series["PieLineColor"] = "Gray";
+                series.Palette = ChartColorPalette.Pastel;
+                chart.Series.Add(series);
+                
+                int index = 0;
+                foreach (DataRow row in dtTopSP.Rows)
+                {
+                    string name = row["TenSP"].ToString();
+                    decimal val = Convert.ToDecimal(row["DoanhThu"]);
+                    if (val > 0)
+                    {
+                        int ptIdx = series.Points.AddXY(name, val);
+                        if (index == 0) // Explode the top product
+                        {
+                            series.Points[ptIdx].CustomProperties = "Exploded=true";
+                        }
+                        index++;
+                    }
+                }
+
+                Title title = new Title("TỶ TRỌNG DOANH THU SẢN PHẨM", Docking.Top, new Font("Segoe UI", 10f, FontStyle.Bold), Color.FromArgb(64, 64, 64));
+                chart.Titles.Add(title);
+                
+                pnlChartMock.Controls.Add(chart);
             }
             catch (Exception ex)
             {

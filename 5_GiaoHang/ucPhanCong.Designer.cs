@@ -1,4 +1,4 @@
-﻿namespace FloriSys._5_GiaoHang
+namespace FloriSys._5_GiaoHang
 {
     partial class ucPhanCong
     {
@@ -315,13 +315,16 @@
             // 
             // pnlRight
             // 
+            this.pnlRight.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlRight.Controls.Add(this.pnlBottom);
             this.pnlRight.Controls.Add(this.pnlShipperInfo);
             this.pnlRight.Controls.Add(this.dgvShipper);
             this.pnlRight.Controls.Add(this.lblShipperTitle);
             this.pnlRight.Location = new System.Drawing.Point(525, 100);
             this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Size = new System.Drawing.Size(440, 506);
+            this.pnlRight.Size = new System.Drawing.Size(460, 506);
             this.pnlRight.TabIndex = 3;
             // 
             // lblShipperTitle

@@ -43,6 +43,7 @@ namespace FloriSys._1_DangNhap
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(900, 80);
             this.pnlHeader.TabIndex = 0;
+            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
             // 
             // lblSubTitle
             // 
@@ -61,7 +62,7 @@ namespace FloriSys._1_DangNhap
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(15, 10);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(192, 37);
+            this.lblTitle.Size = new System.Drawing.Size(189, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Đổi mật khẩu";
             // 
@@ -121,7 +122,7 @@ namespace FloriSys._1_DangNhap
             this.lblConfirmPassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblConfirmPassword.Location = new System.Drawing.Point(20, 195);
             this.lblConfirmPassword.Name = "lblConfirmPassword";
-            this.lblConfirmPassword.Size = new System.Drawing.Size(176, 20);
+            this.lblConfirmPassword.Size = new System.Drawing.Size(174, 20);
             this.lblConfirmPassword.TabIndex = 4;
             this.lblConfirmPassword.Text = "Xác nhận mật khẩu mới";
             // 
@@ -159,7 +160,7 @@ namespace FloriSys._1_DangNhap
             this.lblOldPassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblOldPassword.Location = new System.Drawing.Point(20, 45);
             this.lblOldPassword.Name = "lblOldPassword";
-            this.lblOldPassword.Size = new System.Drawing.Size(130, 20);
+            this.lblOldPassword.Size = new System.Drawing.Size(131, 20);
             this.lblOldPassword.TabIndex = 0;
             this.lblOldPassword.Text = "Mật khẩu hiện tại";
             // 

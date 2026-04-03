@@ -9,23 +9,38 @@ namespace FloriSys.DataAccess
         public static void GhiNhan(string maSP, int soLuong, string lyDo, string ghiChu)
         {
             string maPhieu = DatabaseHelper.GenerateCode("PHH", "HANG_HU", "MaPhieuHuy");
-            string sql = @"INSERT INTO HANG_HU (MaPhieuHuy, MaSP, SoLuong, LyDo, GhiChu) 
-                          VALUES (@MaPH, @MaSP, @SoLuong, @LyDo, @GhiChu)";
-            DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
+            try
             {
-                new SqlParameter("@MaPH", maPhieu),
-                new SqlParameter("@MaSP", maSP),
-                new SqlParameter("@SoLuong", soLuong),
-                new SqlParameter("@LyDo", lyDo),
-                new SqlParameter("@GhiChu", (object)ghiChu ?? DBNull.Value)
-            });
-            // Decrease stock
-            string sqlStock = "UPDATE SAN_PHAM SET SoLuongTon = SoLuongTon - @SoLuong WHERE MaSP = @MaSP AND SoLuongTon >= @SoLuong";
-            DatabaseHelper.ExecuteRawNonQuery(sqlStock, new SqlParameter[]
+                DatabaseHelper.ExecuteNonQuery("sp_GhiNhanHangHu", new SqlParameter[]
+                {
+                    new SqlParameter("@MaPhieuHuy", maPhieu),
+                    new SqlParameter("@MaSP", maSP),
+                    new SqlParameter("@SoLuong", soLuong),
+                    new SqlParameter("@LyDo", lyDo),
+                    new SqlParameter("@GhiChu", (object)ghiChu ?? DBNull.Value)
+                });
+            }
+            catch (SqlException)
             {
-                new SqlParameter("@MaSP", maSP),
-                new SqlParameter("@SoLuong", soLuong)
-            });
+                // Fallback: if SP doesn't exist yet, use raw SQL
+                string sql = @"INSERT INTO HANG_HU (MaPhieuHuy, MaSP, SoLuong, LyDo, GhiChu) 
+                              VALUES (@MaPH, @MaSP, @SoLuong, @LyDo, @GhiChu)";
+                DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
+                {
+                    new SqlParameter("@MaPH", maPhieu),
+                    new SqlParameter("@MaSP", maSP),
+                    new SqlParameter("@SoLuong", soLuong),
+                    new SqlParameter("@LyDo", lyDo),
+                    new SqlParameter("@GhiChu", (object)ghiChu ?? DBNull.Value)
+                });
+                // Decrease stock manually
+                string sqlStock = "UPDATE SAN_PHAM SET SoLuongTon = SoLuongTon - @SoLuong WHERE MaSP = @MaSP AND SoLuongTon >= @SoLuong";
+                DatabaseHelper.ExecuteRawNonQuery(sqlStock, new SqlParameter[]
+                {
+                    new SqlParameter("@MaSP", maSP),
+                    new SqlParameter("@SoLuong", soLuong)
+                });
+            }
         }
 
         public static DataTable LayLichSu(int thang = 0, int nam = 0)

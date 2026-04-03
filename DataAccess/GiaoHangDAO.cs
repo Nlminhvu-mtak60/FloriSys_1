@@ -84,9 +84,9 @@ namespace FloriSys.DataAccess
         {
             string sql = @"SELECT 
                 (SELECT COUNT(*) FROM GIAO_HANG WHERE MaNV_Shipper=@MaNV AND CAST(NgayGiao AS DATE)=CAST(GETDATE() AS DATE)) AS TongDonHnay,
-                (SELECT COUNT(*) FROM GIAO_HANG WHERE MaNV_Shipper=@MaNV AND TrangThai=N'DaGiao' AND CAST(NgayGiao AS DATE)=CAST(GETDATE() AS DATE)) AS DaGiaoHnay,
+                (SELECT COUNT(*) FROM GIAO_HANG WHERE MaNV_Shipper=@MaNV AND TrangThai=N'GiaoThanhCong' AND CAST(NgayGiao AS DATE)=CAST(GETDATE() AS DATE)) AS DaGiaoHnay,
                 (SELECT COUNT(*) FROM GIAO_HANG WHERE MaNV_Shipper=@MaNV AND TrangThai=N'DangGiao') AS DangDiGiao,
-                (SELECT COUNT(*) FROM GIAO_HANG WHERE MaNV_Shipper=@MaNV AND TrangThai=N'DangChuanBi') AS ChuaGiao";
+                (SELECT COUNT(*) FROM GIAO_HANG WHERE MaNV_Shipper=@MaNV AND TrangThai=N'ChoPhanCong') AS ChuaGiao";
             return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
         }
     }

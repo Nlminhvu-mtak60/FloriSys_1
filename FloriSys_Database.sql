@@ -149,6 +149,19 @@ CREATE TABLE CANH_BAO_TON_KHO (
 GO
 
 -- =====================================================
+-- 11. BẢNG HÀNG HƯ (Lịch sử hủy hàng)
+-- =====================================================
+CREATE TABLE HANG_HU (
+    MaPhieuHuy  NVARCHAR(20)    PRIMARY KEY,
+    MaSP        NVARCHAR(20)    NOT NULL REFERENCES SAN_PHAM(MaSP),
+    SoLuong     INT             NOT NULL CHECK (SoLuong > 0),
+    LyDo        NVARCHAR(200)   NOT NULL,
+    NgayHuy     DATETIME        DEFAULT GETDATE(),
+    GhiChu      NVARCHAR(500)   NULL
+);
+GO
+
+-- =====================================================
 -- TRIGGERS
 -- =====================================================
 
@@ -328,19 +341,30 @@ BEGIN
 END;
 GO
 
--- SP: Ghi nhận hàng hư (giảm tồn kho)
+-- SP: Ghi nhận hàng hư (giảm tồn kho + lưu lịch sử)
 CREATE OR ALTER PROCEDURE sp_GhiNhanHangHu
-    @MaSP    NVARCHAR(20),
-    @SoLuong INT
+    @MaPhieuHuy NVARCHAR(20),
+    @MaSP       NVARCHAR(20),
+    @SoLuong    INT,
+    @LyDo       NVARCHAR(200),
+    @GhiChu     NVARCHAR(500) = NULL
 AS
 BEGIN
+    SET NOCOUNT ON;
     DECLARE @TonHienTai INT;
     SELECT @TonHienTai = SoLuongTon FROM SAN_PHAM WHERE MaSP = @MaSP;
+    IF @TonHienTai IS NULL
+    BEGIN
+        RAISERROR(N'Sản phẩm không tồn tại.', 16, 1);
+        RETURN;
+    END
     IF @TonHienTai < @SoLuong
     BEGIN
         RAISERROR(N'Không thể hủy nhiều hơn số tồn kho hiện tại.', 16, 1);
         RETURN;
     END
+    INSERT INTO HANG_HU (MaPhieuHuy, MaSP, SoLuong, LyDo, GhiChu)
+    VALUES (@MaPhieuHuy, @MaSP, @SoLuong, @LyDo, @GhiChu);
     UPDATE SAN_PHAM SET SoLuongTon = SoLuongTon - @SoLuong WHERE MaSP = @MaSP;
 END;
 GO
@@ -571,6 +595,39 @@ UPDATE SAN_PHAM SET SoLuongTon = 28 WHERE MaSP = N'SP002';
 -- Phản hồi
 INSERT INTO PHAN_HOI VALUES
 (N'PH000001', N'DH000004', N'Khách phản hồi hoa hồng bị héo sau 1 ngày', '2026-03-10 14:00', N'DangXuLy', NULL);
+
+-- =====================================================
+-- SP: Doanh thu theo ngày trong tháng (biểu đồ báo cáo tháng)
+-- =====================================================
+GO
+
+CREATE OR ALTER PROCEDURE sp_DoanhThuTheoNgayTrongThang
+    @Thang INT,
+    @Nam   INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    ;WITH DaysInMonth AS (
+        SELECT DATEFROMPARTS(@Nam, @Thang, 1) AS Ngay
+        UNION ALL
+        SELECT DATEADD(DAY, 1, Ngay)
+        FROM DaysInMonth
+        WHERE DATEADD(DAY, 1, Ngay) < DATEADD(MONTH, 1, DATEFROMPARTS(@Nam, @Thang, 1))
+    )
+    SELECT 
+        d.Ngay,
+        DAY(d.Ngay) AS NgayTrongThang,
+        ISNULL(SUM(dh.TongTien), 0) AS DoanhThu,
+        COUNT(dh.MaDon) AS SoDon
+    FROM DaysInMonth d
+    LEFT JOIN DON_HANG dh 
+        ON CAST(dh.NgayTao AS DATE) = d.Ngay 
+        AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
+    GROUP BY d.Ngay
+    ORDER BY d.Ngay ASC
+    OPTION (MAXRECURSION 31);
+END;
+GO
 
 PRINT N'✅ Database FloriSys đã được tạo thành công!';
 GO

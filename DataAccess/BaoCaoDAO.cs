@@ -88,9 +88,9 @@ namespace FloriSys.DataAccess
         public static DataTable ThongKeKho()
         {
             string sql = @"SELECT 
-                (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'ChoXuatKho') AS DonChoXuat,
+                (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'Moi') AS DonChoXuat,
                 (SELECT COUNT(*) FROM SAN_PHAM WHERE SoLuongTon <= MucTonToiThieu) AS SPSapHet,
-                (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Moi', N'ChoXuatKho', N'Huy')) AS DaXuatHomNay,
+                (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Moi', N'Huy')) AS DaXuatHomNay,
                 (SELECT COUNT(*) FROM PHIEU_NHAP_KHO WHERE MONTH(NgayNhap)=MONTH(GETDATE()) AND YEAR(NgayNhap)=YEAR(GETDATE())) AS PhieuNhapThang";
             return DatabaseHelper.ExecuteRawQuery(sql);
         }
@@ -98,10 +98,10 @@ namespace FloriSys.DataAccess
         public static DataTable ThongKeBanHang(string maNV)
         {
             string sql = @"SELECT 
-                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_Lap=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHomNay,
-                (SELECT ISNULL(SUM(TongTien),0) FROM DON_HANG WHERE MaNV_Lap=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Huy', N'HoanHang')) AS DoanhThuHomNay,
-                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_Lap=@MaNV AND TrangThai IN (N'Moi', N'ChoXuatKho', N'DangGiao')) AS DonDangXuLy,
-                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_Lap=@MaNV AND TrangThai=N'HoanThanh' AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHoanThanh";
+                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHomNay,
+                (SELECT ISNULL(SUM(TongTien),0) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Huy', N'HoanHang')) AS DoanhThuHomNay,
+                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND TrangThai IN (N'Moi', N'DangXuLy', N'DaGiao')) AS DonDangXuLy,
+                (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND TrangThai=N'HoanThanh' AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHoanThanh";
             return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
         }
 
@@ -110,7 +110,7 @@ namespace FloriSys.DataAccess
             string sql = string.Format(@"SELECT TOP {0} dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.NgayTao, dh.TrangThai
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
-                          WHERE dh.MaNV_Lap = @MaNV
+                          WHERE dh.MaNV_TaoDon = @MaNV
                           ORDER BY dh.NgayTao DESC", top);
             return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
         }
@@ -120,9 +120,35 @@ namespace FloriSys.DataAccess
             string sql = @"SELECT dh.MaDon, kh.HoTen AS TenKH, dh.NgayTao, dh.TrangThai
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
-                          WHERE dh.TrangThai = N'ChoXuatKho'
+                          WHERE dh.TrangThai = N'Moi'
                           ORDER BY dh.NgayTao ASC";
             return DatabaseHelper.ExecuteRawQuery(sql);
+        }
+
+        public static DataTable DoanhThu7Ngay()
+        {
+            string sql = @"WITH Last7Days AS (
+                                SELECT CAST(GETDATE() AS DATE) AS Ngay
+                                UNION ALL
+                                SELECT DATEADD(day, -1, Ngay)
+                                FROM Last7Days
+                                WHERE Ngay > DATEADD(day, -6, CAST(GETDATE() AS DATE))
+                            )
+                            SELECT d.Ngay, ISNULL(SUM(dh.TongTien), 0) AS DoanhThu
+                            FROM Last7Days d
+                            LEFT JOIN DON_HANG dh ON CAST(dh.NgayTao AS DATE) = d.Ngay AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
+                            GROUP BY d.Ngay
+                            ORDER BY d.Ngay ASC";
+            return DatabaseHelper.ExecuteRawQuery(sql);
+        }
+
+        public static DataTable DoanhThuTheoNgayTrongThang(int thang, int nam)
+        {
+            return DatabaseHelper.ExecuteQuery("sp_DoanhThuTheoNgayTrongThang", new SqlParameter[]
+            {
+                new SqlParameter("@Thang", thang),
+                new SqlParameter("@Nam", nam)
+            });
         }
     }
 }

@@ -54,6 +54,11 @@ namespace FloriSys._5_GiaoHang
                 dgvAllDon.Columns["TongTien"].HeaderText = "Tổng tiền";
                 dgvAllDon.Columns["TongTien"].DefaultCellStyle.Format = "N0";
             }
+            
+            dgvAllDon.ReadOnly = true;
+            dgvAllDon.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvAllDon.MultiSelect = false;
+            dgvAllDon.AllowUserToResizeRows = false;
         }
 
         private void LoadCurrentDelivery()
@@ -62,12 +67,29 @@ namespace FloriSys._5_GiaoHang
             DataRow current = null;
             if (dt != null)
             {
-                foreach (DataRow dr in dt.Rows)
+                // Prioritize the specifically selected order
+                if (!string.IsNullOrEmpty(currentMaGH))
                 {
-                    if (dr["TrangThai"].ToString() == "DangGiao")
+                    foreach (DataRow dr in dt.Rows)
                     {
-                        current = dr;
-                        break;
+                        if (dr["TrangThai"].ToString() == "DangGiao" && dr["MaGiaoHang"].ToString() == currentMaGH)
+                        {
+                            current = dr;
+                            break;
+                        }
+                    }
+                }
+
+                // Fallback to the first available DangGiao
+                if (current == null)
+                {
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        if (dr["TrangThai"].ToString() == "DangGiao")
+                        {
+                            current = dr;
+                            break;
+                        }
                     }
                 }
             }
@@ -90,7 +112,7 @@ namespace FloriSys._5_GiaoHang
         private void btnThanhCong_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(currentMaGH)) return;
-            GiaoHangDAO.CapNhatTrangThai(currentMaGH, "DaGiao");
+            GiaoHangDAO.CapNhatTrangThai(currentMaGH, "GiaoThanhCong");
             MessageBox.Show("Đã cập nhật giao hàng thành công!");
             LoadData();
         }
@@ -98,7 +120,7 @@ namespace FloriSys._5_GiaoHang
         private void btnKhachVang_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(currentMaGH)) return;
-            GiaoHangDAO.CapNhatTrangThai(currentMaGH, "KhachVangMat");
+            GiaoHangDAO.CapNhatTrangThai(currentMaGH, "GiaoLai");
             MessageBox.Show("Ghi nhận khách vắng mặt.");
             LoadData();
         }
@@ -116,14 +138,21 @@ namespace FloriSys._5_GiaoHang
             if (e.RowIndex >= 0)
             {
                 string status = dgvAllDon.Rows[e.RowIndex].Cells["TrangThai"].Value.ToString();
-                if (status == "DangChuanBi" || status == "ChoGiao")
+                string maGH = dgvAllDon.Rows[e.RowIndex].Cells["MaGiaoHang"].Value.ToString();
+
+                if (status == "ChoPhanCong" || status == "GiaoLai")
                 {
                     if (MessageBox.Show("Bạn muốn bắt đầu giao đơn này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        string maGH = dgvAllDon.Rows[e.RowIndex].Cells["MaGiaoHang"].Value.ToString();
                         GiaoHangDAO.CapNhatTrangThai(maGH, "DangGiao");
+                        currentMaGH = maGH;
                         LoadData();
                     }
+                }
+                else if (status == "DangGiao")
+                {
+                    currentMaGH = maGH;
+                    LoadCurrentDelivery();
                 }
             }
         }

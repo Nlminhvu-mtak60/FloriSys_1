@@ -73,7 +73,7 @@ namespace FloriSys._2_QuanLy
                     uc = new _4_KhoHang.ucNhapKho();
                     break;
                 case "XuatKho":
-                    uc = CreatePlaceholder("Xác nhận xuất kho");
+                    uc = new _4_KhoHang.ucXuatKho();
                     break;
                 case "HangHu":
                     uc = new _4_KhoHang.ucHangHu();

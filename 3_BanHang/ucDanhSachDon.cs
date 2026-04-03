@@ -57,6 +57,9 @@ namespace FloriSys._3_BanHang
                 dgvDonHang.Columns["GhiChu"].Visible = false;
             dgvDonHang.Columns["NgayTao"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
             dgvDonHang.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvDonHang.ReadOnly = true;
+            dgvDonHang.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvDonHang.MultiSelect = false;
         }
 
         private void btnTaoDon_Click(object sender, EventArgs e)

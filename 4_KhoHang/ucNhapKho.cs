@@ -53,5 +53,10 @@ namespace FloriSys._4_KhoHang
             }
             catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
         }
+
+        private void lblSP_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
