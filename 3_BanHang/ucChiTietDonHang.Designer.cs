@@ -67,7 +67,7 @@ namespace FloriSys._3_BanHang
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1100, 100);
             this.pnlHeader.TabIndex = 0;
-            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
+            // 
             // 
             // lblStatusBadge
             // 

@@ -39,7 +39,7 @@ namespace FloriSys.Shared
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1000, 80);
             this.pnlHeader.TabIndex = 0;
-            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
+            // 
             // 
             // btnLuu
             // 

@@ -98,10 +98,5 @@ namespace FloriSys.Shared
             MessageBox.Show("Đã cập nhật phân quyền thành công cho vai trò " + selectedRole, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             LoadQuyen();
         }
-
-        private void pnlHeader_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

@@ -33,14 +33,13 @@ namespace FloriSys._5_GiaoHang
             cboDonCho.BringToFront();
 
             this.Load += ucPhanCong_Load;
-            btnXacNhan.Click += btnXacNhan_Click;
             btnXacNhanPC.Click += btnXacNhan_Click;
             dgvShipper.CellClick += dgvShipper_CellClick;
         }
 
         private void ucPhanCong_Load(object sender, EventArgs e)
         {
-            btnXacNhan.Visible = false; // Ẩn button bên trái (chỉ giữ button bên phải góc dưới)
+            btnXacNhanPC.Visible = true; // Hiển thị button phân công
             LoadDonChoGiao();
             LoadShipperList();
         }
@@ -59,7 +58,6 @@ namespace FloriSys._5_GiaoHang
                         cboDonCho.Items.Add("📦 Đơn cần giao – " + dr["MaDon"].ToString());
                     }
                     cboDonCho.SelectedIndex = 0; // Trigger SelectedIndexChanged
-                    btnXacNhan.Enabled = true;
                     btnXacNhanPC.Enabled = true;
                 }
                 else
@@ -73,7 +71,6 @@ namespace FloriSys._5_GiaoHang
                     lblThoiGianVal.Text = "—";
                     lblSanPhamVal.Text = "—";
                     lblGhiChuVal.Text = "—";
-                    btnXacNhan.Enabled = false;
                     btnXacNhanPC.Enabled = false;
                 }
             }

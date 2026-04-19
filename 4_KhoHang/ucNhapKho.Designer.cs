@@ -189,8 +189,8 @@ namespace FloriSys._4_KhoHang
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(245)))), ((int)(((byte)(246)))));
             this.Controls.Add(this.dgvNhap);
-            this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.pnlInput);
+            this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.btnLuu);
 
             this.Name = "ucNhapKho";

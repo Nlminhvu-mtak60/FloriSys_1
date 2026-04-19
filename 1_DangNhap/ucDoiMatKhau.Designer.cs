@@ -43,7 +43,6 @@ namespace FloriSys._1_DangNhap
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(900, 80);
             this.pnlHeader.TabIndex = 0;
-            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
             // 
             // lblSubTitle
             // 
@@ -77,6 +76,8 @@ namespace FloriSys._1_DangNhap
             this.pnlForm.Controls.Add(this.lblNewPassword);
             this.pnlForm.Controls.Add(this.txtOldPassword);
             this.pnlForm.Controls.Add(this.lblOldPassword);
+            this.pnlForm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlForm.Location = new System.Drawing.Point(30, 110);
             this.pnlForm.Name = "pnlForm";
             this.pnlForm.Padding = new System.Windows.Forms.Padding(20);

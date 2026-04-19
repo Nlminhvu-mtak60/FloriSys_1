@@ -128,9 +128,9 @@ namespace FloriSys.Shared
             this.pnlMenu.Controls.Add(this.btnPhanQuyen);
             this.pnlMenu.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.pnlMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.pnlMenu.Location = new System.Drawing.Point(0, 82);
+            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMenu.AutoScroll = true;
             this.pnlMenu.Name = "pnlMenu";
-            this.pnlMenu.Size = new System.Drawing.Size(220, 889);
             this.pnlMenu.TabIndex = 3;
             // 
             // btnTraHang
@@ -177,7 +177,7 @@ namespace FloriSys.Shared
             this.btnDoiMatKhau.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDoiMatKhau.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.btnDoiMatKhau.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnDoiMatKhau.Location = new System.Drawing.Point(0, 815);
+            this.btnDoiMatKhau.Location = new System.Drawing.Point(0, 853);
             this.btnDoiMatKhau.Name = "btnDoiMatKhau";
             this.btnDoiMatKhau.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnDoiMatKhau.Size = new System.Drawing.Size(220, 38);
@@ -186,7 +186,6 @@ namespace FloriSys.Shared
             this.btnDoiMatKhau.Text = "🔑  Đổi mật khẩu";
             this.btnDoiMatKhau.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDoiMatKhau.UseVisualStyleBackColor = true;
-            this.btnDoiMatKhau.Click += new System.EventHandler(this.btnDoiMatKhau_Click);
             // 
             this.btnDangXuat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(232)))), ((int)(((byte)(235)))));
             this.btnDangXuat.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -195,7 +194,7 @@ namespace FloriSys.Shared
             this.btnDangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.btnDangXuat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
-            this.btnDangXuat.Location = new System.Drawing.Point(-3, 853);
+            this.btnDangXuat.Location = new System.Drawing.Point(0, 891);
             this.btnDangXuat.Name = "btnDangXuat";
             this.btnDangXuat.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnDangXuat.Size = new System.Drawing.Size(220, 38);
@@ -213,7 +212,7 @@ namespace FloriSys.Shared
             this.btnBaoCao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBaoCao.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.btnBaoCao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnBaoCao.Location = new System.Drawing.Point(-3, 748);
+            this.btnBaoCao.Location = new System.Drawing.Point(0, 786);
             this.btnBaoCao.Name = "btnBaoCao";
             this.btnBaoCao.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnBaoCao.Size = new System.Drawing.Size(220, 38);
@@ -227,7 +226,7 @@ namespace FloriSys.Shared
             // 
             this.lblNhomBaoCao.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNhomBaoCao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblNhomBaoCao.Location = new System.Drawing.Point(5, 723);
+            this.lblNhomBaoCao.Location = new System.Drawing.Point(5, 761);
             this.lblNhomBaoCao.Name = "lblNhomBaoCao";
             this.lblNhomBaoCao.Size = new System.Drawing.Size(200, 22);
             this.lblNhomBaoCao.TabIndex = 24;
@@ -242,7 +241,7 @@ namespace FloriSys.Shared
             this.btnKhachHang.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnKhachHang.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.btnKhachHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnKhachHang.Location = new System.Drawing.Point(0, 682);
+            this.btnKhachHang.Location = new System.Drawing.Point(0, 720);
             this.btnKhachHang.Name = "btnKhachHang";
             this.btnKhachHang.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnKhachHang.Size = new System.Drawing.Size(220, 38);
@@ -260,7 +259,7 @@ namespace FloriSys.Shared
             this.btnSanPham.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSanPham.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.btnSanPham.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnSanPham.Location = new System.Drawing.Point(0, 644);
+            this.btnSanPham.Location = new System.Drawing.Point(0, 682);
             this.btnSanPham.Name = "btnSanPham";
             this.btnSanPham.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnSanPham.Size = new System.Drawing.Size(220, 38);
@@ -350,7 +349,7 @@ namespace FloriSys.Shared
             this.btnNhanVien.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNhanVien.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.btnNhanVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnNhanVien.Location = new System.Drawing.Point(0, 606);
+            this.btnNhanVien.Location = new System.Drawing.Point(0, 644);
             this.btnNhanVien.Name = "btnNhanVien";
             this.btnNhanVien.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnNhanVien.Size = new System.Drawing.Size(220, 38);
@@ -364,7 +363,7 @@ namespace FloriSys.Shared
             // 
             this.lblNhomTaiKhoan.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.lblNhomTaiKhoan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblNhomTaiKhoan.Location = new System.Drawing.Point(5, 790);
+            this.lblNhomTaiKhoan.Location = new System.Drawing.Point(5, 828);
             this.lblNhomTaiKhoan.Name = "lblNhomTaiKhoan";
             this.lblNhomTaiKhoan.Size = new System.Drawing.Size(200, 22);
             this.lblNhomTaiKhoan.TabIndex = 5;
@@ -547,7 +546,7 @@ namespace FloriSys.Shared
             this.pnlNguoiDung.Controls.Add(this.lblAvatar);
             this.pnlNguoiDung.Controls.Add(this.lblDuongKeUser);
             this.pnlNguoiDung.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlNguoiDung.Location = new System.Drawing.Point(0, 967);
+            this.pnlNguoiDung.Location = new System.Drawing.Point(0, 1026);
             this.pnlNguoiDung.Name = "pnlNguoiDung";
             this.pnlNguoiDung.Size = new System.Drawing.Size(220, 64);
             this.pnlNguoiDung.TabIndex = 4;
@@ -593,7 +592,7 @@ namespace FloriSys.Shared
             this.lblDuongKeUser.Name = "lblDuongKeUser";
             this.lblDuongKeUser.Size = new System.Drawing.Size(220, 1);
             this.lblDuongKeUser.TabIndex = 0;
-            this.lblDuongKeUser.Text = "label1";
+            this.lblDuongKeUser.Text = "";
             // 
             // btnPhanQuyen
             // 
@@ -603,7 +602,7 @@ namespace FloriSys.Shared
             this.btnPhanQuyen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnPhanQuyen.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.btnPhanQuyen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnPhanQuyen.Location = new System.Drawing.Point(0, 576);
+            this.btnPhanQuyen.Location = new System.Drawing.Point(0, 606);
             this.btnPhanQuyen.Name = "btnPhanQuyen";
             this.btnPhanQuyen.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
             this.btnPhanQuyen.Size = new System.Drawing.Size(220, 38);
@@ -619,13 +618,13 @@ namespace FloriSys.Shared
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.pnlNguoiDung);
             this.Controls.Add(this.pnlMenu);
+            this.Controls.Add(this.pnlNguoiDung);
             this.Controls.Add(this.lblDuongKe);
             this.Controls.Add(this.lblPhuDe);
             this.Controls.Add(this.lblLogo);
             this.Name = "ucThanhMenu";
-            this.Size = new System.Drawing.Size(220, 1031);
+            this.Size = new System.Drawing.Size(220, 1090);
             this.Load += new System.EventHandler(this.ucThanhMenu_Load);
             this.pnlMenu.ResumeLayout(false);
             this.pnlNguoiDung.ResumeLayout(false);

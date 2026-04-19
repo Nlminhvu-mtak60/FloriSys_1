@@ -29,8 +29,21 @@ namespace FloriSys._5_GiaoHang
         private void InitializeComponent()
         {
             this.pnlContent = new System.Windows.Forms.Panel();
+            this.pnlRight = new System.Windows.Forms.Panel();
+            this.pnlBottom = new System.Windows.Forms.Panel();
+            this.btnXacNhanPC = new System.Windows.Forms.Button();
+            this.pnlShipperInfo = new System.Windows.Forms.Panel();
+            this.lblGhiY = new System.Windows.Forms.Label();
+            this.lblTrangThaiShipper = new System.Windows.Forms.Label();
+            this.lblSoDonDang = new System.Windows.Forms.Label();
+            this.lblTenShipperChon = new System.Windows.Forms.Label();
+            this.dgvShipper = new System.Windows.Forms.DataGridView();
+            this.colTen = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDang = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDaGiao = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblShipperTitle = new System.Windows.Forms.Label();
             this.pnlLeft = new System.Windows.Forms.Panel();
-            this.btnXacNhan = new System.Windows.Forms.Button();
             this.txtGhiChu = new System.Windows.Forms.TextBox();
             this.lblGhiChuShipper = new System.Windows.Forms.Label();
             this.cboShipper = new System.Windows.Forms.ComboBox();
@@ -49,26 +62,12 @@ namespace FloriSys._5_GiaoHang
             this.lblCardTitle = new System.Windows.Forms.Label();
             this.lblSubTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.pnlRight = new System.Windows.Forms.Panel();
-            this.lblShipperTitle = new System.Windows.Forms.Label();
-            this.dgvShipper = new System.Windows.Forms.DataGridView();
-            this.colTen = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDang = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDaGiao = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pnlShipperInfo = new System.Windows.Forms.Panel();
-            this.lblTenShipperChon = new System.Windows.Forms.Label();
-            this.lblSoDonDang = new System.Windows.Forms.Label();
-            this.lblTrangThaiShipper = new System.Windows.Forms.Label();
-            this.lblGhiY = new System.Windows.Forms.Label();
-            this.pnlBottom = new System.Windows.Forms.Panel();
-            this.btnXacNhanPC = new System.Windows.Forms.Button();
             this.pnlContent.SuspendLayout();
-            this.pnlLeft.SuspendLayout();
             this.pnlRight.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvShipper)).BeginInit();
-            this.pnlShipperInfo.SuspendLayout();
             this.pnlBottom.SuspendLayout();
+            this.pnlShipperInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvShipper)).BeginInit();
+            this.pnlLeft.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlContent
@@ -84,9 +83,172 @@ namespace FloriSys._5_GiaoHang
             this.pnlContent.Size = new System.Drawing.Size(1024, 720);
             this.pnlContent.TabIndex = 4;
             // 
+            // pnlRight
+            // 
+            this.pnlRight.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlRight.Controls.Add(this.pnlBottom);
+            this.pnlRight.Controls.Add(this.pnlShipperInfo);
+            this.pnlRight.Controls.Add(this.dgvShipper);
+            this.pnlRight.Controls.Add(this.lblShipperTitle);
+            this.pnlRight.Location = new System.Drawing.Point(525, 100);
+            this.pnlRight.Name = "pnlRight";
+            this.pnlRight.Size = new System.Drawing.Size(460, 506);
+            this.pnlRight.TabIndex = 3;
+            // 
+            // pnlBottom
+            // 
+            this.pnlBottom.BackColor = System.Drawing.Color.Transparent;
+            this.pnlBottom.Controls.Add(this.btnXacNhanPC);
+            this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlBottom.Location = new System.Drawing.Point(0, 414);
+            this.pnlBottom.Name = "pnlBottom";
+            this.pnlBottom.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.pnlBottom.Size = new System.Drawing.Size(460, 92);
+            this.pnlBottom.TabIndex = 3;
+            // 
+            // btnXacNhanPC
+            // 
+            this.btnXacNhanPC.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            this.btnXacNhanPC.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnXacNhanPC.FlatAppearance.BorderSize = 0;
+            this.btnXacNhanPC.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnXacNhanPC.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnXacNhanPC.ForeColor = System.Drawing.Color.White;
+            this.btnXacNhanPC.Location = new System.Drawing.Point(0, 54);
+            this.btnXacNhanPC.Name = "btnXacNhanPC";
+            this.btnXacNhanPC.Size = new System.Drawing.Size(460, 38);
+            this.btnXacNhanPC.TabIndex = 0;
+            this.btnXacNhanPC.Text = "✅  Xác nhận phân công";
+            this.btnXacNhanPC.UseVisualStyleBackColor = false;
+            // 
+            // pnlShipperInfo
+            // 
+            this.pnlShipperInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.pnlShipperInfo.Controls.Add(this.lblGhiY);
+            this.pnlShipperInfo.Controls.Add(this.lblTrangThaiShipper);
+            this.pnlShipperInfo.Controls.Add(this.lblSoDonDang);
+            this.pnlShipperInfo.Controls.Add(this.lblTenShipperChon);
+            this.pnlShipperInfo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlShipperInfo.Location = new System.Drawing.Point(0, 254);
+            this.pnlShipperInfo.Name = "pnlShipperInfo";
+            this.pnlShipperInfo.Padding = new System.Windows.Forms.Padding(12);
+            this.pnlShipperInfo.Size = new System.Drawing.Size(460, 160);
+            this.pnlShipperInfo.TabIndex = 2;
+            // 
+            // lblGhiY
+            // 
+            this.lblGhiY.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblGhiY.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblGhiY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(106)))), ((int)(((byte)(79)))));
+            this.lblGhiY.Location = new System.Drawing.Point(12, 96);
+            this.lblGhiY.Name = "lblGhiY";
+            this.lblGhiY.Size = new System.Drawing.Size(436, 28);
+            this.lblGhiY.TabIndex = 3;
+            this.lblGhiY.Text = "⭐  Ghi ý: Nên chọn shipper đang rảnh";
+            // 
+            // lblTrangThaiShipper
+            // 
+            this.lblTrangThaiShipper.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblTrangThaiShipper.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTrangThaiShipper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(106)))), ((int)(((byte)(79)))));
+            this.lblTrangThaiShipper.Location = new System.Drawing.Point(12, 68);
+            this.lblTrangThaiShipper.Name = "lblTrangThaiShipper";
+            this.lblTrangThaiShipper.Size = new System.Drawing.Size(436, 28);
+            this.lblTrangThaiShipper.TabIndex = 2;
+            this.lblTrangThaiShipper.Text = "🟢  Trạng thái: —";
+            // 
+            // lblSoDonDang
+            // 
+            this.lblSoDonDang.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblSoDonDang.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblSoDonDang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.lblSoDonDang.Location = new System.Drawing.Point(12, 40);
+            this.lblSoDonDang.Name = "lblSoDonDang";
+            this.lblSoDonDang.Size = new System.Drawing.Size(436, 28);
+            this.lblSoDonDang.TabIndex = 1;
+            this.lblSoDonDang.Text = "📦  Đang giao: — đơn";
+            // 
+            // lblTenShipperChon
+            // 
+            this.lblTenShipperChon.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblTenShipperChon.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTenShipperChon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.lblTenShipperChon.Location = new System.Drawing.Point(12, 12);
+            this.lblTenShipperChon.Name = "lblTenShipperChon";
+            this.lblTenShipperChon.Size = new System.Drawing.Size(436, 28);
+            this.lblTenShipperChon.TabIndex = 0;
+            this.lblTenShipperChon.Text = "👤  Tên Shipper: —";
+            // 
+            // dgvShipper
+            // 
+            this.dgvShipper.AllowUserToAddRows = false;
+            this.dgvShipper.BackgroundColor = System.Drawing.Color.White;
+            this.dgvShipper.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvShipper.ColumnHeadersHeight = 36;
+            this.dgvShipper.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvShipper.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colTen,
+            this.colDang,
+            this.colDaGiao,
+            this.colStatus});
+            this.dgvShipper.Dock = System.Windows.Forms.DockStyle.Top;
+            this.dgvShipper.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            this.dgvShipper.Location = new System.Drawing.Point(0, 34);
+            this.dgvShipper.Name = "dgvShipper";
+            this.dgvShipper.ReadOnly = true;
+            this.dgvShipper.RowHeadersWidth = 51;
+            this.dgvShipper.RowTemplate.Height = 48;
+            this.dgvShipper.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvShipper.Size = new System.Drawing.Size(460, 220);
+            this.dgvShipper.TabIndex = 1;
+            // 
+            // colTen
+            // 
+            this.colTen.HeaderText = "SHIPPER";
+            this.colTen.MinimumWidth = 6;
+            this.colTen.Name = "colTen";
+            this.colTen.ReadOnly = true;
+            this.colTen.Width = 125;
+            // 
+            // colDang
+            // 
+            this.colDang.HeaderText = "ĐANG GIAO";
+            this.colDang.MinimumWidth = 6;
+            this.colDang.Name = "colDang";
+            this.colDang.ReadOnly = true;
+            this.colDang.Width = 125;
+            // 
+            // colDaGiao
+            // 
+            this.colDaGiao.HeaderText = "ĐÃ GIAO HÔM NAY";
+            this.colDaGiao.MinimumWidth = 6;
+            this.colDaGiao.Name = "colDaGiao";
+            this.colDaGiao.ReadOnly = true;
+            this.colDaGiao.Width = 125;
+            // 
+            // colStatus
+            // 
+            this.colStatus.HeaderText = "TRẠNG THÁI";
+            this.colStatus.MinimumWidth = 6;
+            this.colStatus.Name = "colStatus";
+            this.colStatus.ReadOnly = true;
+            this.colStatus.Width = 125;
+            // 
+            // lblShipperTitle
+            // 
+            this.lblShipperTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblShipperTitle.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblShipperTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
+            this.lblShipperTitle.Location = new System.Drawing.Point(0, 0);
+            this.lblShipperTitle.Name = "lblShipperTitle";
+            this.lblShipperTitle.Size = new System.Drawing.Size(460, 34);
+            this.lblShipperTitle.TabIndex = 0;
+            this.lblShipperTitle.Text = "🏍️  Tình trạng Shipper hôm nay";
+            // 
             // pnlLeft
             // 
-            this.pnlLeft.Controls.Add(this.btnXacNhan);
             this.pnlLeft.Controls.Add(this.txtGhiChu);
             this.pnlLeft.Controls.Add(this.lblGhiChuShipper);
             this.pnlLeft.Controls.Add(this.cboShipper);
@@ -107,20 +269,6 @@ namespace FloriSys._5_GiaoHang
             this.pnlLeft.Name = "pnlLeft";
             this.pnlLeft.Size = new System.Drawing.Size(440, 506);
             this.pnlLeft.TabIndex = 2;
-            // 
-            // btnXacNhan
-            // 
-            this.btnXacNhan.BackColor = System.Drawing.Color.White;
-            this.btnXacNhan.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnXacNhan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnXacNhan.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnXacNhan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
-            this.btnXacNhan.Location = new System.Drawing.Point(19, 444);
-            this.btnXacNhan.Name = "btnXacNhan";
-            this.btnXacNhan.Size = new System.Drawing.Size(217, 40);
-            this.btnXacNhan.TabIndex = 16;
-            this.btnXacNhan.Text = "✅  Xác nhận phân công";
-            this.btnXacNhan.UseVisualStyleBackColor = false;
             // 
             // txtGhiChu
             // 
@@ -313,170 +461,6 @@ namespace FloriSys._5_GiaoHang
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Phân công giao hàng";
             // 
-            // pnlRight
-            // 
-            this.pnlRight.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlRight.Controls.Add(this.pnlBottom);
-            this.pnlRight.Controls.Add(this.pnlShipperInfo);
-            this.pnlRight.Controls.Add(this.dgvShipper);
-            this.pnlRight.Controls.Add(this.lblShipperTitle);
-            this.pnlRight.Location = new System.Drawing.Point(525, 100);
-            this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Size = new System.Drawing.Size(460, 506);
-            this.pnlRight.TabIndex = 3;
-            // 
-            // lblShipperTitle
-            // 
-            this.lblShipperTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblShipperTitle.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblShipperTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            this.lblShipperTitle.Location = new System.Drawing.Point(0, 0);
-            this.lblShipperTitle.Name = "lblShipperTitle";
-            this.lblShipperTitle.Size = new System.Drawing.Size(440, 34);
-            this.lblShipperTitle.TabIndex = 0;
-            this.lblShipperTitle.Text = "🏍️  Tình trạng Shipper hôm nay";
-            // 
-            // dgvShipper
-            // 
-            this.dgvShipper.AllowUserToAddRows = false;
-            this.dgvShipper.BackgroundColor = System.Drawing.Color.White;
-            this.dgvShipper.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvShipper.ColumnHeadersHeight = 36;
-            this.dgvShipper.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvShipper.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colTen,
-            this.colDang,
-            this.colDaGiao,
-            this.colStatus});
-            this.dgvShipper.Dock = System.Windows.Forms.DockStyle.Top;
-            this.dgvShipper.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
-            this.dgvShipper.Location = new System.Drawing.Point(0, 34);
-            this.dgvShipper.Name = "dgvShipper";
-            this.dgvShipper.ReadOnly = true;
-            this.dgvShipper.RowHeadersWidth = 51;
-            this.dgvShipper.RowTemplate.Height = 48;
-            this.dgvShipper.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvShipper.Size = new System.Drawing.Size(440, 220);
-            this.dgvShipper.TabIndex = 1;
-            // 
-            // colTen
-            // 
-            this.colTen.HeaderText = "SHIPPER";
-            this.colTen.MinimumWidth = 6;
-            this.colTen.Name = "colTen";
-            this.colTen.ReadOnly = true;
-            this.colTen.Width = 125;
-            // 
-            // colDang
-            // 
-            this.colDang.HeaderText = "ĐANG GIAO";
-            this.colDang.MinimumWidth = 6;
-            this.colDang.Name = "colDang";
-            this.colDang.ReadOnly = true;
-            this.colDang.Width = 125;
-            // 
-            // colDaGiao
-            // 
-            this.colDaGiao.HeaderText = "ĐÃ GIAO HÔM NAY";
-            this.colDaGiao.MinimumWidth = 6;
-            this.colDaGiao.Name = "colDaGiao";
-            this.colDaGiao.ReadOnly = true;
-            this.colDaGiao.Width = 125;
-            // 
-            // colStatus
-            // 
-            this.colStatus.HeaderText = "TRẠNG THÁI";
-            this.colStatus.MinimumWidth = 6;
-            this.colStatus.Name = "colStatus";
-            this.colStatus.ReadOnly = true;
-            this.colStatus.Width = 125;
-            // 
-            // pnlShipperInfo
-            // 
-            this.pnlShipperInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.pnlShipperInfo.Controls.Add(this.lblGhiY);
-            this.pnlShipperInfo.Controls.Add(this.lblTrangThaiShipper);
-            this.pnlShipperInfo.Controls.Add(this.lblSoDonDang);
-            this.pnlShipperInfo.Controls.Add(this.lblTenShipperChon);
-            this.pnlShipperInfo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlShipperInfo.Location = new System.Drawing.Point(0, 254);
-            this.pnlShipperInfo.Name = "pnlShipperInfo";
-            this.pnlShipperInfo.Padding = new System.Windows.Forms.Padding(12);
-            this.pnlShipperInfo.Size = new System.Drawing.Size(440, 160);
-            this.pnlShipperInfo.TabIndex = 2;
-            // 
-            // lblTenShipperChon
-            // 
-            this.lblTenShipperChon.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblTenShipperChon.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTenShipperChon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.lblTenShipperChon.Location = new System.Drawing.Point(12, 12);
-            this.lblTenShipperChon.Name = "lblTenShipperChon";
-            this.lblTenShipperChon.Size = new System.Drawing.Size(416, 28);
-            this.lblTenShipperChon.TabIndex = 0;
-            this.lblTenShipperChon.Text = "👤  Tên Shipper: —";
-            // 
-            // lblSoDonDang
-            // 
-            this.lblSoDonDang.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblSoDonDang.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblSoDonDang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.lblSoDonDang.Location = new System.Drawing.Point(12, 40);
-            this.lblSoDonDang.Name = "lblSoDonDang";
-            this.lblSoDonDang.Size = new System.Drawing.Size(416, 28);
-            this.lblSoDonDang.TabIndex = 1;
-            this.lblSoDonDang.Text = "📦  Đang giao: — đơn";
-            // 
-            // lblTrangThaiShipper
-            // 
-            this.lblTrangThaiShipper.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblTrangThaiShipper.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTrangThaiShipper.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(106)))), ((int)(((byte)(79)))));
-            this.lblTrangThaiShipper.Location = new System.Drawing.Point(12, 68);
-            this.lblTrangThaiShipper.Name = "lblTrangThaiShipper";
-            this.lblTrangThaiShipper.Size = new System.Drawing.Size(416, 28);
-            this.lblTrangThaiShipper.TabIndex = 2;
-            this.lblTrangThaiShipper.Text = "🟢  Trạng thái: —";
-            // 
-            // lblGhiY
-            // 
-            this.lblGhiY.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblGhiY.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblGhiY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(106)))), ((int)(((byte)(79)))));
-            this.lblGhiY.Location = new System.Drawing.Point(12, 96);
-            this.lblGhiY.Name = "lblGhiY";
-            this.lblGhiY.Size = new System.Drawing.Size(416, 28);
-            this.lblGhiY.TabIndex = 3;
-            this.lblGhiY.Text = "⭐  Ghi ý: Nên chọn shipper đang rảnh";
-            // 
-            // pnlBottom
-            // 
-            this.pnlBottom.BackColor = System.Drawing.Color.Transparent;
-            this.pnlBottom.Controls.Add(this.btnXacNhanPC);
-            this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 414);
-            this.pnlBottom.Name = "pnlBottom";
-            this.pnlBottom.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            this.pnlBottom.Size = new System.Drawing.Size(440, 92);
-            this.pnlBottom.TabIndex = 3;
-            // 
-            // btnXacNhanPC
-            // 
-            this.btnXacNhanPC.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
-            this.btnXacNhanPC.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.btnXacNhanPC.FlatAppearance.BorderSize = 0;
-            this.btnXacNhanPC.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnXacNhanPC.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnXacNhanPC.ForeColor = System.Drawing.Color.White;
-            this.btnXacNhanPC.Location = new System.Drawing.Point(0, 54);
-            this.btnXacNhanPC.Name = "btnXacNhanPC";
-            this.btnXacNhanPC.Size = new System.Drawing.Size(440, 38);
-            this.btnXacNhanPC.TabIndex = 0;
-            this.btnXacNhanPC.Text = "✅  Xác nhận phân công";
-            this.btnXacNhanPC.UseVisualStyleBackColor = false;
-            // 
             // ucPhanCong
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -486,12 +470,12 @@ namespace FloriSys._5_GiaoHang
             this.Name = "ucPhanCong";
             this.Size = new System.Drawing.Size(1024, 720);
             this.pnlContent.ResumeLayout(false);
+            this.pnlRight.ResumeLayout(false);
+            this.pnlBottom.ResumeLayout(false);
+            this.pnlShipperInfo.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvShipper)).EndInit();
             this.pnlLeft.ResumeLayout(false);
             this.pnlLeft.PerformLayout();
-            this.pnlRight.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvShipper)).EndInit();
-            this.pnlShipperInfo.ResumeLayout(false);
-            this.pnlBottom.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -500,7 +484,6 @@ namespace FloriSys._5_GiaoHang
 
         private System.Windows.Forms.Panel pnlContent;
         private System.Windows.Forms.Panel pnlLeft;
-        private System.Windows.Forms.Button btnXacNhan;
         private System.Windows.Forms.TextBox txtGhiChu;
         private System.Windows.Forms.Label lblGhiChuShipper;
         private System.Windows.Forms.ComboBox cboShipper;

@@ -20,7 +20,10 @@ namespace FloriSys._4_KhoHang
             this.txtTimKiem.Dock = System.Windows.Forms.DockStyle.Top;
             this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.txtTimKiem.Size = new System.Drawing.Size(800, 30);
-            //this.txtTimKiem.PlaceholderText = "🔍 Tìm tên sản phẩm...";
+            this.txtTimKiem.Text = "🔍 Tìm tên sản phẩm...";
+            this.txtTimKiem.ForeColor = System.Drawing.Color.Gray;
+            this.txtTimKiem.Enter += new System.EventHandler(this.txtTimKiem_Enter);
+            this.txtTimKiem.Leave += new System.EventHandler(this.txtTimKiem_Leave);
             this.dgvTonKho.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvTonKho.AllowUserToAddRows = false; this.dgvTonKho.ReadOnly = true; this.dgvTonKho.RowHeadersVisible = false;
             this.dgvTonKho.BackgroundColor = System.Drawing.Color.White; this.dgvTonKho.BorderStyle = System.Windows.Forms.BorderStyle.None;

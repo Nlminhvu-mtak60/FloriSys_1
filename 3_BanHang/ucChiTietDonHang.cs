@@ -131,10 +131,5 @@ namespace FloriSys._3_BanHang
                 // Search for the method to switch uc
             }
         }
-
-        private void pnlHeader_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

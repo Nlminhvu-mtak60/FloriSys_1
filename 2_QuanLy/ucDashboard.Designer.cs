@@ -87,7 +87,6 @@ namespace FloriSys._2_QuanLy
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(1024, 720);
             this.pnlContent.TabIndex = 3;
-            this.pnlContent.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlContent_Paint);
             // 
             // 
             // pnlBieuDo
@@ -163,6 +162,7 @@ namespace FloriSys._2_QuanLy
             // 
             // pnlStat4
             // 
+            this.pnlStat4.BackColor = System.Drawing.Color.White;
             this.pnlStat4.Controls.Add(this.lblStat4Sub);
             this.pnlStat4.Controls.Add(this.lblStat4Title);
             this.pnlStat4.Controls.Add(this.lblStat4Value);
@@ -204,6 +204,7 @@ namespace FloriSys._2_QuanLy
             // 
             // pnlStat3
             // 
+            this.pnlStat3.BackColor = System.Drawing.Color.White;
             this.pnlStat3.Controls.Add(this.lblStat3Sub);
             this.pnlStat3.Controls.Add(this.lblStat3Title);
             this.pnlStat3.Controls.Add(this.lblStat3Value);
@@ -373,6 +374,7 @@ namespace FloriSys._2_QuanLy
             // 
             // btnCanhBao
             // 
+            this.btnCanhBao.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCanhBao.BackColor = System.Drawing.Color.White;
             this.btnCanhBao.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCanhBao.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
@@ -408,7 +410,6 @@ namespace FloriSys._2_QuanLy
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Tổng quan hôm nay";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTitle.Click += new System.EventHandler(this.lblTitle_Click);
             // 
             // ucDashboard
             // 

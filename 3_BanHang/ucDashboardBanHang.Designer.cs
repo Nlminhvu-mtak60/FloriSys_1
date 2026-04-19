@@ -39,7 +39,7 @@ namespace FloriSys._3_BanHang
             this.lblTableTitle = new System.Windows.Forms.Label();
             this.dgvDonGanDay = new System.Windows.Forms.DataGridView();
             this.pnlRight = new System.Windows.Forms.Panel();
-            this.pnlKhaNăng = new System.Windows.Forms.Panel();
+            this.pnlKhaNang = new System.Windows.Forms.Panel();
             this.lblRank = new System.Windows.Forms.Label();
             this.lblTargetDoanhThu = new System.Windows.Forms.Label();
             this.pbDoanhThu = new System.Windows.Forms.ProgressBar();
@@ -61,7 +61,7 @@ namespace FloriSys._3_BanHang
             this.pnlLeft.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDonGanDay)).BeginInit();
             this.pnlRight.SuspendLayout();
-            this.pnlKhaNăng.SuspendLayout();
+            this.pnlKhaNang.SuspendLayout();
             this.pnlLookup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLookup)).BeginInit();
             this.SuspendLayout();
@@ -80,6 +80,7 @@ namespace FloriSys._3_BanHang
             // 
             // btnTaoDon
             // 
+            this.btnTaoDon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnTaoDon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
             this.btnTaoDon.FlatAppearance.BorderSize = 0;
             this.btnTaoDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -326,7 +327,7 @@ namespace FloriSys._3_BanHang
             // pnlRight
             // 
             this.pnlRight.BackColor = System.Drawing.Color.White;
-            this.pnlRight.Controls.Add(this.pnlKhaNăng);
+            this.pnlRight.Controls.Add(this.pnlKhaNang);
             this.pnlRight.Controls.Add(this.pnlLookup);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlRight.Location = new System.Drawing.Point(603, 15);
@@ -334,21 +335,21 @@ namespace FloriSys._3_BanHang
             this.pnlRight.Size = new System.Drawing.Size(384, 490);
             this.pnlRight.TabIndex = 1;
             // 
-            // pnlKhaNăng
+            // pnlKhaNang
             // 
-            this.pnlKhaNăng.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlKhaNăng.Controls.Add(this.lblRank);
-            this.pnlKhaNăng.Controls.Add(this.lblTargetDoanhThu);
-            this.pnlKhaNăng.Controls.Add(this.pbDoanhThu);
-            this.pnlKhaNăng.Controls.Add(this.lblTargetDon);
-            this.pnlKhaNăng.Controls.Add(this.pbDonHang);
-            this.pnlKhaNăng.Controls.Add(this.lblHieuSuatTitle);
-            this.pnlKhaNăng.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlKhaNăng.Location = new System.Drawing.Point(0, 0);
-            this.pnlKhaNăng.Name = "pnlKhaNăng";
-            this.pnlKhaNăng.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlKhaNăng.Size = new System.Drawing.Size(384, 180);
-            this.pnlKhaNăng.TabIndex = 0;
+            this.pnlKhaNang.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlKhaNang.Controls.Add(this.lblRank);
+            this.pnlKhaNang.Controls.Add(this.lblTargetDoanhThu);
+            this.pnlKhaNang.Controls.Add(this.pbDoanhThu);
+            this.pnlKhaNang.Controls.Add(this.lblTargetDon);
+            this.pnlKhaNang.Controls.Add(this.pbDonHang);
+            this.pnlKhaNang.Controls.Add(this.lblHieuSuatTitle);
+            this.pnlKhaNang.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlKhaNang.Location = new System.Drawing.Point(0, 0);
+            this.pnlKhaNang.Name = "pnlKhaNang";
+            this.pnlKhaNang.Padding = new System.Windows.Forms.Padding(10);
+            this.pnlKhaNang.Size = new System.Drawing.Size(384, 180);
+            this.pnlKhaNang.TabIndex = 0;
             // 
             // lblRank
             // 
@@ -487,8 +488,8 @@ namespace FloriSys._3_BanHang
             this.pnlLeft.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDonGanDay)).EndInit();
             this.pnlRight.ResumeLayout(false);
-            this.pnlKhaNăng.ResumeLayout(false);
-            this.pnlKhaNăng.PerformLayout();
+            this.pnlKhaNang.ResumeLayout(false);
+            this.pnlKhaNang.PerformLayout();
             this.pnlLookup.ResumeLayout(false);
             this.pnlLookup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLookup)).EndInit();
@@ -520,7 +521,7 @@ namespace FloriSys._3_BanHang
         private System.Windows.Forms.Label lblTableTitle;
         private System.Windows.Forms.DataGridView dgvDonGanDay;
         private System.Windows.Forms.Panel pnlRight;
-        private System.Windows.Forms.Panel pnlKhaNăng;
+        private System.Windows.Forms.Panel pnlKhaNang;
         private System.Windows.Forms.Label lblHieuSuatTitle;
         private System.Windows.Forms.Label lblTargetDon;
         private System.Windows.Forms.ProgressBar pbDonHang;

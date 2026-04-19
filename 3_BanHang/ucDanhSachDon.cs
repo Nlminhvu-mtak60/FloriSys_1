@@ -29,6 +29,8 @@ namespace FloriSys._3_BanHang
             try
             {
                 string key = txtTimKiem.Text.Trim();
+                // Bỏ qua placeholder text
+                if (key == "🔍 Tìm mã đơn, tên khách...") key = "";
                 string tt = cboTrangThai.SelectedIndex > 0 ? cboTrangThai.SelectedItem.ToString() : "";
                 DataTable dt = DonHangDAO.LayDanhSach(key, tt);
                 dgvDonHang.DataSource = dt;
@@ -87,6 +89,23 @@ namespace FloriSys._3_BanHang
             {
                 string maDon = dgvDonHang.CurrentRow.Cells["MaDon"].Value.ToString();
                 XemChiTiet?.Invoke(maDon);
+            }
+        }
+        private void txtTimKiem_Enter(object sender, EventArgs e)
+        {
+            if (txtTimKiem.Text == "🔍 Tìm mã đơn, tên khách...")
+            {
+                txtTimKiem.Text = "";
+                txtTimKiem.ForeColor = System.Drawing.Color.Black;
+            }
+        }
+
+        private void txtTimKiem_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtTimKiem.Text))
+            {
+                txtTimKiem.Text = "🔍 Tìm mã đơn, tên khách...";
+                txtTimKiem.ForeColor = System.Drawing.Color.Gray;
             }
         }
     }

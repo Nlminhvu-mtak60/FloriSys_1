@@ -72,17 +72,26 @@ namespace FloriSys.DataAccess
                 (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai != N'Huy') AS DonHomNay,
                 (SELECT ISNULL(SUM(TongTien),0) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Huy', N'HoanHang')) AS DoanhThuHomNay,
                 (SELECT COUNT(*) FROM GIAO_HANG WHERE TrangThai=N'DangGiao') AS DonDangGiao,
-                (SELECT COUNT(*) FROM SAN_PHAM WHERE TrangThai=N'DangBan' AND SoLuongTon <= MucTonToiThieu) AS SPSapHet";
+                (SELECT COUNT(*) FROM SAN_PHAM WHERE TrangThai=N'DangBan' AND SoLuongTon <= MucTonToiThieu) AS SPSapHet,
+                (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=DATEADD(day,-1,CAST(GETDATE() AS DATE)) AND TrangThai != N'Huy') AS DonHomQua,
+                (SELECT ISNULL(SUM(TongTien),0) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=DATEADD(day,-1,CAST(GETDATE() AS DATE)) AND TrangThai NOT IN (N'Huy', N'HoanHang')) AS DoanhThuHomQua,
+                (SELECT COUNT(DISTINCT MaNV_Shipper) FROM GIAO_HANG WHERE TrangThai=N'DangGiao') AS ShipperDangGiao";
+            return DatabaseHelper.ExecuteRawQuery(sql);
+        }
+
+        public static DataTable LaySanPhamSapHet()
+        {
+            string sql = "SELECT TenSP, SoLuongTon FROM SAN_PHAM WHERE TrangThai=N'DangBan' AND SoLuongTon <= MucTonToiThieu";
             return DatabaseHelper.ExecuteRawQuery(sql);
         }
 
         public static DataTable DonHangGanDay(int top = 5)
         {
-            string sql = string.Format(@"SELECT TOP {0} dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.TrangThai
+            string sql = @"SELECT TOP (@Top) dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.TrangThai
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
-                          ORDER BY dh.NgayTao DESC", top);
-            return DatabaseHelper.ExecuteRawQuery(sql);
+                          ORDER BY dh.NgayTao DESC";
+            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@Top", top) });
         }
 
         public static DataTable ThongKeKho()
@@ -107,12 +116,12 @@ namespace FloriSys.DataAccess
 
         public static DataTable DonHangCuaNV(string maNV, int top = 10)
         {
-            string sql = string.Format(@"SELECT TOP {0} dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.NgayTao, dh.TrangThai
+            string sql = @"SELECT TOP (@Top) dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.NgayTao, dh.TrangThai
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           WHERE dh.MaNV_TaoDon = @MaNV
-                          ORDER BY dh.NgayTao DESC", top);
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
+                          ORDER BY dh.NgayTao DESC";
+            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV), new SqlParameter("@Top", top) });
         }
 
         public static DataTable DonHangChoXuat()

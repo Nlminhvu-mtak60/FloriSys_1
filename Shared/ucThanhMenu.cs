@@ -12,6 +12,37 @@ namespace FloriSys.Shared
         public ucThanhMenu()
         {
             InitializeComponent();
+            SetupLayout();
+        }
+
+        private void SetupLayout()
+        {
+            // Tái cấu trúc layout để tránh lỗi overlap và lỗi scroll không hết cỡ
+            Panel pnlHeader = new Panel();
+            pnlHeader.Height = 82;
+            pnlHeader.Dock = DockStyle.Top;
+            pnlHeader.BackColor = Color.White;
+
+            // Chuyển logo và phụ đề vào pnlHeader
+            pnlHeader.Controls.Add(lblLogo);
+            lblLogo.Location = new Point(10, 20);
+            pnlHeader.Controls.Add(lblPhuDe);
+            lblPhuDe.Location = new Point(10, 52);
+            pnlHeader.Controls.Add(lblDuongKe);
+            lblDuongKe.Location = new Point(0, 76);
+
+            this.Controls.Add(pnlHeader);
+
+            // Cấu hình thứ tự Dock (Z-Order)
+            pnlNguoiDung.Dock = DockStyle.Bottom;
+            pnlHeader.SendToBack(); // Tính Dock=Top ưu tiên
+            pnlNguoiDung.SendToBack(); // Tính Dock=Bottom ưu tiên kế tiếp
+
+            pnlMenu.Dock = DockStyle.Fill;
+            pnlMenu.BringToFront(); // Chiếm khoảng trống còn lại ở giữa
+            
+            // Padding cuối để cuộn đủ thấy các nút cuối cùng
+            pnlMenu.AutoScrollMargin = new Size(0, 30);
         }
 
         private void ucThanhMenu_Load(object sender, EventArgs e)

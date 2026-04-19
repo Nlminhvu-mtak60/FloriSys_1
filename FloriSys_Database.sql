@@ -162,6 +162,47 @@ CREATE TABLE HANG_HU (
 GO
 
 -- =====================================================
+-- 12. BẢNG PHÂN QUYỀN
+-- =====================================================
+CREATE TABLE PHAN_QUYEN (
+    ChucVu   NVARCHAR(20)  NOT NULL,
+    Module   NVARCHAR(50)  NOT NULL,
+    Xem      BIT           NOT NULL DEFAULT 0,
+    Them     BIT           NOT NULL DEFAULT 0,
+    Sua      BIT           NOT NULL DEFAULT 0,
+    Xoa      BIT           NOT NULL DEFAULT 0,
+    Export   BIT           NOT NULL DEFAULT 0,
+    PRIMARY KEY (ChucVu, Module)
+);
+GO
+
+-- =====================================================
+-- 13. BẢNG TRẢ HÀNG
+-- =====================================================
+CREATE TABLE TRA_HANG (
+    MaPhieuTra      NVARCHAR(20)   PRIMARY KEY,
+    MaDon           NVARCHAR(20)   NOT NULL REFERENCES DON_HANG(MaDon),
+    LyDo            NVARCHAR(500)  NOT NULL,
+    HinhThucHoanTien NVARCHAR(50)  NOT NULL DEFAULT N'TienMat'
+        CHECK (HinhThucHoanTien IN (N'TienMat', N'ChuyenKhoan', N'DoiHang')),
+    GhiChu          NVARCHAR(500),
+    NgayTra         DATETIME       NOT NULL DEFAULT GETDATE()
+);
+GO
+
+-- =====================================================
+-- 14. BẢNG CHI TIẾT TRẢ HÀNG
+-- =====================================================
+CREATE TABLE CT_TRA_HANG (
+    MaPhieuTra  NVARCHAR(20)  NOT NULL REFERENCES TRA_HANG(MaPhieuTra),
+    MaSP        NVARCHAR(20)  NOT NULL REFERENCES SAN_PHAM(MaSP),
+    SoLuong     INT           NOT NULL CHECK (SoLuong > 0),
+    CoNhapKho   BIT           NOT NULL DEFAULT 0,
+    PRIMARY KEY (MaPhieuTra, MaSP)
+);
+GO
+
+-- =====================================================
 -- TRIGGERS
 -- =====================================================
 
@@ -515,7 +556,7 @@ AS
 BEGIN
     DECLARE @SQL NVARCHAR(500);
     DECLARE @MaxNum INT;
-    SET @SQL = N'SELECT @Num = ISNULL(MAX(CAST(SUBSTRING(' + @Column + N', LEN(''' + @Prefix + N''')+1, 10) AS INT)), 0) FROM ' + @Table;
+    SET @SQL = N'SELECT @Num = ISNULL(MAX(CAST(SUBSTRING(' + QUOTENAME(@Column) + N', LEN(''' + @Prefix + N''')+1, 10) AS INT)), 0) FROM ' + QUOTENAME(@Table);
     EXEC sp_executesql @SQL, N'@Num INT OUTPUT', @Num = @MaxNum OUTPUT;
     SET @NewCode = @Prefix + RIGHT('000000' + CAST(@MaxNum + 1 AS NVARCHAR), 6);
 END;
@@ -582,19 +623,50 @@ INSERT INTO GIAO_HANG VALUES
 INSERT INTO PHIEU_NHAP_KHO VALUES
 (N'PN000001', '2026-03-10 07:30', N'NV003', N'Hàng từ vựa Bình Điền');
 
+-- Tạm tắt trigger để tránh xung đột tồn kho khi nhập data mẫu
+DISABLE TRIGGER trg_NhapKho_TangTon ON CT_NHAP_KHO;
+GO
+
 INSERT INTO CT_NHAP_KHO VALUES
 (N'PN000001', N'SP001', 50, 120000),
 (N'PN000001', N'SP002', 30, 160000);
 
--- NOTE: Trigger sẽ tự động cộng tồn kho. Do data mẫu đã set sẵn SoLuongTon nên bỏ qua.
--- Trong thực tế, khi INSERT vào CT_NHAP_KHO trigger sẽ tự cập nhật.
--- Resetlại tồn kho đúng cho data mẫu:
-UPDATE SAN_PHAM SET SoLuongTon = 42 WHERE MaSP = N'SP001';
-UPDATE SAN_PHAM SET SoLuongTon = 28 WHERE MaSP = N'SP002';
+-- Bật lại trigger
+ENABLE TRIGGER trg_NhapKho_TangTon ON CT_NHAP_KHO;
+GO
 
 -- Phản hồi
 INSERT INTO PHAN_HOI VALUES
 (N'PH000001', N'DH000004', N'Khách phản hồi hoa hồng bị héo sau 1 ngày', '2026-03-10 14:00', N'DangXuLy', NULL);
+
+-- Phân quyền mẫu
+INSERT INTO PHAN_QUYEN VALUES
+-- Admin: toàn quyền
+(N'Admin', N'Dashboard',    1, 1, 1, 1, 1),
+(N'Admin', N'DonHang',      1, 1, 1, 1, 1),
+(N'Admin', N'KhoHang',      1, 1, 1, 1, 1),
+(N'Admin', N'GiaoHang',     1, 1, 1, 1, 1),
+(N'Admin', N'NhanVien',     1, 1, 1, 1, 1),
+(N'Admin', N'KhachHang',    1, 1, 1, 1, 1),
+(N'Admin', N'SanPham',      1, 1, 1, 1, 1),
+(N'Admin', N'PhanQuyen',    1, 1, 1, 0, 0),
+(N'Admin', N'BaoCao',       1, 0, 0, 0, 1),
+(N'Admin', N'TraHang',      1, 1, 1, 0, 0),
+(N'Admin', N'PhanHoi',      1, 1, 1, 0, 0),
+-- Cashier: bán hàng, khách hàng
+(N'Cashier', N'Dashboard',  1, 0, 0, 0, 0),
+(N'Cashier', N'DonHang',    1, 1, 1, 0, 0),
+(N'Cashier', N'KhachHang',  1, 1, 1, 0, 0),
+(N'Cashier', N'SanPham',    1, 0, 0, 0, 0),
+(N'Cashier', N'TraHang',    1, 1, 0, 0, 0),
+(N'Cashier', N'PhanHoi',    1, 1, 0, 0, 0),
+-- Warehouse: kho hàng
+(N'Warehouse', N'Dashboard',1, 0, 0, 0, 0),
+(N'Warehouse', N'KhoHang',  1, 1, 1, 0, 1),
+(N'Warehouse', N'SanPham',  1, 1, 1, 0, 0),
+-- Shipper: giao hàng
+(N'Shipper', N'Dashboard',  1, 0, 0, 0, 0),
+(N'Shipper', N'GiaoHang',   1, 0, 1, 0, 0);
 
 -- =====================================================
 -- SP: Doanh thu theo ngày trong tháng (biểu đồ báo cáo tháng)

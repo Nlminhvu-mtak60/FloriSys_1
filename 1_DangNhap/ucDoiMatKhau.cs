@@ -73,10 +73,5 @@ namespace FloriSys._1_DangNhap
             txtNewPassword.Clear();
             txtConfirmPassword.Clear();
         }
-
-        private void pnlHeader_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

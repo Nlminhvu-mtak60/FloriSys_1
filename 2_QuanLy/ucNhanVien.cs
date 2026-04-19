@@ -196,10 +196,5 @@ namespace FloriSys._2_QuanLy
                 txtSearch.ForeColor = Color.Gray;
             }
         }
-
-        private void pnlHeader_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

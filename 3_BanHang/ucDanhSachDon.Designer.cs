@@ -64,7 +64,10 @@ namespace FloriSys._3_BanHang
             this.txtTimKiem.Location = new System.Drawing.Point(0, 4);
             this.txtTimKiem.Name = "txtTimKiem";
             this.txtTimKiem.Size = new System.Drawing.Size(250, 30);
-            //this.txtTimKiem.PlaceholderText = "🔍 Tìm mã đơn, tên khách...";
+            this.txtTimKiem.Text = "🔍 Tìm mã đơn, tên khách...";
+            this.txtTimKiem.ForeColor = System.Drawing.Color.Gray;
+            this.txtTimKiem.Enter += new System.EventHandler(this.txtTimKiem_Enter);
+            this.txtTimKiem.Leave += new System.EventHandler(this.txtTimKiem_Leave);
             // cboTrangThai
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.Font = new System.Drawing.Font("Segoe UI", 10F);

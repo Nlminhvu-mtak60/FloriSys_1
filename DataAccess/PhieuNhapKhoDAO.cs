@@ -70,14 +70,5 @@ namespace FloriSys.DataAccess
                 new SqlParameter("@GiaNhap", giaNhap)
             });
         }
-
-        public static void GhiNhanHangHu(string maSP, int soLuong)
-        {
-            DatabaseHelper.ExecuteNonQuery("sp_GhiNhanHangHu", new SqlParameter[]
-            {
-                new SqlParameter("@MaSP", maSP),
-                new SqlParameter("@SoLuong", soLuong)
-            });
-        }
     }
 }

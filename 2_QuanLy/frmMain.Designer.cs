@@ -35,9 +35,9 @@ namespace FloriSys._2_QuanLy
             // panel1
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Location = new System.Drawing.Point(220, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1006, 553);
+            this.panel1.Size = new System.Drawing.Size(786, 553);
             this.panel1.TabIndex = 0;
             // 
             // ucThanhMenu1
@@ -52,13 +52,13 @@ namespace FloriSys._2_QuanLy
             // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(245)))), ((int)(((byte)(246)))));
             this.ClientSize = new System.Drawing.Size(1006, 553);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.ucThanhMenu1);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.MinimumSize = new System.Drawing.Size(1024, 600);
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

@@ -134,29 +134,5 @@ namespace FloriSys._2_QuanLy
             uc.Dock = DockStyle.Fill;
             panel1.Controls.Add(uc);
         }
-
-        private UserControl CreatePlaceholder(string title)
-        {
-            UserControl uc = new UserControl();
-            uc.BackColor = Color.FromArgb(250, 245, 246);
-            Label lbl = new Label();
-            lbl.Text = title;
-            lbl.Font = new Font("Georgia", 18F, FontStyle.Bold);
-            lbl.ForeColor = Color.FromArgb(17, 24, 39);
-            lbl.AutoSize = true;
-            lbl.Location = new Point(30, 30);
-            Label lblSub = new Label();
-            lblSub.Text = "Màn hình này sẽ được hoàn thiện trong bước tiếp theo.";
-            lblSub.Font = new Font("Segoe UI", 10F);
-            lblSub.ForeColor = Color.FromArgb(156, 163, 175);
-            lblSub.AutoSize = true;
-            lblSub.Location = new Point(30, 70);
-            uc.Controls.Add(lbl);
-            uc.Controls.Add(lblSub);
-            return uc;
-        }
-
-        private void ucThanhMenu1_Load(object sender, EventArgs e) { }
-        private void ucThanhMenu1_Load_1(object sender, EventArgs e) { }
     }
 }

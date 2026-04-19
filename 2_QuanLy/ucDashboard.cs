@@ -34,22 +34,58 @@ namespace FloriSys._2_QuanLy
                 if (dt.Rows.Count > 0)
                 {
                     DataRow dr = dt.Rows[0];
-                    lblStat1Value.Text = dr["DonHomNay"].ToString();
-                    
+
+                    // === Stat 1: Đơn hàng hôm nay ===
+                    int donHomNay = Convert.ToInt32(dr["DonHomNay"]);
+                    int donHomQua = Convert.ToInt32(dr["DonHomQua"]);
+                    lblStat1Value.Text = donHomNay.ToString();
+                    lblStat1Sub.Text = TinhPhanTram(donHomNay, donHomQua, "so với hôm qua");
+                    lblStat1Sub.ForeColor = donHomNay >= donHomQua
+                        ? System.Drawing.Color.FromArgb(22, 101, 52)
+                        : System.Drawing.Color.FromArgb(185, 28, 28);
+
+                    // === Stat 2: Doanh thu hôm nay ===
                     decimal doanhThu = Convert.ToDecimal(dr["DoanhThuHomNay"]);
+                    decimal doanhThuQua = Convert.ToDecimal(dr["DoanhThuHomQua"]);
                     if (doanhThu >= 1000000)
                         lblStat2Value.Text = (doanhThu / 1000000).ToString("N1") + "M";
                     else
-                        lblStat2Value.Text = doanhThu.ToString("N0") + "đ";
+                        lblStat2Value.Text = doanhThu.ToString("#,##0") + "đ";
+                    lblStat2Sub.Text = TinhPhanTram(doanhThu, doanhThuQua, "so với hôm qua");
+                    lblStat2Sub.ForeColor = doanhThu >= doanhThuQua
+                        ? System.Drawing.Color.FromArgb(22, 101, 52)
+                        : System.Drawing.Color.FromArgb(185, 28, 28);
 
-                    lblStat3Value.Text = dr["DonDangGiao"].ToString();
-                    lblStat4Value.Text = dr["SPSapHet"].ToString();
-                    
+                    // === Stat 3: Đơn đang giao ===
+                    int donDangGiao = Convert.ToInt32(dr["DonDangGiao"]);
+                    int shipperDangGiao = Convert.ToInt32(dr["ShipperDangGiao"]);
+                    lblStat3Value.Text = donDangGiao.ToString();
+                    lblStat3Sub.Text = shipperDangGiao > 0
+                        ? $"{shipperDangGiao} shipper đang giao"
+                        : "Không có đơn đang giao";
+
+                    // === Stat 4: SP sắp hết ===
                     int spSapHet = Convert.ToInt32(dr["SPSapHet"]);
+                    lblStat4Value.Text = spSapHet.ToString();
+                    lblStat4Sub.Text = spSapHet > 0 ? "↓ Cần nhập thêm" : "✓ Đủ hàng";
+                    lblStat4Sub.ForeColor = spSapHet > 0
+                        ? System.Drawing.Color.FromArgb(232, 57, 77)
+                        : System.Drawing.Color.FromArgb(22, 101, 52);
+
+                    // === Cảnh báo ===
                     if (spSapHet > 0)
                     {
                         pnlCanhBao.Visible = true;
-                        lblCanhBao.Text = $"⚠️  Có {spSapHet} sản phẩm sắp hết hàng cần nhập ngay!";
+                        
+                        DataTable dtSapHet = BaoCaoDAO.LaySanPhamSapHet();
+                        System.Collections.Generic.List<string> dsSapHet = new System.Collections.Generic.List<string>();
+                        foreach (DataRow r in dtSapHet.Rows)
+                        {
+                            dsSapHet.Add($"{r["TenSP"]} (còn {r["SoLuongTon"]})");
+                        }
+                        
+                        string thongTinSapHet = string.Join(", ", dsSapHet);
+                        lblCanhBao.Text = $"⚠️  {spSapHet} sản phẩm sắp hết hàng: {thongTinSapHet}";
                         btnCanhBao.Text = $"🔔  Cảnh báo ({spSapHet})";
                     }
                     else
@@ -61,8 +97,25 @@ namespace FloriSys._2_QuanLy
             }
             catch (Exception ex)
             {
-                // Bỏ qua lỗi trong lúc design
+                // In ra chi tiết ở Output trong IDE
+                System.Diagnostics.Debug.WriteLine("Lỗi LoadStats: " + ex.Message);
             }
+        }
+
+        private string TinhPhanTram(decimal homNay, decimal homQua, string suffix)
+        {
+            if (homQua == 0 && homNay == 0)
+                return "— Chưa có dữ liệu";
+            if (homQua == 0)
+                return $"↑ Mới hôm nay";
+
+            decimal phanTram = ((homNay - homQua) / homQua) * 100;
+            if (phanTram > 0)
+                return $"↑ {phanTram:N0}% {suffix}";
+            else if (phanTram < 0)
+                return $"↓ {Math.Abs(phanTram):N0}% {suffix}";
+            else
+                return $"— Bằng hôm qua";
         }
 
         private void LoadDonHangGanDay()
@@ -86,7 +139,7 @@ namespace FloriSys._2_QuanLy
                 dgvDonHang.CellFormatting -= DgvDonHang_CellFormatting;
                 dgvDonHang.CellFormatting += DgvDonHang_CellFormatting;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Bỏ qua lỗi trong lúc design
             }
@@ -114,6 +167,10 @@ namespace FloriSys._2_QuanLy
                     case "Huy":
                         e.Value = "Đã hủy";
                         e.CellStyle.ForeColor = Color.FromArgb(185, 28, 28);
+                        break;
+                    case "DaGiao":
+                        e.Value = "Đã giao";
+                        e.CellStyle.ForeColor = Color.FromArgb(21, 128, 61);
                         break;
                     case "HoanHang":
                         e.Value = "Hoàn hàng";
@@ -176,14 +233,5 @@ namespace FloriSys._2_QuanLy
             catch (Exception) { }
         }
 
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlContent_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }
