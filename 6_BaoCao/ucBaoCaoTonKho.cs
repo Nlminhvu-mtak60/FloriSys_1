@@ -1,8 +1,9 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._6_BaoCao
 {
@@ -22,8 +23,8 @@ namespace FloriSys._6_BaoCao
         {
             try
             {
-                DataTable dt = BaoCaoDAO.BaoCaoTonKho();
-                dgvTonKho.DataSource = dt;
+                List<SanPham> dsSP = BaoCaoDAO.BaoCaoTonKho();
+                dgvTonKho.DataSource = dsSP;
 
                 if (dgvTonKho.Columns.Count > 0)
                 {
@@ -36,16 +37,14 @@ namespace FloriSys._6_BaoCao
                 }
 
                 // Count KPIs
-                int totalSP = dt.Rows.Count;
+                int totalSP = dsSP.Count;
                 int sapHet = 0;
                 int hetHang = 0;
 
-                foreach (DataRow dr in dt.Rows)
+                foreach (SanPham sp in dsSP)
                 {
-                    int ton = Convert.ToInt32(dr["SoLuongTon"]);
-                    string tinhTrang = dr["TinhTrang"].ToString();
-                    if (ton == 0) hetHang++;
-                    else if (tinhTrang != "DuHang") sapHet++;
+                    if (sp.SoLuongTon == 0) hetHang++;
+                    else if (sp.SoLuongTon <= sp.MucTonToiThieu) sapHet++;
                 }
 
                 lblTongSPSapHet.Text = (sapHet + hetHang).ToString();

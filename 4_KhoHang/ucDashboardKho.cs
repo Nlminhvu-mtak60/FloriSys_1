@@ -1,8 +1,9 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._4_KhoHang
 {
@@ -22,20 +23,20 @@ namespace FloriSys._4_KhoHang
 
         private void LoadStats()
         {
-            DataTable dt = BaoCaoDAO.ThongKeKho();
-            if (dt.Rows.Count > 0)
+            ThongKeKho stats = BaoCaoDAO.ThongKeKho();
+            if (stats != null)
             {
-                DataRow dr = dt.Rows[0];
-                lblValChoXuat.Text = dr["DonChoXuat"].ToString();
-                lblValSapHet.Text = dr["SPSapHet"].ToString();
-                lblValDaXuat.Text = dr["DaXuatHomNay"].ToString();
-                lblValPhieuNhap.Text = dr["PhieuNhapThang"].ToString();
+                lblValChoXuat.Text = stats.DonChoXuat.ToString();
+                lblValSapHet.Text = stats.SPSapHet.ToString();
+                lblValDaXuat.Text = stats.DaXuatHomNay.ToString();
+                lblValPhieuNhap.Text = stats.PhieuNhapThang.ToString();
             }
         }
 
         private void LoadDonChoXuat()
         {
-            dgvDonChoXuat.DataSource = BaoCaoDAO.DonHangChoXuat();
+            List<DonHangGanDay> dsDH = BaoCaoDAO.DonHangChoXuat();
+            dgvDonChoXuat.DataSource = dsDH;
             if (dgvDonChoXuat.Columns.Count > 0)
             {
                 dgvDonChoXuat.Columns["MaDon"].HeaderText = "Mã đơn";
@@ -49,15 +50,11 @@ namespace FloriSys._4_KhoHang
         private void LoadCanhBao()
         {
             flpCanhBao.Controls.Clear();
-            DataTable dt = SanPhamDAO.LayCanhBaoTonKho();
+            List<SanPham> dsSP = SanPhamDAO.LayCanhBaoTonKho();
 
-            foreach (DataRow dr in dt.Rows)
+            foreach (SanPham sp in dsSP)
             {
-                Panel pnl = CreateItemCanhBao(
-                    dr["TenSP"].ToString(),
-                    Convert.ToInt32(dr["SoLuongTon"]),
-                    Convert.ToInt32(dr["MucTonToiThieu"])
-                );
+                Panel pnl = CreateItemCanhBao(sp.TenSP, sp.SoLuongTon, sp.MucTonToiThieu);
                 flpCanhBao.Controls.Add(pnl);
             }
         }

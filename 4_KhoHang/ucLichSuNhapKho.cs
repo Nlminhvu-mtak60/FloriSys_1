@@ -1,7 +1,8 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._4_KhoHang
 {
@@ -23,13 +24,11 @@ namespace FloriSys._4_KhoHang
 
         private void LoadNhanVien()
         {
-            DataTable dt = NhanVienDAO.LayDanhSach();
-            DataRow dr = dt.NewRow();
-            dr["MaNV"] = "";
-            dr["HoTen"] = "Tất cả nhân viên";
-            dt.Rows.InsertAt(dr, 0);
+            List<NhanVien> dsNV = NhanVienDAO.LayDanhSach();
+            // Insert "All" option at beginning
+            dsNV.Insert(0, new NhanVien { MaNV = "", HoTen = "Tất cả nhân viên" });
 
-            cboNhanVien.DataSource = dt;
+            cboNhanVien.DataSource = dsNV;
             cboNhanVien.DisplayMember = "HoTen";
             cboNhanVien.ValueMember = "MaNV";
         }
@@ -41,7 +40,8 @@ namespace FloriSys._4_KhoHang
             DateTime fromDate = dtpTuNgay.Value;
             DateTime toDate = dtpDenNgay.Value;
 
-            dgvPhieuNhap.DataSource = PhieuNhapKhoDAO.LayDanhSach(keyword, maNV, fromDate, toDate);
+            List<PhieuNhapKho> dsPNK = PhieuNhapKhoDAO.LayDanhSach(keyword, maNV, fromDate, toDate);
+            dgvPhieuNhap.DataSource = dsPNK;
             
             // Format columns
             if (dgvPhieuNhap.Columns.Count > 0)
@@ -67,15 +67,17 @@ namespace FloriSys._4_KhoHang
         {
             if (e.RowIndex >= 0)
             {
-                string maPhieu = dgvPhieuNhap.Rows[e.RowIndex].Cells["MaPhieu"].Value.ToString();
-                LoadChiTiet(maPhieu);
+                PhieuNhapKho pnk = dgvPhieuNhap.Rows[e.RowIndex].DataBoundItem as PhieuNhapKho;
+                if (pnk != null)
+                    LoadChiTiet(pnk.MaPhieu);
             }
         }
 
         private void LoadChiTiet(string maPhieu)
         {
             lblDetailTitle.Text = "Chi tiết phiếu nhập: " + maPhieu;
-            dgvChiTiet.DataSource = PhieuNhapKhoDAO.LayChiTiet(maPhieu);
+            List<ChiTietNhapKho> dsCT = PhieuNhapKhoDAO.LayChiTiet(maPhieu);
+            dgvChiTiet.DataSource = dsCT;
 
             if (dgvChiTiet.Columns.Count > 0)
             {

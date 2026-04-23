@@ -1,17 +1,18 @@
-using System.Data;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
     public class PhanQuyenDAO
     {
-        public static DataTable LayPhanQuyen(string chucVu)
+        public static List<PhanQuyen> LayPhanQuyen(string chucVu)
         {
-            string sql = "SELECT Module, Xem, Them, Sua, Xoa, Export FROM PHAN_QUYEN WHERE ChucVu = @ChucVu";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@ChucVu", chucVu) });
+            string sql = "SELECT ChucVu, Module, Xem, Them, Sua, Xoa, Export FROM PHAN_QUYEN WHERE ChucVu = @ChucVu";
+            return DatabaseHelper.ExecuteRawList<PhanQuyen>(sql, new SqlParameter[] { new SqlParameter("@ChucVu", chucVu) });
         }
 
-        public static void CapNhatQuyen(string chucVu, string module, bool xem, bool them, bool sua, bool xoa, bool export)
+        public static void CapNhatQuyen(PhanQuyen pq)
         {
             string sql = @"IF EXISTS (SELECT 1 FROM PHAN_QUYEN WHERE ChucVu=@ChucVu AND Module=@Module)
                           UPDATE PHAN_QUYEN SET Xem=@Xem, Them=@Them, Sua=@Sua, Xoa=@Xoa, Export=@Export WHERE ChucVu=@ChucVu AND Module=@Module
@@ -19,13 +20,13 @@ namespace FloriSys.DataAccess
                           INSERT INTO PHAN_QUYEN (ChucVu, Module, Xem, Them, Sua, Xoa, Export) VALUES (@ChucVu, @Module, @Xem, @Them, @Sua, @Xoa, @Export)";
             DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
             {
-                new SqlParameter("@ChucVu", chucVu),
-                new SqlParameter("@Module", module),
-                new SqlParameter("@Xem", xem),
-                new SqlParameter("@Them", them),
-                new SqlParameter("@Sua", sua),
-                new SqlParameter("@Xoa", xoa),
-                new SqlParameter("@Export", export)
+                new SqlParameter("@ChucVu", pq.ChucVu),
+                new SqlParameter("@Module", pq.Module),
+                new SqlParameter("@Xem", pq.Xem),
+                new SqlParameter("@Them", pq.Them),
+                new SqlParameter("@Sua", pq.Sua),
+                new SqlParameter("@Xoa", pq.Xoa),
+                new SqlParameter("@Export", pq.Export)
             });
         }
     }

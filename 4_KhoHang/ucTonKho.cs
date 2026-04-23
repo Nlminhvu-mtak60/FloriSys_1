@@ -1,8 +1,8 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
-using FloriSys.Services;
+using FloriSys.Models;
 
 namespace FloriSys._4_KhoHang
 {
@@ -17,7 +17,8 @@ namespace FloriSys._4_KhoHang
                 string key = txtTimKiem.Text.Trim();
                 // Bỏ qua placeholder text
                 if (key == "🔍 Tìm tên sản phẩm...") key = "";
-                dgvTonKho.DataSource = SanPhamDAO.LayDanhSach(key, "", "DangBan");
+                List<SanPham> dsSP = SanPhamDAO.LayDanhSach(key, "", "DangBan");
+                dgvTonKho.DataSource = dsSP;
                 if (dgvTonKho.Columns.Count > 0)
                 {
                     if (dgvTonKho.Columns.Contains("MaSP")) dgvTonKho.Columns["MaSP"].HeaderText = "Mã SP";

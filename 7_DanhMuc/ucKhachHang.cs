@@ -1,8 +1,9 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._7_DanhMuc
 {
@@ -25,8 +26,8 @@ namespace FloriSys._7_DanhMuc
             try
             {
                 string key = txtSearch.Text.Trim();
-                DataTable dt = KhachHangDAO.LayDanhSach(key);
-                dgvKhachHang.DataSource = dt;
+                List<KhachHang> dsKH = KhachHangDAO.LayDanhSach(key);
+                dgvKhachHang.DataSource = dsKH;
                 FormatGrid();
             }
             catch (Exception ex)
@@ -139,16 +140,23 @@ namespace FloriSys._7_DanhMuc
 
                 try
                 {
+                    KhachHang kh = new KhachHang
+                    {
+                        MaKH = editingMaKH,
+                        HoTen = txtHoTen.Text.Trim(),
+                        SoDienThoai = txtSDT.Text.Trim(),
+                        DiaChi = txtDiaChi.Text.Trim(),
+                        Email = txtEmail.Text.Trim()
+                    };
+
                     if (editingMaKH == null)
                     {
-                        KhachHangDAO.ThemKhachHang(txtHoTen.Text.Trim(), txtSDT.Text.Trim(),
-                            txtDiaChi.Text.Trim(), txtEmail.Text.Trim());
+                        KhachHangDAO.ThemKhachHang(kh);
                         MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
                     {
-                        KhachHangDAO.CapNhatKhachHang(editingMaKH, txtHoTen.Text.Trim(), txtSDT.Text.Trim(),
-                            txtDiaChi.Text.Trim(), txtEmail.Text.Trim());
+                        KhachHangDAO.CapNhatKhachHang(kh);
                         MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     frm.DialogResult = DialogResult.OK;
@@ -195,30 +203,26 @@ namespace FloriSys._7_DanhMuc
         private void EditSelected()
         {
             if (dgvKhachHang.CurrentRow == null) return;
-            DataGridViewRow row = dgvKhachHang.CurrentRow;
+            KhachHang kh = dgvKhachHang.CurrentRow.DataBoundItem as KhachHang;
+            if (kh == null) return;
 
-            editingMaKH = row.Cells["MaKH"].Value.ToString();
-            string hoTen = row.Cells["HoTen"].Value?.ToString() ?? "";
-            string sdt = row.Cells["SoDienThoai"].Value?.ToString() ?? "";
-            string diaChi = row.Cells["DiaChi"].Value?.ToString() ?? "";
-            string email = row.Cells["Email"].Value?.ToString() ?? "";
-
-            ShowEditDialog("Sửa khách hàng – " + editingMaKH, hoTen, sdt, diaChi, email);
+            editingMaKH = kh.MaKH;
+            ShowEditDialog("Sửa khách hàng – " + editingMaKH, kh.HoTen, kh.SoDienThoai, kh.DiaChi ?? "", kh.Email ?? "");
         }
 
         private void DeleteSelected()
         {
             if (dgvKhachHang.CurrentRow == null) return;
-            string maKH = dgvKhachHang.CurrentRow.Cells["MaKH"].Value.ToString();
-            string tenKH = dgvKhachHang.CurrentRow.Cells["HoTen"].Value.ToString();
+            KhachHang kh = dgvKhachHang.CurrentRow.DataBoundItem as KhachHang;
+            if (kh == null) return;
 
             if (MessageBox.Show(
-                string.Format("Bạn có chắc muốn xóa khách hàng \"{0}\" ({1})?", tenKH, maKH),
+                string.Format("Bạn có chắc muốn xóa khách hàng \"{0}\" ({1})?", kh.HoTen, kh.MaKH),
                 "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 try
                 {
-                    KhachHangDAO.XoaKhachHang(maKH);
+                    KhachHangDAO.XoaKhachHang(kh.MaKH);
                     MessageBox.Show("Đã xóa thành công.", "Thông báo");
                     LoadData();
                 }

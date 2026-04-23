@@ -3,6 +3,7 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 using FloriSys.Services;
 
 namespace FloriSys._1_DangNhap
@@ -34,16 +35,11 @@ namespace FloriSys._1_DangNhap
             try
             {
                 string matKhauHash = SessionManager.HashSHA256(password);
-                DataTable dt = NhanVienDAO.DangNhap(username, matKhauHash);
+                NhanVien nv = NhanVienDAO.DangNhap(username, matKhauHash);
 
-                if (dt.Rows.Count > 0)
+                if (nv != null)
                 {
-                    DataRow row = dt.Rows[0];
-                    SessionManager.MaNV = row["MaNV"].ToString();
-                    SessionManager.HoTen = row["HoTen"].ToString();
-                    SessionManager.ChucVu = row["ChucVu"].ToString();
-                    SessionManager.TaiKhoan = row["TaiKhoan"].ToString();
-                    SessionManager.SoDienThoai = row["SoDienThoai"].ToString();
+                    SessionManager.CurrentUser = nv;
 
                     this.DialogResult = DialogResult.OK;
                     this.Close();

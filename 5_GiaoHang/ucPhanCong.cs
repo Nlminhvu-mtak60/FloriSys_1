@@ -1,14 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._5_GiaoHang
 {
     public partial class ucPhanCong : UserControl
     {
-        private DataTable dtDonCho;
+        private List<GiaoHang> dsDonCho;
         private DataTable dtShippers;
         private string selectedMaGH = "";
         private string selectedMaDon = "";
@@ -39,7 +41,7 @@ namespace FloriSys._5_GiaoHang
 
         private void ucPhanCong_Load(object sender, EventArgs e)
         {
-            btnXacNhanPC.Visible = true; // Hiển thị button phân công
+            btnXacNhanPC.Visible = true;
             LoadDonChoGiao();
             LoadShipperList();
         }
@@ -48,16 +50,16 @@ namespace FloriSys._5_GiaoHang
         {
             try
             {
-                dtDonCho = GiaoHangDAO.LayDonChoGiao();
+                dsDonCho = GiaoHangDAO.LayDonChoGiao();
                 cboDonCho.Items.Clear();
                 
-                if (dtDonCho.Rows.Count > 0)
+                if (dsDonCho.Count > 0)
                 {
-                    foreach (DataRow dr in dtDonCho.Rows)
+                    foreach (GiaoHang gh in dsDonCho)
                     {
-                        cboDonCho.Items.Add("📦 Đơn cần giao – " + dr["MaDon"].ToString());
+                        cboDonCho.Items.Add("📦 Đơn cần giao – " + gh.MaDon);
                     }
-                    cboDonCho.SelectedIndex = 0; // Trigger SelectedIndexChanged
+                    cboDonCho.SelectedIndex = 0;
                     btnXacNhanPC.Enabled = true;
                 }
                 else
@@ -82,16 +84,16 @@ namespace FloriSys._5_GiaoHang
 
         private void cboDonCho_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboDonCho.SelectedIndex >= 0 && dtDonCho != null && cboDonCho.SelectedIndex < dtDonCho.Rows.Count)
+            if (cboDonCho.SelectedIndex >= 0 && dsDonCho != null && cboDonCho.SelectedIndex < dsDonCho.Count)
             {
-                DataRow dr = dtDonCho.Rows[cboDonCho.SelectedIndex];
-                selectedMaGH = dr["MaGiaoHang"].ToString();
-                selectedMaDon = dr["MaDon"].ToString();
-                lblKhachHangVal.Text = dr["TenKH"].ToString();
-                lblDiaChiVal.Text = dr["DiaChi"] != DBNull.Value ? dr["DiaChi"].ToString() : "—";
+                GiaoHang gh = dsDonCho[cboDonCho.SelectedIndex];
+                selectedMaGH = gh.MaGiaoHang;
+                selectedMaDon = gh.MaDon;
+                lblKhachHangVal.Text = gh.TenKH;
+                lblDiaChiVal.Text = !string.IsNullOrEmpty(gh.DiaChi) ? gh.DiaChi : "—";
                 lblThoiGianVal.Text = "Giao trong ngày";
-                lblSanPhamVal.Text = string.Format("Tổng {0:N0}đ", dr["TongTien"]);
-                lblGhiChuVal.Text = dr["GhiChu"] != DBNull.Value ? dr["GhiChu"].ToString() : "—";
+                lblSanPhamVal.Text = string.Format("Tổng {0:N0}đ", gh.TongTien);
+                lblGhiChuVal.Text = !string.IsNullOrEmpty(gh.GhiChuDon) ? gh.GhiChuDon : "—";
             }
         }
 
@@ -99,7 +101,6 @@ namespace FloriSys._5_GiaoHang
         {
             try
             {
-                // Load all shippers from NHAN_VIEN where ChucVu = 'Shipper'
                 string sql = @"SELECT nv.MaNV, nv.HoTen, 
                     (SELECT COUNT(*) FROM GIAO_HANG gh WHERE gh.MaNV_Shipper = nv.MaNV AND gh.TrangThai = N'DangGiao') AS DangGiao,
                     (SELECT COUNT(*) FROM GIAO_HANG gh WHERE gh.MaNV_Shipper = nv.MaNV AND gh.TrangThai = N'GiaoThanhCong' AND CAST(gh.NgayGiao AS DATE) = CAST(GETDATE() AS DATE)) AS DaGiaoHomNay,
@@ -166,7 +167,7 @@ namespace FloriSys._5_GiaoHang
                 }
 
                 // Sync ComboBox
-                cboShipper.SelectedIndex = e.RowIndex + 1; // +1 for "-- Chọn shipper --"
+                cboShipper.SelectedIndex = e.RowIndex + 1;
             }
         }
 
@@ -178,7 +179,7 @@ namespace FloriSys._5_GiaoHang
                 return;
             }
 
-            int shipperIndex = cboShipper.SelectedIndex - 1; // -1 for "-- Chọn shipper --"
+            int shipperIndex = cboShipper.SelectedIndex - 1;
             if (shipperIndex < 0 || dtShippers == null || shipperIndex >= dtShippers.Rows.Count)
             {
                 MessageBox.Show("Vui lòng chọn shipper để phân công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);

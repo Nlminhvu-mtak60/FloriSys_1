@@ -1,9 +1,10 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._6_BaoCao
 {
@@ -28,24 +29,21 @@ namespace FloriSys._6_BaoCao
                 lblMonth.Text = "Tháng " + thang + "/" + nam;
 
                 // KPI - Doanh thu tháng
-                DataTable dtDoanhThu = BaoCaoDAO.DoanhThuThang(thang, nam);
-                if (dtDoanhThu.Rows.Count > 0)
+                BaoCaoDoanhThu doanhThu = BaoCaoDAO.DoanhThuThang(thang, nam);
+                if (doanhThu != null)
                 {
-                    decimal tongDT = Convert.ToDecimal(dtDoanhThu.Rows[0]["TongDoanhThu"]);
-                    lblDoanhThuValue.Text = tongDT.ToString("N0") + "đ";
+                    lblDoanhThuValue.Text = doanhThu.TongDoanhThu.ToString("N0") + "đ";
                 }
 
                 // So sánh với tháng trước
                 int thangTruoc = thang == 1 ? 12 : thang - 1;
                 int namTruoc = thang == 1 ? nam - 1 : nam;
-                DataTable dtTruoc = BaoCaoDAO.DoanhThuThang(thangTruoc, namTruoc);
-                if (dtDoanhThu.Rows.Count > 0 && dtTruoc.Rows.Count > 0)
+                BaoCaoDoanhThu dtTruoc = BaoCaoDAO.DoanhThuThang(thangTruoc, namTruoc);
+                if (doanhThu != null && dtTruoc != null)
                 {
-                    decimal dtThang = Convert.ToDecimal(dtDoanhThu.Rows[0]["TongDoanhThu"]);
-                    decimal dtThangTruoc = Convert.ToDecimal(dtTruoc.Rows[0]["TongDoanhThu"]);
-                    if (dtThangTruoc > 0)
+                    if (dtTruoc.TongDoanhThu > 0)
                     {
-                        decimal phanTram = ((dtThang - dtThangTruoc) / dtThangTruoc) * 100;
+                        decimal phanTram = ((doanhThu.TongDoanhThu - dtTruoc.TongDoanhThu) / dtTruoc.TongDoanhThu) * 100;
                         lblCompareValue.Text = (phanTram >= 0 ? "+" : "") + phanTram.ToString("N1") + "% so với tháng trước";
                         lblCompareValue.ForeColor = phanTram >= 0 ? Color.FromArgb(45, 106, 79) : Color.FromArgb(220, 38, 38);
                     }
@@ -57,8 +55,8 @@ namespace FloriSys._6_BaoCao
                 }
 
                 // Top sản phẩm tháng
-                DataTable dtTopSP = BaoCaoDAO.SanPhamBanChay(thang, nam);
-                dgvTopSP.DataSource = dtTopSP;
+                List<SanPhamBanChay> dsTopSP = BaoCaoDAO.SanPhamBanChay(thang, nam);
+                dgvTopSP.DataSource = dsTopSP;
                 if (dgvTopSP.Columns.Count > 0)
                 {
                     dgvTopSP.Columns["TenSP"].HeaderText = "Sản phẩm";
@@ -105,13 +103,11 @@ namespace FloriSys._6_BaoCao
 
             try
             {
-                DataTable dtNgay = BaoCaoDAO.DoanhThuTheoNgayTrongThang(thang, nam);
-                foreach (DataRow row in dtNgay.Rows)
+                List<DoanhThuNgay> dsNgay = BaoCaoDAO.DoanhThuTheoNgayTrongThang(thang, nam);
+                foreach (DoanhThuNgay item in dsNgay)
                 {
-                    int ngay = Convert.ToInt32(row["NgayTrongThang"]);
-                    decimal dt = Convert.ToDecimal(row["DoanhThu"]);
-                    int idx = series.Points.AddXY(ngay, dt);
-                    if (dt == 0) series.Points[idx].Color = Color.FromArgb(229, 231, 235);
+                    int idx = series.Points.AddXY(item.Ngay.Day, item.DoanhThu);
+                    if (item.DoanhThu == 0) series.Points[idx].Color = Color.FromArgb(229, 231, 235);
                 }
             }
             catch

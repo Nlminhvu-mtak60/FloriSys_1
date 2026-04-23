@@ -1,7 +1,8 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._4_KhoHang
 {
@@ -30,8 +31,8 @@ namespace FloriSys._4_KhoHang
         {
             try
             {
-                DataTable dt = SanPhamDAO.LayDanhSach();
-                cboSanPham.DataSource = dt;
+                List<SanPham> dsSP = SanPhamDAO.LayDanhSach();
+                cboSanPham.DataSource = dsSP;
                 cboSanPham.DisplayMember = "TenSP";
                 cboSanPham.ValueMember = "MaSP";
             }
@@ -45,10 +46,10 @@ namespace FloriSys._4_KhoHang
         {
             try
             {
-                DataTable dt = HangHuDAO.LayLichSu(DateTime.Now.Month, DateTime.Now.Year);
-                dgvHistory.DataSource = dt;
+                List<HangHu> dsHH = HangHuDAO.LayLichSu(DateTime.Now.Month, DateTime.Now.Year);
+                dgvHistory.DataSource = dsHH;
                 FormatGrid();
-                UpdateTotalLoss(dt);
+                UpdateTotalLoss(dsHH);
             }
             catch (Exception ex)
             {
@@ -68,13 +69,12 @@ namespace FloriSys._4_KhoHang
             dgvHistory.Columns["NgayHuy"].DefaultCellStyle.Format = "dd/MM/yyyy";
         }
 
-        private void UpdateTotalLoss(DataTable dt)
+        private void UpdateTotalLoss(List<HangHu> dsHH)
         {
             int totalQty = 0;
-            // In a real app, we'd multiply by GiaNhap to get money loss
-            foreach (DataRow row in dt.Rows)
+            foreach (HangHu hh in dsHH)
             {
-                totalQty += Convert.ToInt32(row["SoLuong"]);
+                totalQty += hh.SoLuong;
             }
             lblTotalLoss.Text = totalQty + " sản phẩm / (Tính toán thiệt hại...)";
         }
@@ -89,12 +89,15 @@ namespace FloriSys._4_KhoHang
 
             try
             {
-                string maSP = cboSanPham.SelectedValue.ToString();
-                int sl = (int)txtSoLuong.Value;
-                string lyDo = cboLyDo.SelectedItem.ToString();
-                string ghiChu = txtNote.Text.Trim();
+                HangHu hh = new HangHu
+                {
+                    MaSP = cboSanPham.SelectedValue.ToString(),
+                    SoLuong = (int)txtSoLuong.Value,
+                    LyDo = cboLyDo.SelectedItem.ToString(),
+                    GhiChu = txtNote.Text.Trim()
+                };
 
-                HangHuDAO.GhiNhan(maSP, sl, lyDo, ghiChu);
+                HangHuDAO.GhiNhan(hh);
                 MessageBox.Show("Đã ghi nhận hàng hư thành công!", "Thông báo");
                 
                 txtSoLuong.Value = 0;

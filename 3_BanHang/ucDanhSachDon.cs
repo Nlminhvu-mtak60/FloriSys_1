@@ -1,7 +1,8 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._3_BanHang
 {
@@ -32,10 +33,10 @@ namespace FloriSys._3_BanHang
                 // Bỏ qua placeholder text
                 if (key == "🔍 Tìm mã đơn, tên khách...") key = "";
                 string tt = cboTrangThai.SelectedIndex > 0 ? cboTrangThai.SelectedItem.ToString() : "";
-                DataTable dt = DonHangDAO.LayDanhSach(key, tt);
-                dgvDonHang.DataSource = dt;
+                List<DonHang> dsDH = DonHangDAO.LayDanhSach(key, tt);
+                dgvDonHang.DataSource = dsDH;
                 FormatGrid();
-                lblTongDon.Text = string.Format("Hiển thị {0} đơn hàng", dt.Rows.Count);
+                lblTongDon.Text = string.Format("Hiển thị {0} đơn hàng", dsDH.Count);
             }
             catch (Exception ex)
             {
@@ -78,8 +79,8 @@ namespace FloriSys._3_BanHang
         {
             if (e.RowIndex >= 0)
             {
-                string maDon = dgvDonHang.Rows[e.RowIndex].Cells["MaDon"].Value.ToString();
-                XemChiTiet?.Invoke(maDon);
+                DonHang dh = dgvDonHang.Rows[e.RowIndex].DataBoundItem as DonHang;
+                if (dh != null) XemChiTiet?.Invoke(dh.MaDon);
             }
         }
 
@@ -87,8 +88,8 @@ namespace FloriSys._3_BanHang
         {
             if (dgvDonHang.CurrentRow != null)
             {
-                string maDon = dgvDonHang.CurrentRow.Cells["MaDon"].Value.ToString();
-                XemChiTiet?.Invoke(maDon);
+                DonHang dh = dgvDonHang.CurrentRow.DataBoundItem as DonHang;
+                if (dh != null) XemChiTiet?.Invoke(dh.MaDon);
             }
         }
         private void txtTimKiem_Enter(object sender, EventArgs e)

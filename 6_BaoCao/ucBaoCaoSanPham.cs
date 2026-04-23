@@ -1,9 +1,10 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._6_BaoCao
 {
@@ -35,8 +36,8 @@ namespace FloriSys._6_BaoCao
                 int? thang = cboThang.SelectedItem as int?;
                 int? nam = cboNam.SelectedItem as int?;
 
-                DataTable dt = BaoCaoDAO.SanPhamBanChay(thang, nam);
-                dgvSanPham.DataSource = dt;
+                List<SanPhamBanChay> dsSP = BaoCaoDAO.SanPhamBanChay(thang, nam);
+                dgvSanPham.DataSource = dsSP;
 
                 if (dgvSanPham.Columns.Count > 0)
                 {
@@ -57,20 +58,19 @@ namespace FloriSys._6_BaoCao
 
                     // Calculate total revenue for percentage
                     decimal totalRevenue = 0;
-                    foreach (DataRow row in dt.Rows)
-                        totalRevenue += Convert.ToDecimal(row["TongDoanhThu"]);
+                    foreach (SanPhamBanChay sp in dsSP)
+                        totalRevenue += sp.TongDoanhThu;
 
                     // Set percentage values
-                    for (int i = 0; i < dt.Rows.Count && i < dgvSanPham.Rows.Count; i++)
+                    for (int i = 0; i < dsSP.Count && i < dgvSanPham.Rows.Count; i++)
                     {
-                        decimal rowRevenue = Convert.ToDecimal(dt.Rows[i]["TongDoanhThu"]);
-                        decimal percent = totalRevenue > 0 ? (rowRevenue / totalRevenue) * 100 : 0;
+                        decimal percent = totalRevenue > 0 ? (dsSP[i].TongDoanhThu / totalRevenue) * 100 : 0;
                         dgvSanPham.Rows[i].Cells["colTyTrong"].Value = percent.ToString("N1") + "%";
                     }
                 }
 
                 // Draw chart
-                DrawPieChart(dt);
+                DrawPieChart(dsSP);
             }
             catch (Exception ex)
             {
@@ -78,15 +78,13 @@ namespace FloriSys._6_BaoCao
             }
         }
 
-        private void DrawPieChart(DataTable dt)
+        private void DrawPieChart(List<SanPhamBanChay> dsSP)
         {
-            // Use pnlFilter's parent to find space - we'll add chart below dgvSanPham
-            // Since pnlGridCard contains the grid, we can add a chart to it
             string chartName = "chartSP";
             Control existing = pnlGridCard.Controls[chartName];
             if (existing != null) pnlGridCard.Controls.Remove(existing);
 
-            if (dt.Rows.Count == 0) return;
+            if (dsSP.Count == 0) return;
 
             Chart chart = new Chart();
             chart.Name = chartName;
@@ -110,13 +108,12 @@ namespace FloriSys._6_BaoCao
             chart.Series.Add(series);
 
             int count = 0;
-            foreach (DataRow row in dt.Rows)
+            foreach (SanPhamBanChay sp in dsSP)
             {
                 if (count >= 5) break;
-                decimal val = Convert.ToDecimal(row["TongDoanhThu"]);
-                if (val > 0)
+                if (sp.TongDoanhThu > 0)
                 {
-                    int idx = series.Points.AddXY(row["TenSP"].ToString(), val);
+                    int idx = series.Points.AddXY(sp.TenSP, sp.TongDoanhThu);
                     if (count == 0) series.Points[idx].CustomProperties = "Exploded=true";
                 }
                 count++;

@@ -1,8 +1,9 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys.Shared
 {
@@ -62,7 +63,8 @@ namespace FloriSys.Shared
         private void LoadQuyen()
         {
             lblTableTitle.Text = "Ma trận quyền hạn cho vai trò: " + selectedRole;
-            dgvQuyen.DataSource = PhanQuyenDAO.LayPhanQuyen(selectedRole);
+            List<PhanQuyen> dsPQ = PhanQuyenDAO.LayPhanQuyen(selectedRole);
+            dgvQuyen.DataSource = dsPQ;
             
             if (dgvQuyen.Columns.Count > 0)
             {
@@ -74,25 +76,25 @@ namespace FloriSys.Shared
                 dgvQuyen.Columns["Sua"].HeaderText = "Sửa";
                 dgvQuyen.Columns["Xoa"].HeaderText = "Xóa";
                 dgvQuyen.Columns["Export"].HeaderText = "Xuất BC";
+
+                // Hide ChucVu column
+                if (dgvQuyen.Columns.Contains("ChucVu"))
+                    dgvQuyen.Columns["ChucVu"].Visible = false;
             }
         }
 
         private void btnLuu_Click(object sender, EventArgs e)
         {
             dgvQuyen.EndEdit();
-            DataTable dt = dgvQuyen.DataSource as DataTable;
-            if (dt == null) return;
 
-            foreach (DataRow dr in dt.Rows)
+            foreach (DataGridViewRow row in dgvQuyen.Rows)
             {
-                string module = dr["Module"].ToString();
-                bool xem = Convert.ToBoolean(dr["Xem"]);
-                bool them = Convert.ToBoolean(dr["Them"]);
-                bool sua = Convert.ToBoolean(dr["Sua"]);
-                bool xoa = Convert.ToBoolean(dr["Xoa"]);
-                bool export = Convert.ToBoolean(dr["Export"]);
-
-                PhanQuyenDAO.CapNhatQuyen(selectedRole, module, xem, them, sua, xoa, export);
+                PhanQuyen pq = row.DataBoundItem as PhanQuyen;
+                if (pq != null)
+                {
+                    pq.ChucVu = selectedRole;
+                    PhanQuyenDAO.CapNhatQuyen(pq);
+                }
             }
 
             MessageBox.Show("Đã cập nhật phân quyền thành công cho vai trò " + selectedRole, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -12,6 +12,15 @@ namespace FloriSys._3_BanHang
         public ucPhanHoi()
         {
             InitializeComponent();
+            txtMaDon.ReadOnly = false;
+            txtMaDon.BackColor = System.Drawing.Color.White;
+            txtMaDon.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    SetMaDon(txtMaDon.Text.Trim());
+                }
+            };
         }
 
         public void SetMaDon(string maDon)

@@ -236,6 +236,18 @@
     <Compile Include="7_DanhMuc\ucKhachHang.Designer.cs">
       <DependentUpon>ucKhachHang.cs</DependentUpon>
     </Compile>
+    <!-- ===== Models ===== -->
+    <Compile Include="Models\NhanVien.cs" />
+    <Compile Include="Models\SanPham.cs" />
+    <Compile Include="Models\KhachHang.cs" />
+    <Compile Include="Models\DonHang.cs" />
+    <Compile Include="Models\GiaoHang.cs" />
+    <Compile Include="Models\PhieuNhapKho.cs" />
+    <Compile Include="Models\PhanHoi.cs" />
+    <Compile Include="Models\PhanQuyen.cs" />
+    <Compile Include="Models\HangHu.cs" />
+    <Compile Include="Models\TraHang.cs" />
+    <Compile Include="Models\BaoCaoModels.cs" />
     <!-- ===== DataAccess ===== -->
     <Compile Include="DataAccess\DatabaseHelper.cs" />
     <Compile Include="DataAccess\NhanVienDAO.cs" />

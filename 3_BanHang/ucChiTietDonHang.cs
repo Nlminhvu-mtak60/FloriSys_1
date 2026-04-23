@@ -1,7 +1,8 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._3_BanHang
 {
@@ -33,21 +34,19 @@ namespace FloriSys._3_BanHang
         {
             try
             {
-                DataTable dt = DonHangDAO.LayThongTinDon(_maDon);
-                if (dt.Rows.Count > 0)
+                DonHang dh = DonHangDAO.LayThongTinDon(_maDon);
+                if (dh != null)
                 {
-                    DataRow row = dt.Rows[0];
                     lblMaDon.Text = "Đơn hàng " + _maDon;
-                    lblTenKH.Text = row["TenKH"].ToString();
-                    lblSDT.Text = "SĐT: " + row["SoDienThoai"].ToString();
-                    lblHinhThuc.Text = "Hình thức: " + row["HinhThucNhanHang"].ToString();
-                    lblDiaChi.Text = "Địa chỉ: " + row["DiaChi"].ToString();
-                    lblGhiChu.Text = "Ghi chú: " + row["GhiChu"].ToString();
-                    lblTongTien.Text = string.Format("{0:#,##0}đ", row["TongTien"]);
+                    lblTenKH.Text = dh.TenKH;
+                    lblSDT.Text = "SĐT: " + dh.SoDienThoai;
+                    lblHinhThuc.Text = "Hình thức: " + dh.HinhThucNhanHang;
+                    lblDiaChi.Text = "Địa chỉ: " + dh.DiaChi;
+                    lblGhiChu.Text = "Ghi chú: " + dh.GhiChu;
+                    lblTongTien.Text = string.Format("{0:#,##0}đ", dh.TongTien);
                     
-                    string status = row["TrangThai"].ToString();
-                    lblStatusBadge.Text = status;
-                    cboStatus.SelectedItem = status;
+                    lblStatusBadge.Text = dh.TrangThai;
+                    cboStatus.SelectedItem = dh.TrangThai;
                 }
             }
             catch (Exception ex)
@@ -60,7 +59,8 @@ namespace FloriSys._3_BanHang
         {
             try
             {
-                dgvChiTiet.DataSource = DonHangDAO.LayChiTiet(_maDon);
+                List<ChiTietDonHang> dsCT = DonHangDAO.LayChiTiet(_maDon);
+                dgvChiTiet.DataSource = dsCT;
                 FormatGrid();
             }
             catch (Exception ex)
@@ -117,7 +117,6 @@ namespace FloriSys._3_BanHang
         private void lblBack_Click(object sender, EventArgs e)
         {
             // Trigger navigation back to list
-            // Assuming we can find frmMain
             Control parent = this.Parent;
             while (parent != null && !(parent is Form))
             {
@@ -125,10 +124,7 @@ namespace FloriSys._3_BanHang
             }
             if (parent != null)
             {
-                // This is a bit hacky but common in this project structure
-                // Alternatively, use an event
                 var frm = parent as Form;
-                // Search for the method to switch uc
             }
         }
     }

@@ -1,6 +1,6 @@
 using System;
-using System.Data;
 using System.Data.SqlClient;
+using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {

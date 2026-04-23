@@ -1,8 +1,9 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FloriSys._2_QuanLy
@@ -30,63 +31,54 @@ namespace FloriSys._2_QuanLy
         {
             try
             {
-                DataTable dt = BaoCaoDAO.ThongKeDashboard();
-                if (dt.Rows.Count > 0)
+                ThongKeDashboard stats = BaoCaoDAO.ThongKeDashboard();
+                if (stats != null)
                 {
-                    DataRow dr = dt.Rows[0];
-
                     // === Stat 1: Đơn hàng hôm nay ===
-                    int donHomNay = Convert.ToInt32(dr["DonHomNay"]);
-                    int donHomQua = Convert.ToInt32(dr["DonHomQua"]);
-                    lblStat1Value.Text = donHomNay.ToString();
-                    lblStat1Sub.Text = TinhPhanTram(donHomNay, donHomQua, "so với hôm qua");
-                    lblStat1Sub.ForeColor = donHomNay >= donHomQua
-                        ? System.Drawing.Color.FromArgb(22, 101, 52)
-                        : System.Drawing.Color.FromArgb(185, 28, 28);
+                    lblStat1Value.Text = stats.DonHomNay.ToString();
+                    lblStat1Sub.Text = TinhPhanTram(stats.DonHomNay, stats.DonHomQua, "so với hôm qua");
+                    lblStat1Sub.ForeColor = stats.DonHomNay >= stats.DonHomQua
+                        ? Color.FromArgb(22, 101, 52)
+                        : Color.FromArgb(185, 28, 28);
 
                     // === Stat 2: Doanh thu hôm nay ===
-                    decimal doanhThu = Convert.ToDecimal(dr["DoanhThuHomNay"]);
-                    decimal doanhThuQua = Convert.ToDecimal(dr["DoanhThuHomQua"]);
-                    if (doanhThu >= 1000000)
-                        lblStat2Value.Text = (doanhThu / 1000000).ToString("N1") + "M";
+                    if (stats.DoanhThuHomNay >= 1000000)
+                        lblStat2Value.Text = (stats.DoanhThuHomNay / 1000000).ToString("N1") + "M";
                     else
-                        lblStat2Value.Text = doanhThu.ToString("#,##0") + "đ";
-                    lblStat2Sub.Text = TinhPhanTram(doanhThu, doanhThuQua, "so với hôm qua");
-                    lblStat2Sub.ForeColor = doanhThu >= doanhThuQua
-                        ? System.Drawing.Color.FromArgb(22, 101, 52)
-                        : System.Drawing.Color.FromArgb(185, 28, 28);
+                        lblStat2Value.Text = stats.DoanhThuHomNay.ToString("#,##0") + "đ";
+                    lblStat2Sub.Text = TinhPhanTram(stats.DoanhThuHomNay, stats.DoanhThuHomQua, "so với hôm qua");
+                    lblStat2Sub.ForeColor = stats.DoanhThuHomNay >= stats.DoanhThuHomQua
+                        ? Color.FromArgb(22, 101, 52)
+                        : Color.FromArgb(185, 28, 28);
 
                     // === Stat 3: Đơn đang giao ===
-                    int donDangGiao = Convert.ToInt32(dr["DonDangGiao"]);
-                    int shipperDangGiao = Convert.ToInt32(dr["ShipperDangGiao"]);
-                    lblStat3Value.Text = donDangGiao.ToString();
-                    lblStat3Sub.Text = shipperDangGiao > 0
-                        ? $"{shipperDangGiao} shipper đang giao"
+                    lblStat3Value.Text = stats.DonDangGiao.ToString();
+                    lblStat3Sub.Text = stats.ShipperDangGiao > 0
+                        ? $"{stats.ShipperDangGiao} shipper đang giao"
                         : "Không có đơn đang giao";
 
                     // === Stat 4: SP sắp hết ===
-                    int spSapHet = Convert.ToInt32(dr["SPSapHet"]);
-                    lblStat4Value.Text = spSapHet.ToString();
-                    lblStat4Sub.Text = spSapHet > 0 ? "↓ Cần nhập thêm" : "✓ Đủ hàng";
-                    lblStat4Sub.ForeColor = spSapHet > 0
-                        ? System.Drawing.Color.FromArgb(232, 57, 77)
-                        : System.Drawing.Color.FromArgb(22, 101, 52);
+                    lblStat4Value.Text = stats.SPSapHet.ToString();
+                    lblStat4Sub.Text = stats.SPSapHet > 0 ? "↓ Cần nhập thêm" : "✓ Đủ hàng";
+                    lblStat4Sub.ForeColor = stats.SPSapHet > 0
+                        ? Color.FromArgb(232, 57, 77)
+                        : Color.FromArgb(22, 101, 52);
 
                     // === Cảnh báo ===
-                    if (spSapHet > 0)
+                    if (stats.SPSapHet > 0)
                     {
                         pnlCanhBao.Visible = true;
                         
-                        DataTable dtSapHet = BaoCaoDAO.LaySanPhamSapHet();
-                        System.Collections.Generic.List<string> dsSapHet = new System.Collections.Generic.List<string>();
-                        foreach (DataRow r in dtSapHet.Rows)
+                        List<SanPhamSapHet> dsSapHet = BaoCaoDAO.LaySanPhamSapHet();
+                        List<string> tenSapHet = new List<string>();
+                        foreach (SanPhamSapHet sp in dsSapHet)
                         {
-                            dsSapHet.Add($"{r["TenSP"]} (còn {r["SoLuongTon"]})");
+                            tenSapHet.Add($"{sp.TenSP} (còn {sp.SoLuongTon})");
                         }
                         
-                        string thongTinSapHet = string.Join(", ", dsSapHet);
-                        lblCanhBao.Text = $"⚠️  {spSapHet} sản phẩm sắp hết hàng: {thongTinSapHet}";
-                        btnCanhBao.Text = $"🔔  Cảnh báo ({spSapHet})";
+                        string thongTinSapHet = string.Join(", ", tenSapHet);
+                        lblCanhBao.Text = $"⚠️  {stats.SPSapHet} sản phẩm sắp hết hàng: {thongTinSapHet}";
+                        btnCanhBao.Text = $"🔔  Cảnh báo ({stats.SPSapHet})";
                     }
                     else
                     {
@@ -97,7 +89,6 @@ namespace FloriSys._2_QuanLy
             }
             catch (Exception ex)
             {
-                // In ra chi tiết ở Output trong IDE
                 System.Diagnostics.Debug.WriteLine("Lỗi LoadStats: " + ex.Message);
             }
         }
@@ -122,7 +113,8 @@ namespace FloriSys._2_QuanLy
         {
             try
             {
-                dgvDonHang.DataSource = BaoCaoDAO.DonHangGanDay(5);
+                List<DonHangGanDay> dsDH = BaoCaoDAO.DonHangGanDay(5);
+                dgvDonHang.DataSource = dsDH;
                 if (dgvDonHang.Columns.Count > 0)
                 {
                     if (dgvDonHang.Columns.Contains("MaDon")) dgvDonHang.Columns["MaDon"].HeaderText = "Mã đơn";
@@ -214,14 +206,10 @@ namespace FloriSys._2_QuanLy
                 series["PointWidth"] = "0.6";
                 chart.Series.Add(series);
                 
-                DataTable dt = BaoCaoDAO.DoanhThu7Ngay();
-                decimal total = 0;
-                foreach (DataRow row in dt.Rows)
+                List<DoanhThuNgay> dsDoanhThu = BaoCaoDAO.DoanhThu7Ngay();
+                foreach (DoanhThuNgay item in dsDoanhThu)
                 {
-                    DateTime date = Convert.ToDateTime(row["Ngay"]);
-                    decimal val = Convert.ToDecimal(row["DoanhThu"]);
-                    total += val;
-                    series.Points.AddXY(date.ToString("dd/MM"), val);
+                    series.Points.AddXY(item.Ngay.ToString("dd/MM"), item.DoanhThu);
                 }
 
                 // Tiêu đề biểu đồ

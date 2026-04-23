@@ -1,7 +1,9 @@
 using System;
 using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 using FloriSys.Services;
 
 namespace FloriSys._3_BanHang
@@ -35,7 +37,12 @@ namespace FloriSys._3_BanHang
 
         private void LoadSanPham(string key = "")
         {
-            try { dgvSanPham.DataSource = SanPhamDAO.LaySanPhamDangBan(key); FormatGridSP(); }
+            try
+            {
+                List<SanPham> dsSP = SanPhamDAO.LaySanPhamDangBan(key);
+                dgvSanPham.DataSource = dsSP;
+                FormatGridSP();
+            }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
 
@@ -56,26 +63,24 @@ namespace FloriSys._3_BanHang
         private void btnThemSP_Click(object sender, EventArgs e)
         {
             if (dgvSanPham.CurrentRow == null) return;
-            string maSP = dgvSanPham.CurrentRow.Cells["MaSP"].Value.ToString();
-            string tenSP = dgvSanPham.CurrentRow.Cells["TenSP"].Value.ToString();
-            decimal giaBan = Convert.ToDecimal(dgvSanPham.CurrentRow.Cells["GiaBan"].Value);
-            int ton = Convert.ToInt32(dgvSanPham.CurrentRow.Cells["SoLuongTon"].Value);
+            SanPham sp = dgvSanPham.CurrentRow.DataBoundItem as SanPham;
+            if (sp == null) return;
 
-            if (ton <= 0) { MessageBox.Show("Sản phẩm đã hết hàng!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (sp.SoLuongTon <= 0) { MessageBox.Show("Sản phẩm đã hết hàng!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
 
             foreach (DataRow row in _gioHang.Rows)
             {
-                if (row["MaSP"].ToString() == maSP)
+                if (row["MaSP"].ToString() == sp.MaSP)
                 {
                     int sl = Convert.ToInt32(row["SoLuong"]) + 1;
-                    if (sl > ton) { MessageBox.Show("Vượt quá tồn kho!"); return; }
+                    if (sl > sp.SoLuongTon) { MessageBox.Show("Vượt quá tồn kho!"); return; }
                     row["SoLuong"] = sl;
-                    row["ThanhTien"] = sl * giaBan;
+                    row["ThanhTien"] = sl * sp.GiaBan;
                     TinhTong();
                     return;
                 }
             }
-            _gioHang.Rows.Add(maSP, tenSP, 1, giaBan, giaBan);
+            _gioHang.Rows.Add(sp.MaSP, sp.TenSP, 1, sp.GiaBan, sp.GiaBan);
             TinhTong();
         }
 
@@ -104,12 +109,22 @@ namespace FloriSys._3_BanHang
             try
             {
                 // Tìm hoặc tạo khách hàng
-                DataTable dtKH = KhachHangDAO.TimTheoSDT(txtSDT.Text.Trim());
+                KhachHang khTim = KhachHangDAO.TimTheoSDT(txtSDT.Text.Trim());
                 string maKH;
-                if (dtKH.Rows.Count > 0)
-                    maKH = dtKH.Rows[0]["MaKH"].ToString();
+                if (khTim != null)
+                {
+                    maKH = khTim.MaKH;
+                }
                 else
-                    maKH = KhachHangDAO.ThemKhachHang(txtTenKH.Text.Trim(), txtSDT.Text.Trim(), txtDiaChi.Text.Trim());
+                {
+                    KhachHang khMoi = new KhachHang
+                    {
+                        HoTen = txtTenKH.Text.Trim(),
+                        SoDienThoai = txtSDT.Text.Trim(),
+                        DiaChi = txtDiaChi.Text.Trim()
+                    };
+                    maKH = KhachHangDAO.ThemKhachHang(khMoi);
+                }
 
                 string hinhThuc = cboHinhThuc.SelectedIndex == 0 ? "TaiQuay" : "GiaoTanNoi";
                 string maDon = DonHangDAO.TaoDonHang(maKH, SessionManager.MaNV, hinhThuc, txtGhiChu.Text.Trim());

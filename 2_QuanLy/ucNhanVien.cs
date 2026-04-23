@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 using FloriSys.Services;
 
 namespace FloriSys._2_QuanLy
@@ -34,7 +36,8 @@ namespace FloriSys._2_QuanLy
             if (cboFilterTrangThai.SelectedIndex == 1) trangThai = "DangLam";
             else if (cboFilterTrangThai.SelectedIndex == 2) trangThai = "DaNghi";
 
-            dgvNhanVien.DataSource = NhanVienDAO.LayDanhSach(keyword, chucVu, trangThai);
+            List<NhanVien> dsNV = NhanVienDAO.LayDanhSach(keyword, chucVu, trangThai);
+            dgvNhanVien.DataSource = dsNV;
 
             // Tùy chỉnh cột
             if (dgvNhanVien.Columns.Count > 0)
@@ -98,29 +101,26 @@ namespace FloriSys._2_QuanLy
             {
                 isEditMode = true;
                 lblFormTitle.Text = "Cập nhật nhân viên";
-                DataGridViewRow row = dgvNhanVien.Rows[e.RowIndex];
+                NhanVien nv = dgvNhanVien.Rows[e.RowIndex].DataBoundItem as NhanVien;
+                if (nv == null) return;
 
-                txtMaNV.Text = row.Cells["MaNV"].Value.ToString();
-                txtHoTen.Text = row.Cells["HoTen"].Value.ToString();
-                cboChucVu.SelectedItem = row.Cells["ChucVu"].Value.ToString();
-                txtSDT.Text = row.Cells["SoDienThoai"].Value.ToString();
-                txtTaiKhoan.Text = row.Cells["TaiKhoan"].Value.ToString();
+                txtMaNV.Text = nv.MaNV;
+                txtHoTen.Text = nv.HoTen;
+                cboChucVu.SelectedItem = nv.ChucVu;
+                txtSDT.Text = nv.SoDienThoai;
+                txtTaiKhoan.Text = nv.TaiKhoan;
                 txtTaiKhoan.ReadOnly = true;
-                txtMatKhau.Clear(); // Mật khẩu không hiển thị lái
+                txtMatKhau.Clear(); // Mật khẩu không hiển thị lại
 
                 btnUpdateStatus.Visible = true;
-                string status = row.Cells["TrangThai"].Value.ToString();
-                btnUpdateStatus.Text = status == "DangLam" ? "Khóa / Nghỉ" : "Mở khóa / Làm lại";
+                btnUpdateStatus.Text = nv.TrangThai == "DangLam" ? "Khóa / Nghỉ" : "Mở khóa / Làm lại";
                 btnSave.Text = "💾 Cập nhật";
             }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            string maNV = txtMaNV.Text;
             string hoTen = txtHoTen.Text.Trim();
-            string chucVu = cboChucVu.SelectedItem.ToString();
-            string sdt = txtSDT.Text.Trim();
             string taiKhoan = txtTaiKhoan.Text.Trim();
             string matKhau = txtMatKhau.Text.Trim();
 
@@ -132,9 +132,18 @@ namespace FloriSys._2_QuanLy
 
             try
             {
+                NhanVien nv = new NhanVien
+                {
+                    MaNV = txtMaNV.Text,
+                    HoTen = hoTen,
+                    ChucVu = cboChucVu.SelectedItem.ToString(),
+                    SoDienThoai = txtSDT.Text.Trim(),
+                    TaiKhoan = taiKhoan
+                };
+
                 if (isEditMode)
                 {
-                    NhanVienDAO.CapNhatNhanVien(maNV, hoTen, chucVu, sdt);
+                    NhanVienDAO.CapNhatNhanVien(nv);
                     if (!string.IsNullOrEmpty(matKhau))
                     {
                         // Cập nhật mật khẩu nếu có nhập
@@ -142,7 +151,7 @@ namespace FloriSys._2_QuanLy
                         string sql = "UPDATE NHAN_VIEN SET MatKhau=@MK WHERE MaNV=@Ma";
                         DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[] {
                             new SqlParameter("@MK", hash),
-                            new SqlParameter("@Ma", maNV)
+                            new SqlParameter("@Ma", nv.MaNV)
                         });
                     }
                     MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -150,8 +159,8 @@ namespace FloriSys._2_QuanLy
                 else
                 {
                     if (string.IsNullOrEmpty(matKhau)) matKhau = "123456"; // Mật khẩu mặc định
-                    string hash = SessionManager.HashSHA256(matKhau);
-                    NhanVienDAO.ThemNhanVien(maNV, hoTen, chucVu, sdt, taiKhoan, hash);
+                    nv.MatKhau = SessionManager.HashSHA256(matKhau);
+                    NhanVienDAO.ThemNhanVien(nv);
                     MessageBox.Show("Thêm nhân viên mới thành công!\nMật khẩu mặc định là: 123456 (nếu không nhập)", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 LoadData();

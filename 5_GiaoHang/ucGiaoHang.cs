@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._5_GiaoHang
 {
@@ -28,7 +30,7 @@ namespace FloriSys._5_GiaoHang
                 LoadStats();
 
                 // Load DataGridView
-                DataTable dt = GiaoHangDAO.LayDanhSach();
+                List<GiaoHang> dsGH = GiaoHangDAO.LayDanhSach();
                 dgvGiaoHang.AutoGenerateColumns = false;
 
                 // Map default columns
@@ -39,8 +41,6 @@ namespace FloriSys._5_GiaoHang
                 colShipper.DataPropertyName = "TenShipper";
                 colTT.DataPropertyName = "TrangThai";
 
-                // We don't have TongTien column in the designer for this grid (it has colAction instead), 
-                // but let's just make colAction display TongTien or hide it.
                 colAction.DataPropertyName = "TongTien";
                 colAction.HeaderText = "TỔNG TIỀN";
                 colAction.DefaultCellStyle.Format = "N0";
@@ -52,7 +52,7 @@ namespace FloriSys._5_GiaoHang
                 dgvGiaoHang.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 dgvGiaoHang.MultiSelect = false;
 
-                dgvGiaoHang.DataSource = dt;
+                dgvGiaoHang.DataSource = dsGH;
 
                 // Color-code rows by status
                 dgvGiaoHang.CellFormatting -= DgvGiaoHang_CellFormatting;
@@ -68,13 +68,12 @@ namespace FloriSys._5_GiaoHang
         {
             try
             {
-                DataTable dt = GiaoHangDAO.LayDanhSach();
+                List<GiaoHang> dsGH = GiaoHangDAO.LayDanhSach();
                 int choPhanCong = 0, dangGiao = 0, thanhCong = 0, hoanHang = 0;
 
-                foreach (DataRow dr in dt.Rows)
+                foreach (GiaoHang gh in dsGH)
                 {
-                    string tt = dr["TrangThai"].ToString();
-                    switch (tt)
+                    switch (gh.TrangThai)
                     {
                         case "ChoPhanCong": choPhanCong++; break;
                         case "DangGiao": dangGiao++; break;

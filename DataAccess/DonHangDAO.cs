@@ -1,12 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
     public class DonHangDAO
     {
-        public static DataTable LayDanhSach(string keyword = "", string trangThai = "", string maNV = "", DateTime? ngay = null)
+        public static List<DonHang> LayDanhSach(string keyword = "", string trangThai = "", string maNV = "", DateTime? ngay = null)
         {
             string sql = @"SELECT dh.MaDon, dh.NgayTao, kh.HoTen AS TenKH, kh.SoDienThoai, 
                           dh.HinhThucNhanHang, dh.TongTien, dh.TrangThai, nv.HoTen AS TenNV, dh.GhiChu
@@ -14,7 +16,7 @@ namespace FloriSys.DataAccess
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           INNER JOIN NHAN_VIEN nv ON dh.MaNV_TaoDon = nv.MaNV
                           WHERE 1=1";
-            var parms = new System.Collections.Generic.List<SqlParameter>();
+            var parms = new List<SqlParameter>();
             if (!string.IsNullOrEmpty(keyword))
             {
                 sql += " AND (dh.MaDon LIKE @Key OR kh.HoTen LIKE @Key)";
@@ -36,27 +38,29 @@ namespace FloriSys.DataAccess
                 parms.Add(new SqlParameter("@Ngay", ngay.Value.Date));
             }
             sql += " ORDER BY dh.NgayTao DESC";
-            return DatabaseHelper.ExecuteRawQuery(sql, parms.ToArray());
+            return DatabaseHelper.ExecuteRawList<DonHang>(sql, parms.ToArray());
         }
 
-        public static DataTable LayChiTiet(string maDon)
+        public static List<ChiTietDonHang> LayChiTiet(string maDon)
         {
             string sql = @"SELECT ct.MaSP, sp.TenSP, ct.SoLuong, ct.DonGia, ct.ThanhTien
                           FROM CHI_TIET_DON_HANG ct
                           INNER JOIN SAN_PHAM sp ON ct.MaSP = sp.MaSP
                           WHERE ct.MaDon = @MaDon";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaDon", maDon) });
+            return DatabaseHelper.ExecuteRawList<ChiTietDonHang>(sql, new SqlParameter[] { new SqlParameter("@MaDon", maDon) });
         }
 
-        public static DataTable LayThongTinDon(string maDon)
+        public static DonHang LayThongTinDon(string maDon)
         {
-            string sql = @"SELECT dh.*, kh.HoTen AS TenKH, kh.SoDienThoai, kh.DiaChi, kh.Email,
+            string sql = @"SELECT dh.MaDon, dh.NgayTao, dh.MaKH, dh.MaNV_TaoDon, dh.HinhThucNhanHang,
+                          dh.TrangThai, dh.TongTien, dh.GhiChu,
+                          kh.HoTen AS TenKH, kh.SoDienThoai, kh.DiaChi, kh.Email,
                           nv.HoTen AS TenNV
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           INNER JOIN NHAN_VIEN nv ON dh.MaNV_TaoDon = nv.MaNV
                           WHERE dh.MaDon = @MaDon";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaDon", maDon) });
+            return DatabaseHelper.ExecuteRawSingle<DonHang>(sql, new SqlParameter[] { new SqlParameter("@MaDon", maDon) });
         }
 
         public static string TaoDonHang(string maKH, string maNV, string hinhThuc, string ghiChu)
@@ -93,7 +97,7 @@ namespace FloriSys.DataAccess
             });
         }
 
-        public static DataTable LayDonChoXuatKho()
+        public static List<DonChoXuatKho> LayDonChoXuatKho()
         {
             string sql = @"SELECT dh.MaDon, kh.HoTen AS TenKH, sp.TenSP, ct.SoLuong, sp.SoLuongTon,
                           CASE WHEN sp.SoLuongTon >= ct.SoLuong THEN N'DuHang' ELSE N'KhongDu' END AS TinhTrangKho
@@ -103,7 +107,7 @@ namespace FloriSys.DataAccess
                           INNER JOIN SAN_PHAM sp ON ct.MaSP = sp.MaSP
                           WHERE dh.TrangThai = N'Moi'
                           ORDER BY dh.NgayTao";
-            return DatabaseHelper.ExecuteRawQuery(sql);
+            return DatabaseHelper.ExecuteRawList<DonChoXuatKho>(sql);
         }
     }
 }

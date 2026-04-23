@@ -1,15 +1,16 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 using FloriSys.Services;
 
 namespace FloriSys._5_GiaoHang
 {
     public partial class ucCapNhatGH : UserControl
     {
-        private DataTable dtDonGiao;
+        private List<GiaoHang> dsDonGiao;
 
         public ucCapNhatGH()
         {
@@ -31,8 +32,8 @@ namespace FloriSys._5_GiaoHang
         {
             try
             {
-                dtDonGiao = GiaoHangDAO.LayDonCuaShipper(SessionManager.MaNV);
-                if (dtDonGiao == null || dtDonGiao.Rows.Count == 0)
+                dsDonGiao = GiaoHangDAO.LayDonCuaShipper(SessionManager.MaNV);
+                if (dsDonGiao == null || dsDonGiao.Count == 0)
                 {
                     pnlDon1.Visible = false;
                     panel2.Visible = false;
@@ -40,27 +41,26 @@ namespace FloriSys._5_GiaoHang
                 }
 
                 // Find the first DangGiao order for card 1
-                DataRow dangGiao = null;
-                DataRow choPhanCong = null;
-                foreach (DataRow dr in dtDonGiao.Rows)
+                GiaoHang dangGiao = null;
+                GiaoHang choPhanCong = null;
+                foreach (GiaoHang gh in dsDonGiao)
                 {
-                    string tt = dr["TrangThai"].ToString();
-                    if (tt == "DangGiao" && dangGiao == null) dangGiao = dr;
-                    if ((tt == "ChoPhanCong" || tt == "GiaoLai") && choPhanCong == null) choPhanCong = dr;
+                    if (gh.TrangThai == "DangGiao" && dangGiao == null) dangGiao = gh;
+                    if ((gh.TrangThai == "ChoPhanCong" || gh.TrangThai == "GiaoLai") && choPhanCong == null) choPhanCong = gh;
                 }
 
                 // Card 1 - Đơn đang giao (urgent)
                 if (dangGiao != null)
                 {
                     pnlDon1.Visible = true;
-                    pnlDon1.Tag = dangGiao["MaGiaoHang"].ToString();
-                    lblMaDon1.Text = dangGiao["MaDon"].ToString() + " – " + dangGiao["TenKH"].ToString();
-                    lblInfo1.Text = "📍 " + (dangGiao["DiaChi"] != DBNull.Value ? dangGiao["DiaChi"].ToString() : "—") +
-                                    "   📞 " + (dangGiao["SoDienThoai"] != DBNull.Value ? dangGiao["SoDienThoai"].ToString() : "—");
-                    lblTien1.Text = string.Format("💰 {0:N0}đ – COD", dangGiao["TongTien"]);
+                    pnlDon1.Tag = dangGiao.MaGiaoHang;
+                    lblMaDon1.Text = dangGiao.MaDon + " – " + dangGiao.TenKH;
+                    lblInfo1.Text = "📍 " + (!string.IsNullOrEmpty(dangGiao.DiaChi) ? dangGiao.DiaChi : "—") +
+                                    "   📞 " + (!string.IsNullOrEmpty(dangGiao.SoDienThoai) ? dangGiao.SoDienThoai : "—");
+                    lblTien1.Text = string.Format("💰 {0:N0}đ – COD", dangGiao.TongTien);
 
-                    string ghiChu = dangGiao["GhiChu"] != DBNull.Value ? dangGiao["GhiChu"].ToString() : "";
-                    string ghiChuGH = dangGiao["GhiChuGiaoHang"] != DBNull.Value ? dangGiao["GhiChuGiaoHang"].ToString() : "";
+                    string ghiChu = dangGiao.GhiChuDon ?? "";
+                    string ghiChuGH = dangGiao.GhiChuGiaoHang ?? "";
                     label1.Text = ghiChu.Length > 0 ? "📝 " + ghiChu : "";
                     label2.Text = ghiChuGH.Length > 0 ? "🚚 " + ghiChuGH : "";
                 }
@@ -73,12 +73,12 @@ namespace FloriSys._5_GiaoHang
                 if (choPhanCong != null)
                 {
                     panel2.Visible = true;
-                    panel2.Tag = choPhanCong["MaGiaoHang"].ToString();
-                    label7.Text = choPhanCong["MaDon"].ToString() + " – " + choPhanCong["TenKH"].ToString();
-                    label6.Text = "📍 " + (choPhanCong["DiaChi"] != DBNull.Value ? choPhanCong["DiaChi"].ToString() : "—");
+                    panel2.Tag = choPhanCong.MaGiaoHang;
+                    label7.Text = choPhanCong.MaDon + " – " + choPhanCong.TenKH;
+                    label6.Text = "📍 " + (!string.IsNullOrEmpty(choPhanCong.DiaChi) ? choPhanCong.DiaChi : "—");
                     label5.Text = "⏰ Chờ giao";
-                    label4.Text = string.Format("💰 {0:N0}đ", choPhanCong["TongTien"]);
-                    label3.Text = "📞 " + (choPhanCong["SoDienThoai"] != DBNull.Value ? choPhanCong["SoDienThoai"].ToString() : "—");
+                    label4.Text = string.Format("💰 {0:N0}đ", choPhanCong.TongTien);
+                    label3.Text = "📞 " + (!string.IsNullOrEmpty(choPhanCong.SoDienThoai) ? choPhanCong.SoDienThoai : "—");
                 }
                 else
                 {

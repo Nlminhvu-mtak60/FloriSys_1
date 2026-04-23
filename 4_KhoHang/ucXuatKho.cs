@@ -1,8 +1,9 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._4_KhoHang
 {
@@ -22,8 +23,8 @@ namespace FloriSys._4_KhoHang
         {
             try
             {
-                DataTable dt = DonHangDAO.LayDonChoXuatKho();
-                dgvXuatKho.DataSource = dt;
+                List<DonChoXuatKho> dsXK = DonHangDAO.LayDonChoXuatKho();
+                dgvXuatKho.DataSource = dsXK;
                 FormatGrid();
             }
             catch (Exception ex)
@@ -64,18 +65,18 @@ namespace FloriSys._4_KhoHang
 
             if (dgvXuatKho.Columns[e.ColumnIndex].Name == "btnXuat")
             {
-                string maDon = dgvXuatKho.Rows[e.RowIndex].Cells["MaDon"].Value.ToString();
-                string tinhTrang = dgvXuatKho.Rows[e.RowIndex].Cells["TinhTrangKho"].Value.ToString();
+                DonChoXuatKho item = dgvXuatKho.Rows[e.RowIndex].DataBoundItem as DonChoXuatKho;
+                if (item == null) return;
 
-                if (tinhTrang == "KhongDu")
+                if (item.TinhTrangKho == "KhongDu")
                 {
                     MessageBox.Show("Không thể xuất kho vì tồn kho không đủ!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (MessageBox.Show($"Xác nhận xuất kho cho đơn {maDon}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show($"Xác nhận xuất kho cho đơn {item.MaDon}?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    XacNhanXuat(maDon);
+                    XacNhanXuat(item.MaDon);
                 }
             }
         }

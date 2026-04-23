@@ -1,11 +1,12 @@
-using System.Data;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
     public class PhanHoiDAO
     {
-        public static DataTable LayDanhSach(string maDon = "")
+        public static List<PhanHoi> LayDanhSach(string maDon = "")
         {
             string sql = @"SELECT ph.MaPH, ph.MaDon, ph.NoiDung, ph.NgayGhi, ph.TrangThaiXuLy, ph.KetQuaXuLy,
                           kh.HoTen AS TenKH
@@ -13,14 +14,14 @@ namespace FloriSys.DataAccess
                           INNER JOIN DON_HANG dh ON ph.MaDon = dh.MaDon
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           WHERE 1=1";
-            var parms = new System.Collections.Generic.List<SqlParameter>();
+            var parms = new List<SqlParameter>();
             if (!string.IsNullOrEmpty(maDon))
             {
                 sql += " AND ph.MaDon = @MaDon";
                 parms.Add(new SqlParameter("@MaDon", maDon));
             }
             sql += " ORDER BY ph.NgayGhi DESC";
-            return DatabaseHelper.ExecuteRawQuery(sql, parms.ToArray());
+            return DatabaseHelper.ExecuteRawList<PhanHoi>(sql, parms.ToArray());
         }
 
         public static string GhiNhan(string maDon, string noiDung)

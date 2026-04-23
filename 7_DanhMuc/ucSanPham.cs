@@ -1,7 +1,8 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._7_DanhMuc
 {
@@ -33,8 +34,8 @@ namespace FloriSys._7_DanhMuc
             {
                 string key = txtSearch.Text.Trim();
                 string loai = cboLoai.SelectedIndex > 0 ? cboLoai.SelectedItem.ToString() : "";
-                DataTable dt = SanPhamDAO.LayDanhSach(key, loai);
-                dgvSanPham.DataSource = dt;
+                List<SanPham> dsSP = SanPhamDAO.LayDanhSach(key, loai);
+                dgvSanPham.DataSource = dsSP;
                 FormatGrid();
             }
             catch (Exception ex)
@@ -62,9 +63,8 @@ namespace FloriSys._7_DanhMuc
             // Highlight low stock
             foreach (DataGridViewRow row in dgvSanPham.Rows)
             {
-                int ton = Convert.ToInt32(row.Cells["SoLuongTon"].Value);
-                int min = Convert.ToInt32(row.Cells["MucTonToiThieu"].Value);
-                if (ton <= min)
+                SanPham sp = row.DataBoundItem as SanPham;
+                if (sp != null && sp.SoLuongTon <= sp.MucTonToiThieu)
                 {
                     row.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
                 }

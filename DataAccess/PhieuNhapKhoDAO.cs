@@ -1,11 +1,13 @@
-using System.Data;
+using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
     public class PhieuNhapKhoDAO
     {
-        public static DataTable LayDanhSach(string keyword = "", string maNV = "", System.DateTime? fromDate = null, System.DateTime? toDate = null)
+        public static List<PhieuNhapKho> LayDanhSach(string keyword = "", string maNV = "", DateTime? fromDate = null, DateTime? toDate = null)
         {
             string sql = @"SELECT pn.MaPhieu, pn.NgayNhap, nv.HoTen AS TenNV, pn.GhiChu,
                           (SELECT COUNT(*) FROM CT_NHAP_KHO WHERE MaPhieu=pn.MaPhieu) AS SoLoaiSP,
@@ -14,7 +16,7 @@ namespace FloriSys.DataAccess
                           FROM PHIEU_NHAP_KHO pn
                           INNER JOIN NHAN_VIEN nv ON pn.MaNV = nv.MaNV
                           WHERE 1=1";
-            var parms = new System.Collections.Generic.List<SqlParameter>();
+            var parms = new List<SqlParameter>();
             if (!string.IsNullOrEmpty(keyword))
             {
                 sql += " AND (pn.MaPhieu LIKE @Key OR pn.GhiChu LIKE @Key)";
@@ -36,16 +38,16 @@ namespace FloriSys.DataAccess
                 parms.Add(new SqlParameter("@ToDate", toDate.Value.Date.AddDays(1).AddTicks(-1)));
             }
             sql += " ORDER BY pn.NgayNhap DESC";
-            return DatabaseHelper.ExecuteRawQuery(sql, parms.ToArray());
+            return DatabaseHelper.ExecuteRawList<PhieuNhapKho>(sql, parms.ToArray());
         }
 
-        public static DataTable LayChiTiet(string maPhieu)
+        public static List<ChiTietNhapKho> LayChiTiet(string maPhieu)
         {
             string sql = @"SELECT ct.MaSP, sp.TenSP, ct.SoLuong, ct.GiaNhap, (ct.SoLuong*ct.GiaNhap) AS ThanhTien
                           FROM CT_NHAP_KHO ct
                           INNER JOIN SAN_PHAM sp ON ct.MaSP = sp.MaSP
                           WHERE ct.MaPhieu = @MaPhieu";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaPhieu", maPhieu) });
+            return DatabaseHelper.ExecuteRawList<ChiTietNhapKho>(sql, new SqlParameter[] { new SqlParameter("@MaPhieu", maPhieu) });
         }
 
         public static string TaoPhieuNhap(string maNV, string ghiChu = null)
@@ -55,7 +57,7 @@ namespace FloriSys.DataAccess
             {
                 new SqlParameter("@MaPhieu", maPhieu),
                 new SqlParameter("@MaNV", maNV),
-                new SqlParameter("@GhiChu", (object)ghiChu ?? System.DBNull.Value)
+                new SqlParameter("@GhiChu", (object)ghiChu ?? DBNull.Value)
             });
             return maPhieu;
         }

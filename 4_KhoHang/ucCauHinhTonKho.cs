@@ -1,8 +1,9 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._4_KhoHang
 {
@@ -20,8 +21,8 @@ namespace FloriSys._4_KhoHang
 
         private void LoadData()
         {
-            DataTable dt = SanPhamDAO.LayDanhSach(txtTimKiem.Text);
-            dgvSanPham.DataSource = dt;
+            List<SanPham> dsSP = SanPhamDAO.LayDanhSach(txtTimKiem.Text);
+            dgvSanPham.DataSource = dsSP;
 
             // Format columns
             foreach (DataGridViewColumn col in dgvSanPham.Columns)

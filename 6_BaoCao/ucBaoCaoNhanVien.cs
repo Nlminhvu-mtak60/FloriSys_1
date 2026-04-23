@@ -1,9 +1,10 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._6_BaoCao
 {
@@ -31,8 +32,8 @@ namespace FloriSys._6_BaoCao
             {
                 int? thang = cboThang.SelectedItem as int?;
                 int? nam = cboNam.SelectedItem as int?;
-                DataTable dt = BaoCaoDAO.HieuSuatNhanVien(thang, nam);
-                dgvNhanVien.DataSource = dt;
+                List<HieuSuatNhanVien> dsNV = BaoCaoDAO.HieuSuatNhanVien(thang, nam);
+                dgvNhanVien.DataSource = dsNV;
 
                 if (dgvNhanVien.Columns.Count > 0)
                 {
@@ -43,7 +44,7 @@ namespace FloriSys._6_BaoCao
                 }
 
                 // Draw bar chart
-                DrawBarChart(dt);
+                DrawBarChart(dsNV);
             }
             catch (Exception ex)
             {
@@ -51,13 +52,13 @@ namespace FloriSys._6_BaoCao
             }
         }
 
-        private void DrawBarChart(DataTable dt)
+        private void DrawBarChart(List<HieuSuatNhanVien> dsNV)
         {
             string chartName = "chartNV";
             Control existing = pnlGridCard.Controls[chartName];
             if (existing != null) pnlGridCard.Controls.Remove(existing);
 
-            if (dt.Rows.Count == 0) return;
+            if (dsNV.Count == 0) return;
 
             Chart chart = new Chart();
             chart.Name = chartName;
@@ -98,13 +99,13 @@ namespace FloriSys._6_BaoCao
             chart.Titles.Add(title);
 
             int count = 0;
-            foreach (DataRow row in dt.Rows)
+            foreach (HieuSuatNhanVien nv in dsNV)
             {
                 if (count >= 8) break;
-                string name = row["HoTen"].ToString();
+                string name = nv.HoTen;
                 if (name.Length > 12) name = name.Substring(0, 12) + "…";
-                sDT.Points.AddXY(name, Convert.ToDecimal(row["TongDoanhThu"]));
-                sDon.Points.AddXY(name, Convert.ToInt32(row["SoDonTao"]) * 100000); // scale for visibility
+                sDT.Points.AddXY(name, nv.TongDoanhThu);
+                sDon.Points.AddXY(name, nv.SoDonTao * 100000); // scale for visibility
                 count++;
             }
 

@@ -139,7 +139,7 @@ namespace FloriSys._6_BaoCao
             this.dgvNhanVien.ReadOnly = true;
             this.dgvNhanVien.RowHeadersVisible = false;
             this.dgvNhanVien.RowTemplate.Height = 35;
-            this.dgvNhanVien.Size = new System.Drawing.Size(900, 455);
+            this.dgvNhanVien.Size = new System.Drawing.Size(520, 455);
             this.dgvNhanVien.TabIndex = 1;
             // 
             // lblGridTitle
@@ -151,6 +151,7 @@ namespace FloriSys._6_BaoCao
             this.lblGridTitle.Name = "lblGridTitle";
             this.lblGridTitle.Size = new System.Drawing.Size(353, 28);
             this.lblGridTitle.TabIndex = 0;
+            this.lblGridTitle.UseCompatibleTextRendering = true;
             this.lblGridTitle.Text = "👤 Bảng xếp hạng doanh số nhân viên";
             // 
             // ucBaoCaoNhanVien

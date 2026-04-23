@@ -1,15 +1,22 @@
 using System.Security.Cryptography;
 using System.Text;
+using FloriSys.Models;
 
 namespace FloriSys.Services
 {
     public static class SessionManager
     {
-        public static string MaNV { get; set; }
-        public static string HoTen { get; set; }
-        public static string ChucVu { get; set; }
-        public static string TaiKhoan { get; set; }
-        public static string SoDienThoai { get; set; }
+        /// <summary>
+        /// Đối tượng NhanVien đang đăng nhập hiện tại (OOP chuẩn).
+        /// </summary>
+        public static NhanVien CurrentUser { get; set; }
+
+        // Backward-compatible properties (đọc từ CurrentUser)
+        public static string MaNV => CurrentUser?.MaNV;
+        public static string HoTen => CurrentUser?.HoTen;
+        public static string ChucVu => CurrentUser?.ChucVu;
+        public static string TaiKhoan => CurrentUser?.TaiKhoan;
+        public static string SoDienThoai => CurrentUser?.SoDienThoai;
 
         public static bool IsAdmin => ChucVu == "Admin";
         public static bool IsCashier => ChucVu == "Cashier";
@@ -18,7 +25,7 @@ namespace FloriSys.Services
 
         public static void Clear()
         {
-            MaNV = HoTen = ChucVu = TaiKhoan = SoDienThoai = null;
+            CurrentUser = null;
         }
 
         public static string HashSHA256(string input)
@@ -47,14 +54,7 @@ namespace FloriSys.Services
         {
             get
             {
-                switch (ChucVu)
-                {
-                    case "Admin": return "Quản lý";
-                    case "Cashier": return "Nhân viên bán hàng";
-                    case "Warehouse": return "Nhân viên kho";
-                    case "Shipper": return "Nhân viên giao hàng";
-                    default: return ChucVu;
-                }
+                return CurrentUser?.ChucVuDisplay ?? ChucVu;
             }
         }
     }

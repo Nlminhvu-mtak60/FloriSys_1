@@ -1,7 +1,9 @@
 using System;
 using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._3_BanHang
 {
@@ -14,6 +16,15 @@ namespace FloriSys._3_BanHang
             InitializeComponent();
             LoadLyDo();
             LoadHinhThuc();
+            txtMaDon.ReadOnly = false;
+            txtMaDon.BackColor = System.Drawing.Color.White;
+            txtMaDon.KeyDown += (s, e) =>
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    SetMaDon(txtMaDon.Text.Trim());
+                }
+            };
         }
 
         private void LoadLyDo()
@@ -41,19 +52,23 @@ namespace FloriSys._3_BanHang
         {
             try
             {
-                DataTable dt = DonHangDAO.LayChiTiet(_maDon);
-                // We want to add column for "Amount to return" and "Restock?"
-                if (!dt.Columns.Contains("SLTra"))
+                // Get chi tiết đơn hàng as List, then convert to DataTable for editing
+                List<ChiTietDonHang> dsCT = DonHangDAO.LayChiTiet(_maDon);
+                
+                DataTable dt = new DataTable();
+                dt.Columns.Add("MaSP", typeof(string));
+                dt.Columns.Add("TenSP", typeof(string));
+                dt.Columns.Add("SoLuong", typeof(int));
+                dt.Columns.Add("DonGia", typeof(decimal));
+                dt.Columns.Add("ThanhTien", typeof(decimal));
+                dt.Columns.Add("SLTra", typeof(int));
+                dt.Columns["SLTra"].DefaultValue = 0;
+                dt.Columns.Add("CoNhapKho", typeof(bool));
+                dt.Columns["CoNhapKho"].DefaultValue = true;
+
+                foreach (ChiTietDonHang ct in dsCT)
                 {
-                    DataColumn colQty = new DataColumn("SLTra", typeof(int));
-                    colQty.DefaultValue = 0;
-                    dt.Columns.Add(colQty);
-                }
-                if (!dt.Columns.Contains("CoNhapKho"))
-                {
-                    DataColumn colRestock = new DataColumn("CoNhapKho", typeof(bool));
-                    colRestock.DefaultValue = true;
-                    dt.Columns.Add(colRestock);
+                    dt.Rows.Add(ct.MaSP, ct.TenSP, ct.SoLuong, ct.DonGia, ct.ThanhTien, 0, true);
                 }
 
                 dgvSanPhamTra.DataSource = dt;

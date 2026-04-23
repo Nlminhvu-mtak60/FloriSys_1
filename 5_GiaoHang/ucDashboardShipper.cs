@@ -1,7 +1,8 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 
 namespace FloriSys._5_GiaoHang
 {
@@ -29,20 +30,20 @@ namespace FloriSys._5_GiaoHang
 
         private void LoadStats()
         {
-            DataTable dt = GiaoHangDAO.ThongKeShipper(currentUserMaNV);
-            if (dt.Rows.Count > 0)
+            ThongKeShipper stats = GiaoHangDAO.ThongKeShipper(currentUserMaNV);
+            if (stats != null)
             {
-                DataRow dr = dt.Rows[0];
-                lblValTongDon.Text = dr["TongDonHnay"].ToString();
-                lblValDaGiao.Text = dr["DaGiaoHnay"].ToString();
-                lblValDangGiao.Text = dr["DangDiGiao"].ToString();
-                lblValChuaGiao.Text = dr["ChuaGiao"].ToString();
+                lblValTongDon.Text = stats.TongDonHnay.ToString();
+                lblValDaGiao.Text = stats.DaGiaoHnay.ToString();
+                lblValDangGiao.Text = stats.DangDiGiao.ToString();
+                lblValChuaGiao.Text = stats.ChuaGiao.ToString();
             }
         }
 
         private void LoadList()
         {
-            dgvAllDon.DataSource = GiaoHangDAO.LayDonCuaShipper(currentUserMaNV);
+            List<GiaoHang> dsGH = GiaoHangDAO.LayDonCuaShipper(currentUserMaNV);
+            dgvAllDon.DataSource = dsGH;
             if (dgvAllDon.Columns.Count > 0)
             {
                 dgvAllDon.Columns["MaGiaoHang"].Visible = false;
@@ -63,18 +64,18 @@ namespace FloriSys._5_GiaoHang
 
         private void LoadCurrentDelivery()
         {
-            DataTable dt = dgvAllDon.DataSource as DataTable;
-            DataRow current = null;
-            if (dt != null)
+            List<GiaoHang> dsGH = dgvAllDon.DataSource as List<GiaoHang>;
+            GiaoHang current = null;
+            if (dsGH != null)
             {
                 // Prioritize the specifically selected order
                 if (!string.IsNullOrEmpty(currentMaGH))
                 {
-                    foreach (DataRow dr in dt.Rows)
+                    foreach (GiaoHang gh in dsGH)
                     {
-                        if (dr["TrangThai"].ToString() == "DangGiao" && dr["MaGiaoHang"].ToString() == currentMaGH)
+                        if (gh.TrangThai == "DangGiao" && gh.MaGiaoHang == currentMaGH)
                         {
-                            current = dr;
+                            current = gh;
                             break;
                         }
                     }
@@ -83,11 +84,11 @@ namespace FloriSys._5_GiaoHang
                 // Fallback to the first available DangGiao
                 if (current == null)
                 {
-                    foreach (DataRow dr in dt.Rows)
+                    foreach (GiaoHang gh in dsGH)
                     {
-                        if (dr["TrangThai"].ToString() == "DangGiao")
+                        if (gh.TrangThai == "DangGiao")
                         {
-                            current = dr;
+                            current = gh;
                             break;
                         }
                     }
@@ -97,11 +98,11 @@ namespace FloriSys._5_GiaoHang
             if (current != null)
             {
                 pnlCurrent.Visible = true;
-                currentMaGH = current["MaGiaoHang"].ToString();
-                lblCurTitle.Text = "🔴 Đơn đang giao – " + current["MaDon"].ToString();
-                lblCurCustomer.Text = "Khách hàng: " + current["TenKH"].ToString();
-                lblCurPhone.Text = "📞 SĐT: " + current["SoDienThoai"].ToString();
-                lblCurAddress.Text = "📍 Địa chỉ: " + current["DiaChi"].ToString();
+                currentMaGH = current.MaGiaoHang;
+                lblCurTitle.Text = "🔴 Đơn đang giao – " + current.MaDon;
+                lblCurCustomer.Text = "Khách hàng: " + current.TenKH;
+                lblCurPhone.Text = "📞 SĐT: " + current.SoDienThoai;
+                lblCurAddress.Text = "📍 Địa chỉ: " + current.DiaChi;
             }
             else
             {
@@ -137,21 +138,21 @@ namespace FloriSys._5_GiaoHang
         {
             if (e.RowIndex >= 0)
             {
-                string status = dgvAllDon.Rows[e.RowIndex].Cells["TrangThai"].Value.ToString();
-                string maGH = dgvAllDon.Rows[e.RowIndex].Cells["MaGiaoHang"].Value.ToString();
+                GiaoHang gh = dgvAllDon.Rows[e.RowIndex].DataBoundItem as GiaoHang;
+                if (gh == null) return;
 
-                if (status == "ChoPhanCong" || status == "GiaoLai")
+                if (gh.TrangThai == "ChoPhanCong" || gh.TrangThai == "GiaoLai")
                 {
                     if (MessageBox.Show("Bạn muốn bắt đầu giao đơn này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
-                        GiaoHangDAO.CapNhatTrangThai(maGH, "DangGiao");
-                        currentMaGH = maGH;
+                        GiaoHangDAO.CapNhatTrangThai(gh.MaGiaoHang, "DangGiao");
+                        currentMaGH = gh.MaGiaoHang;
                         LoadData();
                     }
                 }
-                else if (status == "DangGiao")
+                else if (gh.TrangThai == "DangGiao")
                 {
-                    currentMaGH = maGH;
+                    currentMaGH = gh.MaGiaoHang;
                     LoadCurrentDelivery();
                 }
             }

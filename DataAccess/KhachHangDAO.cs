@@ -1,33 +1,35 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
     public class KhachHangDAO
     {
-        public static DataTable LayDanhSach(string keyword = "")
+        public static List<KhachHang> LayDanhSach(string keyword = "")
         {
             string sql = @"SELECT kh.MaKH, kh.HoTen, kh.SoDienThoai, kh.DiaChi, kh.Email, kh.NgayTao,
                            (SELECT COUNT(*) FROM DON_HANG WHERE MaKH=kh.MaKH) AS TongDon
                            FROM KHACH_HANG kh WHERE 1=1";
-            var parms = new System.Collections.Generic.List<SqlParameter>();
+            var parms = new List<SqlParameter>();
             if (!string.IsNullOrEmpty(keyword))
             {
                 sql += " AND (kh.HoTen LIKE @Key OR kh.SoDienThoai LIKE @Key OR kh.Email LIKE @Key)";
                 parms.Add(new SqlParameter("@Key", "%" + keyword + "%"));
             }
             sql += " ORDER BY kh.NgayTao DESC";
-            return DatabaseHelper.ExecuteRawQuery(sql, parms.ToArray());
+            return DatabaseHelper.ExecuteRawList<KhachHang>(sql, parms.ToArray());
         }
 
-        public static DataTable TimTheoSDT(string sdt)
+        public static KhachHang TimTheoSDT(string sdt)
         {
             string sql = "SELECT MaKH, HoTen, SoDienThoai, DiaChi, Email FROM KHACH_HANG WHERE SoDienThoai=@SDT";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@SDT", sdt) });
+            return DatabaseHelper.ExecuteRawSingle<KhachHang>(sql, new SqlParameter[] { new SqlParameter("@SDT", sdt) });
         }
 
-        public static string ThemKhachHang(string hoTen, string sdt, string diaChi = null, string email = null)
+        public static string ThemKhachHang(KhachHang kh)
         {
             string maKH = DatabaseHelper.GenerateCode("KH", "KHACH_HANG", "MaKH");
             string sql = @"INSERT INTO KHACH_HANG (MaKH, HoTen, SoDienThoai, DiaChi, Email) 
@@ -35,25 +37,25 @@ namespace FloriSys.DataAccess
             DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
             {
                 new SqlParameter("@MaKH", maKH),
-                new SqlParameter("@HoTen", hoTen),
-                new SqlParameter("@SDT", sdt),
-                new SqlParameter("@DiaChi", (object)diaChi ?? DBNull.Value),
-                new SqlParameter("@Email", (object)email ?? DBNull.Value)
+                new SqlParameter("@HoTen", kh.HoTen),
+                new SqlParameter("@SDT", kh.SoDienThoai),
+                new SqlParameter("@DiaChi", (object)kh.DiaChi ?? DBNull.Value),
+                new SqlParameter("@Email", (object)kh.Email ?? DBNull.Value)
             });
             return maKH;
         }
 
-        public static void CapNhatKhachHang(string maKH, string hoTen, string sdt, string diaChi, string email)
+        public static void CapNhatKhachHang(KhachHang kh)
         {
             string sql = @"UPDATE KHACH_HANG SET HoTen=@HoTen, SoDienThoai=@SDT, DiaChi=@DiaChi, Email=@Email 
                           WHERE MaKH=@MaKH";
             DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
             {
-                new SqlParameter("@MaKH", maKH),
-                new SqlParameter("@HoTen", hoTen),
-                new SqlParameter("@SDT", sdt),
-                new SqlParameter("@DiaChi", (object)diaChi ?? DBNull.Value),
-                new SqlParameter("@Email", (object)email ?? DBNull.Value)
+                new SqlParameter("@MaKH", kh.MaKH),
+                new SqlParameter("@HoTen", kh.HoTen),
+                new SqlParameter("@SDT", kh.SoDienThoai),
+                new SqlParameter("@DiaChi", (object)kh.DiaChi ?? DBNull.Value),
+                new SqlParameter("@Email", (object)kh.Email ?? DBNull.Value)
             });
         }
 

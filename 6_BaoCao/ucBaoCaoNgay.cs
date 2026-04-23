@@ -1,8 +1,9 @@
 using System;
-using System.Data;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FloriSys._6_BaoCao
@@ -27,23 +28,19 @@ namespace FloriSys._6_BaoCao
                 lblDate.Text = today.ToString("dddd, dd/MM/yyyy");
 
                 // Load KPIs
-                DataTable dtStats = BaoCaoDAO.ThongKeDashboard();
-                if (dtStats.Rows.Count > 0)
+                ThongKeDashboard stats = BaoCaoDAO.ThongKeDashboard();
+                if (stats != null)
                 {
-                    lblTongDonValue.Text = dtStats.Rows[0]["DonHomNay"].ToString();
-                    decimal doanhThu = Convert.ToDecimal(dtStats.Rows[0]["DoanhThuHomNay"]);
-                    lblDoanhThuValue.Text = doanhThu.ToString("N0") + "đ";
+                    lblTongDonValue.Text = stats.DonHomNay.ToString();
+                    lblDoanhThuValue.Text = stats.DoanhThuHomNay.ToString("N0") + "đ";
                 }
 
-                DataTable dtSL = BaoCaoDAO.SoLuongSanPhamBanNgay(today);
-                if (dtSL.Rows.Count > 0)
-                {
-                    lblSoLuongSPValue.Text = dtSL.Rows[0]["TongSP"].ToString();
-                }
+                int slSP = BaoCaoDAO.SoLuongSanPhamBanNgay(today);
+                lblSoLuongSPValue.Text = slSP.ToString();
 
                 // Load Top Products
-                DataTable dtTopSP = BaoCaoDAO.TopSanPhamNgay(today);
-                dgvTopSP.DataSource = dtTopSP;
+                List<TopSanPhamNgay> dsTopSP = BaoCaoDAO.TopSanPhamNgay(today);
+                dgvTopSP.DataSource = dsTopSP;
                 if (dgvTopSP.Columns.Count > 0)
                 {
                     dgvTopSP.Columns["TenSP"].HeaderText = "Tên sản phẩm";
@@ -75,13 +72,11 @@ namespace FloriSys._6_BaoCao
                 chart.Series.Add(series);
                 
                 int index = 0;
-                foreach (DataRow row in dtTopSP.Rows)
+                foreach (TopSanPhamNgay sp in dsTopSP)
                 {
-                    string name = row["TenSP"].ToString();
-                    decimal val = Convert.ToDecimal(row["DoanhThu"]);
-                    if (val > 0)
+                    if (sp.DoanhThu > 0)
                     {
-                        int ptIdx = series.Points.AddXY(name, val);
+                        int ptIdx = series.Points.AddXY(sp.TenSP, sp.DoanhThu);
                         if (index == 0) // Explode the top product
                         {
                             series.Points[ptIdx].CustomProperties = "Exploded=true";

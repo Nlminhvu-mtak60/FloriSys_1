@@ -139,7 +139,7 @@ namespace FloriSys._6_BaoCao
             this.dgvSanPham.ReadOnly = true;
             this.dgvSanPham.RowHeadersVisible = false;
             this.dgvSanPham.RowTemplate.Height = 35;
-            this.dgvSanPham.Size = new System.Drawing.Size(900, 455);
+            this.dgvSanPham.Size = new System.Drawing.Size(610, 455);
             this.dgvSanPham.TabIndex = 1;
             // 
             // lblGridTitle
@@ -151,6 +151,7 @@ namespace FloriSys._6_BaoCao
             this.lblGridTitle.Name = "lblGridTitle";
             this.lblGridTitle.Size = new System.Drawing.Size(325, 28);
             this.lblGridTitle.TabIndex = 0;
+            this.lblGridTitle.UseCompatibleTextRendering = true;
             this.lblGridTitle.Text = "📊 Bảng xếp hạng doanh số bán";
             // 
             // ucBaoCaoSanPham

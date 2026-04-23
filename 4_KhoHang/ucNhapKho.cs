@@ -1,7 +1,9 @@
 using System;
 using System.Data;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Models;
 using FloriSys.Services;
 
 namespace FloriSys._4_KhoHang
@@ -27,8 +29,8 @@ namespace FloriSys._4_KhoHang
         {
             try
             {
-                DataTable dt = SanPhamDAO.LaySanPhamDangBan();
-                cboSanPham.DataSource = dt;
+                List<SanPham> dsSP = SanPhamDAO.LaySanPhamDangBan();
+                cboSanPham.DataSource = dsSP;
                 cboSanPham.DisplayMember = "TenSP";
                 cboSanPham.ValueMember = "MaSP";
             }

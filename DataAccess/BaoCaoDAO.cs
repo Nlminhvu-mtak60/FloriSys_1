@@ -1,52 +1,54 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
     public class BaoCaoDAO
     {
-        public static DataTable DoanhThuNgay(DateTime ngay)
+        public static BaoCaoDoanhThu DoanhThuNgay(DateTime ngay)
         {
-            return DatabaseHelper.ExecuteQuery("sp_BaoCaoDoanhThuNgay", new SqlParameter[]
+            return DatabaseHelper.ExecuteSingle<BaoCaoDoanhThu>("sp_BaoCaoDoanhThuNgay", new SqlParameter[]
             {
                 new SqlParameter("@Ngay", ngay.Date)
             });
         }
 
-        public static DataTable DoanhThuThang(int thang, int nam)
+        public static BaoCaoDoanhThu DoanhThuThang(int thang, int nam)
         {
-            return DatabaseHelper.ExecuteQuery("sp_BaoCaoDoanhThuThang", new SqlParameter[]
+            return DatabaseHelper.ExecuteSingle<BaoCaoDoanhThu>("sp_BaoCaoDoanhThuThang", new SqlParameter[]
             {
                 new SqlParameter("@Thang", thang),
                 new SqlParameter("@Nam", nam)
             });
         }
 
-        public static DataTable SanPhamBanChay(int? thang = null, int? nam = null)
+        public static List<SanPhamBanChay> SanPhamBanChay(int? thang = null, int? nam = null)
         {
-            return DatabaseHelper.ExecuteQuery("sp_SanPhamBanChay", new SqlParameter[]
+            return DatabaseHelper.ExecuteList<SanPhamBanChay>("sp_SanPhamBanChay", new SqlParameter[]
             {
                 new SqlParameter("@Thang", (object)thang ?? DBNull.Value),
                 new SqlParameter("@Nam", (object)nam ?? DBNull.Value)
             });
         }
 
-        public static DataTable HieuSuatNhanVien(int? thang = null, int? nam = null)
+        public static List<HieuSuatNhanVien> HieuSuatNhanVien(int? thang = null, int? nam = null)
         {
-            return DatabaseHelper.ExecuteQuery("sp_HieuSuatNhanVien", new SqlParameter[]
+            return DatabaseHelper.ExecuteList<HieuSuatNhanVien>("sp_HieuSuatNhanVien", new SqlParameter[]
             {
                 new SqlParameter("@Thang", (object)thang ?? DBNull.Value),
                 new SqlParameter("@Nam", (object)nam ?? DBNull.Value)
             });
         }
 
-        public static DataTable BaoCaoTonKho()
+        public static List<SanPham> BaoCaoTonKho()
         {
-            return DatabaseHelper.ExecuteQuery("sp_CanhBaoTonKho");
+            return DatabaseHelper.ExecuteList<SanPham>("sp_CanhBaoTonKho");
         }
 
-        public static DataTable TopSanPhamNgay(DateTime ngay)
+        public static List<TopSanPhamNgay> TopSanPhamNgay(DateTime ngay)
         {
             string sql = @"SELECT TOP 10 sp.TenSP, SUM(ct.SoLuong) AS SLBan, SUM(ct.ThanhTien) AS DoanhThu
                           FROM CHI_TIET_DON_HANG ct
@@ -54,19 +56,20 @@ namespace FloriSys.DataAccess
                           INNER JOIN DON_HANG dh ON ct.MaDon = dh.MaDon
                           WHERE CAST(dh.NgayTao AS DATE) = @Ngay AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
                           GROUP BY sp.TenSP ORDER BY SLBan DESC";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@Ngay", ngay.Date) });
+            return DatabaseHelper.ExecuteRawList<TopSanPhamNgay>(sql, new SqlParameter[] { new SqlParameter("@Ngay", ngay.Date) });
         }
 
-        public static DataTable SoLuongSanPhamBanNgay(DateTime ngay)
+        public static int SoLuongSanPhamBanNgay(DateTime ngay)
         {
             string sql = @"SELECT ISNULL(SUM(ct.SoLuong),0) AS TongSP
                           FROM CHI_TIET_DON_HANG ct
                           INNER JOIN DON_HANG dh ON ct.MaDon = dh.MaDon
                           WHERE CAST(dh.NgayTao AS DATE) = @Ngay AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@Ngay", ngay.Date) });
+            DataTable dt = DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@Ngay", ngay.Date) });
+            return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0]["TongSP"]) : 0;
         }
 
-        public static DataTable ThongKeDashboard()
+        public static ThongKeDashboard ThongKeDashboard()
         {
             string sql = @"SELECT 
                 (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai != N'Huy') AS DonHomNay,
@@ -76,65 +79,65 @@ namespace FloriSys.DataAccess
                 (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=DATEADD(day,-1,CAST(GETDATE() AS DATE)) AND TrangThai != N'Huy') AS DonHomQua,
                 (SELECT ISNULL(SUM(TongTien),0) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=DATEADD(day,-1,CAST(GETDATE() AS DATE)) AND TrangThai NOT IN (N'Huy', N'HoanHang')) AS DoanhThuHomQua,
                 (SELECT COUNT(DISTINCT MaNV_Shipper) FROM GIAO_HANG WHERE TrangThai=N'DangGiao') AS ShipperDangGiao";
-            return DatabaseHelper.ExecuteRawQuery(sql);
+            return DatabaseHelper.ExecuteRawSingle<ThongKeDashboard>(sql);
         }
 
-        public static DataTable LaySanPhamSapHet()
+        public static List<SanPhamSapHet> LaySanPhamSapHet()
         {
             string sql = "SELECT TenSP, SoLuongTon FROM SAN_PHAM WHERE TrangThai=N'DangBan' AND SoLuongTon <= MucTonToiThieu";
-            return DatabaseHelper.ExecuteRawQuery(sql);
+            return DatabaseHelper.ExecuteRawList<SanPhamSapHet>(sql);
         }
 
-        public static DataTable DonHangGanDay(int top = 5)
+        public static List<DonHangGanDay> DonHangGanDay(int top = 5)
         {
             string sql = @"SELECT TOP (@Top) dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.TrangThai
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           ORDER BY dh.NgayTao DESC";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@Top", top) });
+            return DatabaseHelper.ExecuteRawList<DonHangGanDay>(sql, new SqlParameter[] { new SqlParameter("@Top", top) });
         }
 
-        public static DataTable ThongKeKho()
+        public static ThongKeKho ThongKeKho()
         {
             string sql = @"SELECT 
                 (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'Moi') AS DonChoXuat,
                 (SELECT COUNT(*) FROM SAN_PHAM WHERE SoLuongTon <= MucTonToiThieu) AS SPSapHet,
                 (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Moi', N'Huy')) AS DaXuatHomNay,
                 (SELECT COUNT(*) FROM PHIEU_NHAP_KHO WHERE MONTH(NgayNhap)=MONTH(GETDATE()) AND YEAR(NgayNhap)=YEAR(GETDATE())) AS PhieuNhapThang";
-            return DatabaseHelper.ExecuteRawQuery(sql);
+            return DatabaseHelper.ExecuteRawSingle<ThongKeKho>(sql);
         }
 
-        public static DataTable ThongKeBanHang(string maNV)
+        public static ThongKeBanHang ThongKeBanHang(string maNV)
         {
             string sql = @"SELECT 
                 (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHomNay,
                 (SELECT ISNULL(SUM(TongTien),0) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Huy', N'HoanHang')) AS DoanhThuHomNay,
                 (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND TrangThai IN (N'Moi', N'DangXuLy', N'DaGiao')) AS DonDangXuLy,
                 (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND TrangThai=N'HoanThanh' AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHoanThanh";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
+            return DatabaseHelper.ExecuteRawSingle<ThongKeBanHang>(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
         }
 
-        public static DataTable DonHangCuaNV(string maNV, int top = 10)
+        public static List<DonHangGanDay> DonHangCuaNV(string maNV, int top = 10)
         {
             string sql = @"SELECT TOP (@Top) dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.NgayTao, dh.TrangThai
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           WHERE dh.MaNV_TaoDon = @MaNV
                           ORDER BY dh.NgayTao DESC";
-            return DatabaseHelper.ExecuteRawQuery(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV), new SqlParameter("@Top", top) });
+            return DatabaseHelper.ExecuteRawList<DonHangGanDay>(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV), new SqlParameter("@Top", top) });
         }
 
-        public static DataTable DonHangChoXuat()
+        public static List<DonHangGanDay> DonHangChoXuat()
         {
             string sql = @"SELECT dh.MaDon, kh.HoTen AS TenKH, dh.NgayTao, dh.TrangThai
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           WHERE dh.TrangThai = N'Moi'
                           ORDER BY dh.NgayTao ASC";
-            return DatabaseHelper.ExecuteRawQuery(sql);
+            return DatabaseHelper.ExecuteRawList<DonHangGanDay>(sql);
         }
 
-        public static DataTable DoanhThu7Ngay()
+        public static List<DoanhThuNgay> DoanhThu7Ngay()
         {
             string sql = @"WITH Last7Days AS (
                                 SELECT CAST(GETDATE() AS DATE) AS Ngay
@@ -148,12 +151,12 @@ namespace FloriSys.DataAccess
                             LEFT JOIN DON_HANG dh ON CAST(dh.NgayTao AS DATE) = d.Ngay AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
                             GROUP BY d.Ngay
                             ORDER BY d.Ngay ASC";
-            return DatabaseHelper.ExecuteRawQuery(sql);
+            return DatabaseHelper.ExecuteRawList<DoanhThuNgay>(sql);
         }
 
-        public static DataTable DoanhThuTheoNgayTrongThang(int thang, int nam)
+        public static List<DoanhThuNgay> DoanhThuTheoNgayTrongThang(int thang, int nam)
         {
-            return DatabaseHelper.ExecuteQuery("sp_DoanhThuTheoNgayTrongThang", new SqlParameter[]
+            return DatabaseHelper.ExecuteList<DoanhThuNgay>("sp_DoanhThuTheoNgayTrongThang", new SqlParameter[]
             {
                 new SqlParameter("@Thang", thang),
                 new SqlParameter("@Nam", nam)
