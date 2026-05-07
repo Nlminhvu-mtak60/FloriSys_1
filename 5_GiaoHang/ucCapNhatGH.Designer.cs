@@ -1,4 +1,4 @@
-﻿namespace FloriSys._5_GiaoHang
+namespace FloriSys._5_GiaoHang
 {
     partial class ucCapNhatGH
     {
@@ -78,7 +78,7 @@
             this.lblSub.Name = "lblSub";
             this.lblSub.Size = new System.Drawing.Size(194, 20);
             this.lblSub.TabIndex = 1;
-            this.lblSub.Text = "GH-02, GH-03 – 11/03/2026";
+            this.lblSub.Text = "GH-02, GH-03 � 11/03/2026";
             // 
             // lblTitle
             // 
@@ -87,9 +87,9 @@
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.lblTitle.Location = new System.Drawing.Point(28, 12);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(407, 41);
+            this.lblTitle.Size = new System.Drawing.Size(395, 41);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Cập nhật kết quả giao hàng";
+            this.lblTitle.Text = "C?p nh?t k?t qu? giao h�ng";
             this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pnlContent
@@ -140,7 +140,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(120, 34);
             this.button1.TabIndex = 2;
-            this.button1.Text = "↩️  Bắt đầu ";
+            this.button1.Text = "??  B?t �?u ";
             this.button1.UseVisualStyleBackColor = false;
             // 
             // label3
@@ -150,9 +150,9 @@
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.label3.Location = new System.Drawing.Point(20, 154);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(290, 20);
+            this.label3.Size = new System.Drawing.Size(274, 20);
             this.label3.TabIndex = 4;
-            this.label3.Text = "📍 45 Nguyễn Huệ, Q.1   📞 0912 345 678";
+            this.label3.Text = "?? 45 Nguy?n Hu?, Q.1   ?? 0912 345 678";
             // 
             // label4
             // 
@@ -161,9 +161,9 @@
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.label4.Location = new System.Drawing.Point(20, 115);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(173, 20);
+            this.label4.Size = new System.Drawing.Size(165, 20);
             this.label4.TabIndex = 3;
-            this.label4.Text = "💰 Đã thanh toán online";
+            this.label4.Text = "?? �? thanh to�n online";
             // 
             // label5
             // 
@@ -172,9 +172,9 @@
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.label5.Location = new System.Drawing.Point(19, 83);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(146, 20);
+            this.label5.Size = new System.Drawing.Size(130, 20);
             this.label5.TabIndex = 2;
-            this.label5.Text = "⏰ Giao trước: 17:00";
+            this.label5.Text = "? Giao tr�?c: 17:00";
             // 
             // label6
             // 
@@ -183,9 +183,9 @@
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.label6.Location = new System.Drawing.Point(19, 51);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(291, 20);
+            this.label6.Size = new System.Drawing.Size(285, 20);
             this.label6.TabIndex = 1;
-            this.label6.Text = "📍 118 Phan Đình Phùng, Quận Phú Nhuận";
+            this.label6.Text = "?? 118 Phan �?nh Ph�ng, Qu?n Ph� Nhu?n";
             // 
             // label7
             // 
@@ -195,9 +195,9 @@
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.label7.Location = new System.Drawing.Point(16, 16);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(263, 25);
+            this.label7.Size = new System.Drawing.Size(256, 25);
             this.label7.TabIndex = 0;
-            this.label7.Text = "DH2026049 – Phạm Ngọc Yến";
+            this.label7.Text = "DH2026049 � Ph?m Ng?c Y?n";
             // 
             // pnlDon1
             // 
@@ -215,7 +215,6 @@
             this.pnlDon1.Padding = new System.Windows.Forms.Padding(16);
             this.pnlDon1.Size = new System.Drawing.Size(968, 247);
             this.pnlDon1.TabIndex = 0;
-            this.pnlDon1.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlDon1_Paint);
             // 
             // panel1
             // 
@@ -238,7 +237,7 @@
             this.btnHoan1.Name = "btnHoan1";
             this.btnHoan1.Size = new System.Drawing.Size(120, 34);
             this.btnHoan1.TabIndex = 2;
-            this.btnHoan1.Text = "↩️  Hoàn hàng";
+            this.btnHoan1.Text = "??  Ho�n h�ng";
             this.btnHoan1.UseVisualStyleBackColor = false;
             // 
             // btnVang1
@@ -252,7 +251,7 @@
             this.btnVang1.Name = "btnVang1";
             this.btnVang1.Size = new System.Drawing.Size(140, 34);
             this.btnVang1.TabIndex = 1;
-            this.btnVang1.Text = "👤  Giao Lại";
+            this.btnVang1.Text = "??  Giao L?i";
             this.btnVang1.UseVisualStyleBackColor = true;
             // 
             // btnGiaoXong1
@@ -266,7 +265,7 @@
             this.btnGiaoXong1.Name = "btnGiaoXong1";
             this.btnGiaoXong1.Size = new System.Drawing.Size(150, 34);
             this.btnGiaoXong1.TabIndex = 0;
-            this.btnGiaoXong1.Text = "✅  Giao thành công";
+            this.btnGiaoXong1.Text = "?  Giao th�nh c�ng";
             this.btnGiaoXong1.UseVisualStyleBackColor = false;
             // 
             // label2
@@ -276,9 +275,9 @@
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.label2.Location = new System.Drawing.Point(20, 154);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(290, 20);
+            this.label2.Size = new System.Drawing.Size(274, 20);
             this.label2.TabIndex = 4;
-            this.label2.Text = "📍 45 Nguyễn Huệ, Q.1   📞 0912 345 678";
+            this.label2.Text = "?? 45 Nguy?n Hu?, Q.1   ?? 0912 345 678";
             // 
             // label1
             // 
@@ -287,9 +286,9 @@
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.label1.Location = new System.Drawing.Point(20, 115);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(290, 20);
+            this.label1.Size = new System.Drawing.Size(274, 20);
             this.label1.TabIndex = 3;
-            this.label1.Text = "📍 45 Nguyễn Huệ, Q.1   📞 0912 345 678";
+            this.label1.Text = "?? 45 Nguy?n Hu?, Q.1   ?? 0912 345 678";
             // 
             // lblTien1
             // 
@@ -298,10 +297,9 @@
             this.lblTien1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblTien1.Location = new System.Drawing.Point(19, 83);
             this.lblTien1.Name = "lblTien1";
-            this.lblTien1.Size = new System.Drawing.Size(291, 20);
+            this.lblTien1.Size = new System.Drawing.Size(268, 20);
             this.lblTien1.TabIndex = 2;
-            this.lblTien1.Text = "💰 600,000đ – COD    ⏰ Giao trước 14:00";
-            this.lblTien1.Click += new System.EventHandler(this.lblTien1_Click);
+            this.lblTien1.Text = "?? 600,000� � COD    ? Giao tr�?c 14:00";
             // 
             // lblInfo1
             // 
@@ -310,9 +308,9 @@
             this.lblInfo1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(107)))), ((int)(((byte)(114)))), ((int)(((byte)(128)))));
             this.lblInfo1.Location = new System.Drawing.Point(19, 51);
             this.lblInfo1.Name = "lblInfo1";
-            this.lblInfo1.Size = new System.Drawing.Size(290, 20);
+            this.lblInfo1.Size = new System.Drawing.Size(274, 20);
             this.lblInfo1.TabIndex = 1;
-            this.lblInfo1.Text = "📍 45 Nguyễn Huệ, Q.1   📞 0912 345 678";
+            this.lblInfo1.Text = "?? 45 Nguy?n Hu?, Q.1   ?? 0912 345 678";
             // 
             // lblMaDon1
             // 
@@ -322,9 +320,9 @@
             this.lblMaDon1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.lblMaDon1.Location = new System.Drawing.Point(16, 16);
             this.lblMaDon1.Name = "lblMaDon1";
-            this.lblMaDon1.Size = new System.Drawing.Size(260, 25);
+            this.lblMaDon1.Size = new System.Drawing.Size(258, 25);
             this.lblMaDon1.TabIndex = 0;
-            this.lblMaDon1.Text = " DH2026046 – Trần Văn Hùng";
+            this.lblMaDon1.Text = " DH2026046 � Tr?n V�n H�ng";
             // 
             // ucCapNhatGH
             // 

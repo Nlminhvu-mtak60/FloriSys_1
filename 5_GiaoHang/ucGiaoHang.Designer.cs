@@ -29,23 +29,22 @@
         private void InitializeComponent()
         {
             this.pnlHeader = new System.Windows.Forms.Panel();
-            this.lblTitle = new System.Windows.Forms.Label();
             this.lblSub = new System.Windows.Forms.Label();
-            this.btnPhanCong = new System.Windows.Forms.Button();
+            this.lblTitle = new System.Windows.Forms.Label();
             this.pnlStats = new System.Windows.Forms.Panel();
-            this.pnlS1 = new System.Windows.Forms.Panel();
             this.tlpStats = new System.Windows.Forms.TableLayoutPanel();
-            this.lblS1Top = new System.Windows.Forms.Label();
-            this.lblS1Val = new System.Windows.Forms.Label();
-            this.pnlS2 = new System.Windows.Forms.Panel();
-            this.lblS2Top = new System.Windows.Forms.Label();
-            this.lblS2Val = new System.Windows.Forms.Label();
-            this.pnlS3 = new System.Windows.Forms.Panel();
-            this.lblS3Top = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.pnlS4 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.lblS4Top = new System.Windows.Forms.Label();
+            this.pnlS1 = new System.Windows.Forms.Panel();
+            this.lblS1Val = new System.Windows.Forms.Label();
+            this.lblS1Top = new System.Windows.Forms.Label();
+            this.pnlS2 = new System.Windows.Forms.Panel();
+            this.lblS2Val = new System.Windows.Forms.Label();
+            this.lblS2Top = new System.Windows.Forms.Label();
+            this.pnlS3 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblS3Top = new System.Windows.Forms.Label();
             this.pnlTable = new System.Windows.Forms.Panel();
             this.dgvGiaoHang = new System.Windows.Forms.DataGridView();
             this.colMaDon = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -57,11 +56,11 @@
             this.colAction = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlHeader.SuspendLayout();
             this.pnlStats.SuspendLayout();
-            this.pnlS1.SuspendLayout();
             this.tlpStats.SuspendLayout();
+            this.pnlS4.SuspendLayout();
+            this.pnlS1.SuspendLayout();
             this.pnlS2.SuspendLayout();
             this.pnlS3.SuspendLayout();
-            this.pnlS4.SuspendLayout();
             this.pnlTable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvGiaoHang)).BeginInit();
             this.SuspendLayout();
@@ -69,7 +68,6 @@
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.Transparent;
-            this.pnlHeader.Controls.Add(this.btnPhanCong);
             this.pnlHeader.Controls.Add(this.lblSub);
             this.pnlHeader.Controls.Add(this.lblTitle);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -77,17 +75,6 @@
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1024, 72);
             this.pnlHeader.TabIndex = 0;
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblTitle.Location = new System.Drawing.Point(28, 12);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(291, 41);
-            this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "Theo dõi giao hàng";
             // 
             // lblSub
             // 
@@ -100,21 +87,16 @@
             this.lblSub.TabIndex = 1;
             this.lblSub.Text = "Tất cả chuyến giao hàng hôm nay";
             // 
-            // btnPhanCong
+            // lblTitle
             // 
-            this.btnPhanCong.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPhanCong.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
-            this.btnPhanCong.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPhanCong.FlatAppearance.BorderSize = 0;
-            this.btnPhanCong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPhanCong.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnPhanCong.ForeColor = System.Drawing.Color.White;
-            this.btnPhanCong.Location = new System.Drawing.Point(810, 18);
-            this.btnPhanCong.Name = "btnPhanCong";
-            this.btnPhanCong.Size = new System.Drawing.Size(170, 34);
-            this.btnPhanCong.TabIndex = 2;
-            this.btnPhanCong.Text = "👤  Phân công Shipper";
-            this.btnPhanCong.UseVisualStyleBackColor = false;
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblTitle.Location = new System.Drawing.Point(28, 12);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(291, 41);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "Theo dõi giao hàng";
             // 
             // pnlStats
             // 
@@ -126,18 +108,6 @@
             this.pnlStats.Padding = new System.Windows.Forms.Padding(28, 8, 28, 0);
             this.pnlStats.Size = new System.Drawing.Size(1024, 100);
             this.pnlStats.TabIndex = 1;
-            // 
-            // pnlS1
-            // 
-            this.pnlS1.BackColor = System.Drawing.Color.White;
-            this.pnlS1.Controls.Add(this.lblS1Val);
-            this.pnlS1.Controls.Add(this.lblS1Top);
-            this.pnlS1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlS1.Location = new System.Drawing.Point(0, 0);
-            this.pnlS1.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
-            this.pnlS1.Name = "pnlS1";
-            this.pnlS1.Size = new System.Drawing.Size(236, 92);
-            this.pnlS1.TabIndex = 0;
             // 
             // tlpStats
             // 
@@ -158,96 +128,6 @@
             this.tlpStats.Size = new System.Drawing.Size(968, 92);
             this.tlpStats.TabIndex = 0;
             // 
-            // lblS1Top
-            // 
-            this.lblS1Top.AutoSize = true;
-            this.lblS1Top.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblS1Top.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblS1Top.Location = new System.Drawing.Point(18, 13);
-            this.lblS1Top.Name = "lblS1Top";
-            this.lblS1Top.Size = new System.Drawing.Size(114, 17);
-            this.lblS1Top.TabIndex = 0;
-            this.lblS1Top.Text = "CHỜ PHÂN CÔNG";
-            // 
-            // lblS1Val
-            // 
-            this.lblS1Val.AutoSize = true;
-            this.lblS1Val.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblS1Val.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblS1Val.Location = new System.Drawing.Point(18, 30);
-            this.lblS1Val.Name = "lblS1Val";
-            this.lblS1Val.Size = new System.Drawing.Size(40, 46);
-            this.lblS1Val.TabIndex = 1;
-            this.lblS1Val.Text = "5";
-            // 
-            // pnlS2
-            // 
-            this.pnlS2.BackColor = System.Drawing.Color.White;
-            this.pnlS2.Controls.Add(this.lblS2Val);
-            this.pnlS2.Controls.Add(this.lblS2Top);
-            this.pnlS2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlS2.Location = new System.Drawing.Point(245, 0);
-            this.pnlS2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.pnlS2.Name = "pnlS2";
-            this.pnlS2.Size = new System.Drawing.Size(236, 92);
-            this.pnlS2.TabIndex = 1;
-            // 
-            // lblS2Top
-            // 
-            this.lblS2Top.AutoSize = true;
-            this.lblS2Top.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblS2Top.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblS2Top.Location = new System.Drawing.Point(18, 13);
-            this.lblS2Top.Name = "lblS2Top";
-            this.lblS2Top.Size = new System.Drawing.Size(78, 17);
-            this.lblS2Top.TabIndex = 0;
-            this.lblS2Top.Text = "ĐANG GIAO";
-            // 
-            // lblS2Val
-            // 
-            this.lblS2Val.AutoSize = true;
-            this.lblS2Val.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblS2Val.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.lblS2Val.Location = new System.Drawing.Point(18, 30);
-            this.lblS2Val.Name = "lblS2Val";
-            this.lblS2Val.Size = new System.Drawing.Size(40, 46);
-            this.lblS2Val.TabIndex = 2;
-            this.lblS2Val.Text = "9";
-            // 
-            // pnlS3
-            // 
-            this.pnlS3.BackColor = System.Drawing.Color.White;
-            this.pnlS3.Controls.Add(this.label1);
-            this.pnlS3.Controls.Add(this.lblS3Top);
-            this.pnlS3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlS3.Location = new System.Drawing.Point(487, 0);
-            this.pnlS3.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.pnlS3.Name = "pnlS3";
-            this.pnlS3.Size = new System.Drawing.Size(236, 92);
-            this.pnlS3.TabIndex = 2;
-            // 
-            // lblS3Top
-            // 
-            this.lblS3Top.AutoSize = true;
-            this.lblS3Top.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblS3Top.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblS3Top.Location = new System.Drawing.Point(18, 13);
-            this.lblS3Top.Name = "lblS3Top";
-            this.lblS3Top.Size = new System.Drawing.Size(126, 17);
-            this.lblS3Top.TabIndex = 1;
-            this.lblS3Top.Text = "GIAO THÀNH CÔNG";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            this.label1.Location = new System.Drawing.Point(26, 30);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 46);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "24";
-            // 
             // pnlS4
             // 
             this.pnlS4.BackColor = System.Drawing.Color.White;
@@ -267,7 +147,7 @@
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.label2.Location = new System.Drawing.Point(26, 30);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 46);
+            this.label2.Size = new System.Drawing.Size(39, 45);
             this.label2.TabIndex = 3;
             this.label2.Text = "2";
             // 
@@ -281,6 +161,108 @@
             this.lblS4Top.Size = new System.Drawing.Size(85, 17);
             this.lblS4Top.TabIndex = 1;
             this.lblS4Top.Text = "HOÀN HÀNG";
+            // 
+            // pnlS1
+            // 
+            this.pnlS1.BackColor = System.Drawing.Color.White;
+            this.pnlS1.Controls.Add(this.lblS1Val);
+            this.pnlS1.Controls.Add(this.lblS1Top);
+            this.pnlS1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlS1.Location = new System.Drawing.Point(0, 0);
+            this.pnlS1.Margin = new System.Windows.Forms.Padding(0, 0, 6, 0);
+            this.pnlS1.Name = "pnlS1";
+            this.pnlS1.Size = new System.Drawing.Size(236, 92);
+            this.pnlS1.TabIndex = 0;
+            // 
+            // lblS1Val
+            // 
+            this.lblS1Val.AutoSize = true;
+            this.lblS1Val.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblS1Val.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblS1Val.Location = new System.Drawing.Point(18, 30);
+            this.lblS1Val.Name = "lblS1Val";
+            this.lblS1Val.Size = new System.Drawing.Size(39, 45);
+            this.lblS1Val.TabIndex = 1;
+            this.lblS1Val.Text = "5";
+            // 
+            // lblS1Top
+            // 
+            this.lblS1Top.AutoSize = true;
+            this.lblS1Top.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblS1Top.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblS1Top.Location = new System.Drawing.Point(18, 13);
+            this.lblS1Top.Name = "lblS1Top";
+            this.lblS1Top.Size = new System.Drawing.Size(114, 17);
+            this.lblS1Top.TabIndex = 0;
+            this.lblS1Top.Text = "CHỜ PHÂN CÔNG";
+            // 
+            // pnlS2
+            // 
+            this.pnlS2.BackColor = System.Drawing.Color.White;
+            this.pnlS2.Controls.Add(this.lblS2Val);
+            this.pnlS2.Controls.Add(this.lblS2Top);
+            this.pnlS2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlS2.Location = new System.Drawing.Point(245, 0);
+            this.pnlS2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.pnlS2.Name = "pnlS2";
+            this.pnlS2.Size = new System.Drawing.Size(236, 92);
+            this.pnlS2.TabIndex = 1;
+            // 
+            // lblS2Val
+            // 
+            this.lblS2Val.AutoSize = true;
+            this.lblS2Val.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblS2Val.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.lblS2Val.Location = new System.Drawing.Point(18, 30);
+            this.lblS2Val.Name = "lblS2Val";
+            this.lblS2Val.Size = new System.Drawing.Size(39, 45);
+            this.lblS2Val.TabIndex = 2;
+            this.lblS2Val.Text = "9";
+            // 
+            // lblS2Top
+            // 
+            this.lblS2Top.AutoSize = true;
+            this.lblS2Top.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblS2Top.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblS2Top.Location = new System.Drawing.Point(18, 13);
+            this.lblS2Top.Name = "lblS2Top";
+            this.lblS2Top.Size = new System.Drawing.Size(78, 17);
+            this.lblS2Top.TabIndex = 0;
+            this.lblS2Top.Text = "ĐANG GIAO";
+            // 
+            // pnlS3
+            // 
+            this.pnlS3.BackColor = System.Drawing.Color.White;
+            this.pnlS3.Controls.Add(this.label1);
+            this.pnlS3.Controls.Add(this.lblS3Top);
+            this.pnlS3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlS3.Location = new System.Drawing.Point(487, 0);
+            this.pnlS3.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.pnlS3.Name = "pnlS3";
+            this.pnlS3.Size = new System.Drawing.Size(236, 92);
+            this.pnlS3.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            this.label1.Location = new System.Drawing.Point(26, 30);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(58, 45);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "24";
+            // 
+            // lblS3Top
+            // 
+            this.lblS3Top.AutoSize = true;
+            this.lblS3Top.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblS3Top.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblS3Top.Location = new System.Drawing.Point(18, 13);
+            this.lblS3Top.Name = "lblS3Top";
+            this.lblS3Top.Size = new System.Drawing.Size(126, 17);
+            this.lblS3Top.TabIndex = 1;
+            this.lblS3Top.Text = "GIAO THÀNH CÔNG";
             // 
             // pnlTable
             // 
@@ -323,6 +305,7 @@
             this.colMaDon.HeaderText = "MÃ ĐƠN";
             this.colMaDon.MinimumWidth = 6;
             this.colMaDon.Name = "colMaDon";
+            this.colMaDon.Width = 125;
             // 
             // colKhach
             // 
@@ -379,15 +362,15 @@
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
             this.pnlStats.ResumeLayout(false);
+            this.tlpStats.ResumeLayout(false);
+            this.pnlS4.ResumeLayout(false);
+            this.pnlS4.PerformLayout();
             this.pnlS1.ResumeLayout(false);
             this.pnlS1.PerformLayout();
-            this.tlpStats.ResumeLayout(false);
             this.pnlS2.ResumeLayout(false);
             this.pnlS2.PerformLayout();
             this.pnlS3.ResumeLayout(false);
             this.pnlS3.PerformLayout();
-            this.pnlS4.ResumeLayout(false);
-            this.pnlS4.PerformLayout();
             this.pnlTable.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvGiaoHang)).EndInit();
             this.ResumeLayout(false);
@@ -397,7 +380,6 @@
         #endregion
 
         private System.Windows.Forms.Panel pnlHeader;
-        private System.Windows.Forms.Button btnPhanCong;
         private System.Windows.Forms.Label lblSub;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Panel pnlStats;

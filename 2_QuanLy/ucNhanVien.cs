@@ -7,11 +7,13 @@ using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 using FloriSys.Services;
+using FloriSys.Shared;
 
 namespace FloriSys._2_QuanLy
 {
-    public partial class ucNhanVien : UserControl
+    public partial class ucNhanVien : BaseUserControl
     {
+        private readonly NhanVienRepository _nvRepo = new NhanVienRepository();
         private bool isEditMode = false;
         private string placeholderSearch = "🔍 Tìm tên, SDT...";
 
@@ -28,7 +30,7 @@ namespace FloriSys._2_QuanLy
             ResetForm();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             string keyword = txtSearch.Text == placeholderSearch ? "" : txtSearch.Text.Trim();
             string chucVu = cboFilterChucVu.SelectedIndex > 0 ? cboFilterChucVu.SelectedItem.ToString() : "";
@@ -36,18 +38,47 @@ namespace FloriSys._2_QuanLy
             if (cboFilterTrangThai.SelectedIndex == 1) trangThai = "DangLam";
             else if (cboFilterTrangThai.SelectedIndex == 2) trangThai = "DaNghi";
 
-            List<NhanVien> dsNV = NhanVienDAO.LayDanhSach(keyword, chucVu, trangThai);
+            List<NhanVien> dsNV = _nvRepo.LayDanhSach(keyword, chucVu, trangThai);
             dgvNhanVien.DataSource = dsNV;
 
             // Tùy chỉnh cột
             if (dgvNhanVien.Columns.Count > 0)
             {
-                dgvNhanVien.Columns["MaNV"].HeaderText = "Mã NV";
-                dgvNhanVien.Columns["HoTen"].HeaderText = "Họ tên";
-                dgvNhanVien.Columns["ChucVu"].HeaderText = "Chức vụ";
-                dgvNhanVien.Columns["SoDienThoai"].HeaderText = "SĐT";
-                dgvNhanVien.Columns["TaiKhoan"].HeaderText = "Tài khoản";
-                dgvNhanVien.Columns["TrangThai"].HeaderText = "Trạng thái";
+                foreach (DataGridViewColumn col in dgvNhanVien.Columns)
+                {
+                    col.Visible = false;
+                }
+
+                if (dgvNhanVien.Columns.Contains("MaNV"))
+                {
+                    dgvNhanVien.Columns["MaNV"].Visible = true;
+                    dgvNhanVien.Columns["MaNV"].HeaderText = "Mã NV";
+                }
+                if (dgvNhanVien.Columns.Contains("HoTen"))
+                {
+                    dgvNhanVien.Columns["HoTen"].Visible = true;
+                    dgvNhanVien.Columns["HoTen"].HeaderText = "Họ tên";
+                }
+                if (dgvNhanVien.Columns.Contains("ChucVu"))
+                {
+                    dgvNhanVien.Columns["ChucVu"].Visible = true;
+                    dgvNhanVien.Columns["ChucVu"].HeaderText = "Chức vụ";
+                }
+                if (dgvNhanVien.Columns.Contains("SoDienThoai"))
+                {
+                    dgvNhanVien.Columns["SoDienThoai"].Visible = true;
+                    dgvNhanVien.Columns["SoDienThoai"].HeaderText = "SĐT";
+                }
+                if (dgvNhanVien.Columns.Contains("TaiKhoan"))
+                {
+                    dgvNhanVien.Columns["TaiKhoan"].Visible = true;
+                    dgvNhanVien.Columns["TaiKhoan"].HeaderText = "Tài khoản";
+                }
+                if (dgvNhanVien.Columns.Contains("TrangThai"))
+                {
+                    dgvNhanVien.Columns["TrangThai"].Visible = true;
+                    dgvNhanVien.Columns["TrangThai"].HeaderText = "Trạng thái";
+                }
             }
         }
 
@@ -126,7 +157,7 @@ namespace FloriSys._2_QuanLy
 
             if (string.IsNullOrEmpty(hoTen) || string.IsNullOrEmpty(taiKhoan))
             {
-                MessageBox.Show("Họ tên và Tài khoản không được để trống.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ShowWarning("Họ tên và Tài khoản không được để trống.");
                 return;
             }
 
@@ -143,32 +174,28 @@ namespace FloriSys._2_QuanLy
 
                 if (isEditMode)
                 {
-                    NhanVienDAO.CapNhatNhanVien(nv);
+                    _nvRepo.CapNhatNhanVien(nv);
                     if (!string.IsNullOrEmpty(matKhau))
                     {
                         // Cập nhật mật khẩu nếu có nhập
                         string hash = SessionManager.HashSHA256(matKhau);
-                        string sql = "UPDATE NHAN_VIEN SET MatKhau=@MK WHERE MaNV=@Ma";
-                        DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[] {
-                            new SqlParameter("@MK", hash),
-                            new SqlParameter("@Ma", nv.MaNV)
-                        });
+                        _nvRepo.ResetMatKhau(nv.MaNV, hash);
                     }
-                    MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowSuccess("Cập nhật thành công!");
                 }
                 else
                 {
                     if (string.IsNullOrEmpty(matKhau)) matKhau = "123456"; // Mật khẩu mặc định
                     nv.MatKhau = SessionManager.HashSHA256(matKhau);
-                    NhanVienDAO.ThemNhanVien(nv);
-                    MessageBox.Show("Thêm nhân viên mới thành công!\nMật khẩu mặc định là: 123456 (nếu không nhập)", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _nvRepo.ThemNhanVien(nv);
+                    ShowSuccess("Thêm nhân viên mới thành công!\nMật khẩu mặc định là: 123456 (nếu không nhập)");
                 }
                 LoadData();
                 ResetForm();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError("Lỗi: " + ex.Message);
             }
         }
 
@@ -179,9 +206,9 @@ namespace FloriSys._2_QuanLy
             string newStatus = currentStatus == "DangLam" ? "DaNghi" : "DangLam";
 
             string msg = currentStatus == "DangLam" ? "Bạn có chắc muốn cho nhân viên này nghỉ việc?" : "Bạn có chắc muốn cho nhân viên này đi làm lại?";
-            if (MessageBox.Show(msg, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Confirm(msg))
             {
-                NhanVienDAO.CapNhatTrangThai(maNV, newStatus);
+                _nvRepo.CapNhatTrangThai(maNV, newStatus);
                 LoadData();
                 ResetForm();
             }

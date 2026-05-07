@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 using FloriSys.Services;
+using FloriSys.Shared;
 
 namespace FloriSys._5_GiaoHang
 {
-    public partial class ucCapNhatGH : UserControl
+    public partial class ucCapNhatGH : BaseUserControl
     {
+        private readonly GiaoHangRepository _ghRepo = new GiaoHangRepository();
         private List<GiaoHang> dsDonGiao;
 
         public ucCapNhatGH()
@@ -28,11 +29,11 @@ namespace FloriSys._5_GiaoHang
             LoadData();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             try
             {
-                dsDonGiao = GiaoHangDAO.LayDonCuaShipper(SessionManager.MaNV);
+                dsDonGiao = _ghRepo.LayDonCuaShipper(SessionManager.MaNV);
                 if (dsDonGiao == null || dsDonGiao.Count == 0)
                 {
                     pnlDon1.Visible = false;
@@ -40,7 +41,6 @@ namespace FloriSys._5_GiaoHang
                     return;
                 }
 
-                // Find the first DangGiao order for card 1
                 GiaoHang dangGiao = null;
                 GiaoHang choPhanCong = null;
                 foreach (GiaoHang gh in dsDonGiao)
@@ -49,66 +49,41 @@ namespace FloriSys._5_GiaoHang
                     if ((gh.TrangThai == "ChoPhanCong" || gh.TrangThai == "GiaoLai") && choPhanCong == null) choPhanCong = gh;
                 }
 
-                // Card 1 - Đơn đang giao (urgent)
                 if (dangGiao != null)
                 {
                     pnlDon1.Visible = true;
                     pnlDon1.Tag = dangGiao.MaGiaoHang;
                     lblMaDon1.Text = dangGiao.MaDon + " – " + dangGiao.TenKH;
-                    lblInfo1.Text = "📍 " + (!string.IsNullOrEmpty(dangGiao.DiaChi) ? dangGiao.DiaChi : "—") +
-                                    "   📞 " + (!string.IsNullOrEmpty(dangGiao.SoDienThoai) ? dangGiao.SoDienThoai : "—");
+                    lblInfo1.Text = "📍 " + (dangGiao.DiaChi ?? "—") + "   📞 " + (dangGiao.SoDienThoai ?? "—");
                     lblTien1.Text = string.Format("💰 {0:N0}đ – COD", dangGiao.TongTien);
-
-                    string ghiChu = dangGiao.GhiChuDon ?? "";
-                    string ghiChuGH = dangGiao.GhiChuGiaoHang ?? "";
-                    label1.Text = ghiChu.Length > 0 ? "📝 " + ghiChu : "";
-                    label2.Text = ghiChuGH.Length > 0 ? "🚚 " + ghiChuGH : "";
+                    label1.Text = !string.IsNullOrEmpty(dangGiao.GhiChuDon) ? "📝 " + dangGiao.GhiChuDon : "";
+                    label2.Text = !string.IsNullOrEmpty(dangGiao.GhiChuGiaoHang) ? "🚚 " + dangGiao.GhiChuGiaoHang : "";
                 }
-                else
-                {
-                    pnlDon1.Visible = false;
-                }
+                else { pnlDon1.Visible = false; }
 
-                // Card 2 - Đơn chờ giao tiếp theo
                 if (choPhanCong != null)
                 {
                     panel2.Visible = true;
                     panel2.Tag = choPhanCong.MaGiaoHang;
                     label7.Text = choPhanCong.MaDon + " – " + choPhanCong.TenKH;
-                    label6.Text = "📍 " + (!string.IsNullOrEmpty(choPhanCong.DiaChi) ? choPhanCong.DiaChi : "—");
+                    label6.Text = "📍 " + (choPhanCong.DiaChi ?? "—");
                     label5.Text = "⏰ Chờ giao";
                     label4.Text = string.Format("💰 {0:N0}đ", choPhanCong.TongTien);
-                    label3.Text = "📞 " + (!string.IsNullOrEmpty(choPhanCong.SoDienThoai) ? choPhanCong.SoDienThoai : "—");
+                    label3.Text = "📞 " + (choPhanCong.SoDienThoai ?? "—");
                 }
-                else
-                {
-                    panel2.Visible = false;
-                }
+                else { panel2.Visible = false; }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tải dữ liệu giao hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { ShowError("Lỗi tải dữ liệu: " + ex.Message); }
         }
 
         private void btnGiaoXong1_Click(object sender, EventArgs e)
         {
             string maGH = pnlDon1.Tag?.ToString();
             if (string.IsNullOrEmpty(maGH)) return;
-
-            if (MessageBox.Show("Xác nhận đơn này đã giao thành công?", "Xác nhận",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Confirm("Xác nhận đơn này đã giao thành công?"))
             {
-                try
-                {
-                    GiaoHangDAO.CapNhatTrangThai(maGH, "GiaoThanhCong");
-                    MessageBox.Show("✅ Đã cập nhật giao thành công!", "Thông báo");
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                try { _ghRepo.CapNhatTrangThai(maGH, "GiaoThanhCong"); ShowSuccess("Đã giao thành công!"); LoadData(); }
+                catch (Exception ex) { ShowError(ex.Message); }
             }
         }
 
@@ -116,20 +91,10 @@ namespace FloriSys._5_GiaoHang
         {
             string maGH = pnlDon1.Tag?.ToString();
             if (string.IsNullOrEmpty(maGH)) return;
-
-            if (MessageBox.Show("Ghi nhận giao lại (khách vắng mặt)?", "Xác nhận",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Confirm("Ghi nhận giao lại (khách vắng)?"))
             {
-                try
-                {
-                    GiaoHangDAO.CapNhatTrangThai(maGH, "GiaoLai", "Khách vắng mặt, hẹn giao lại");
-                    MessageBox.Show("🔄 Đã ghi nhận giao lại.", "Thông báo");
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                try { _ghRepo.CapNhatTrangThai(maGH, "GiaoLai", "Khách vắng"); ShowSuccess("Đã ghi nhận giao lại."); LoadData(); }
+                catch (Exception ex) { ShowError(ex.Message); }
             }
         }
 
@@ -137,20 +102,10 @@ namespace FloriSys._5_GiaoHang
         {
             string maGH = pnlDon1.Tag?.ToString();
             if (string.IsNullOrEmpty(maGH)) return;
-
-            if (MessageBox.Show("Xác nhận HOÀN HÀNG đơn này?\nHàng sẽ được ghi nhận trả về kho.", "Hoàn hàng",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (Confirm("Xác nhận HOÀN HÀNG đơn này?"))
             {
-                try
-                {
-                    GiaoHangDAO.CapNhatTrangThai(maGH, "HoanHang", "Shipper hoàn hàng");
-                    MessageBox.Show("↩️ Đã hoàn hàng.", "Thông báo");
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                try { _ghRepo.CapNhatTrangThai(maGH, "HoanHang", "Shipper hoàn hàng"); ShowSuccess("Đã hoàn hàng."); LoadData(); }
+                catch (Exception ex) { ShowError(ex.Message); }
             }
         }
 
@@ -158,26 +113,11 @@ namespace FloriSys._5_GiaoHang
         {
             string maGH = panel2.Tag?.ToString();
             if (string.IsNullOrEmpty(maGH)) return;
-
-            if (MessageBox.Show("Bắt đầu giao đơn này?", "Xác nhận",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Confirm("Bắt đầu giao đơn này?"))
             {
-                try
-                {
-                    GiaoHangDAO.CapNhatTrangThai(maGH, "DangGiao");
-                    MessageBox.Show("🛵 Đã bắt đầu giao!", "Thông báo");
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                try { _ghRepo.CapNhatTrangThai(maGH, "DangGiao"); ShowSuccess("Đã bắt đầu giao!"); LoadData(); }
+                catch (Exception ex) { ShowError(ex.Message); }
             }
         }
-
-        private void lblTien1_Click(object sender, EventArgs e) { }
-        private void panel1_Paint(object sender, PaintEventArgs e) { }
-        private void panel2_Paint(object sender, PaintEventArgs e) { }
-        private void pnlDon1_Paint(object sender, PaintEventArgs e) { }
     }
 }

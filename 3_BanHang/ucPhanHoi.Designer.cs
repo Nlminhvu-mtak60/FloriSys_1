@@ -59,7 +59,7 @@ namespace FloriSys._3_BanHang
             this.lblSubTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblSubTitle.Location = new System.Drawing.Point(20, 45);
             this.lblSubTitle.Name = "lblSubTitle";
-            this.lblSubTitle.Size = new System.Drawing.Size(161, 20);
+            this.lblSubTitle.Size = new System.Drawing.Size(156, 20);
             this.lblSubTitle.TabIndex = 1;
             this.lblSubTitle.Text = "Đơn hàng DH2026044";
             // 
@@ -69,15 +69,15 @@ namespace FloriSys._3_BanHang
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(15, 10);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(262, 37);
+            this.lblTitle.Size = new System.Drawing.Size(249, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Ghi nhận phản hồi";
             // 
             // pnlMain
             // 
             this.pnlMain.ColumnCount = 2;
-            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
-            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
+            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40.81818F));
+            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 59.18182F));
             this.pnlMain.Controls.Add(this.pnlLeft, 0, 0);
             this.pnlMain.Controls.Add(this.pnlRight, 1, 0);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -95,7 +95,7 @@ namespace FloriSys._3_BanHang
             this.pnlLeft.Location = new System.Drawing.Point(10, 10);
             this.pnlLeft.Margin = new System.Windows.Forms.Padding(10);
             this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Size = new System.Drawing.Size(475, 700);
+            this.pnlLeft.Size = new System.Drawing.Size(429, 700);
             this.pnlLeft.TabIndex = 0;
             // 
             // grpNew
@@ -109,7 +109,7 @@ namespace FloriSys._3_BanHang
             this.grpNew.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.grpNew.Location = new System.Drawing.Point(0, 0);
             this.grpNew.Name = "grpNew";
-            this.grpNew.Size = new System.Drawing.Size(475, 450);
+            this.grpNew.Size = new System.Drawing.Size(429, 450);
             this.grpNew.TabIndex = 0;
             this.grpNew.TabStop = false;
             this.grpNew.Text = "📝 Ghi nhận phản hồi mới";
@@ -142,7 +142,7 @@ namespace FloriSys._3_BanHang
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.label2.Location = new System.Drawing.Point(20, 105);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(133, 20);
+            this.label2.Size = new System.Drawing.Size(136, 20);
             this.label2.TabIndex = 2;
             this.label2.Text = "Nội dung phản hồi:";
             // 
@@ -170,10 +170,10 @@ namespace FloriSys._3_BanHang
             // 
             this.pnlRight.Controls.Add(this.grpHistory);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlRight.Location = new System.Drawing.Point(505, 10);
+            this.pnlRight.Location = new System.Drawing.Point(459, 10);
             this.pnlRight.Margin = new System.Windows.Forms.Padding(10);
             this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Size = new System.Drawing.Size(585, 700);
+            this.pnlRight.Size = new System.Drawing.Size(631, 700);
             this.pnlRight.TabIndex = 1;
             // 
             // grpHistory
@@ -183,7 +183,7 @@ namespace FloriSys._3_BanHang
             this.grpHistory.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.grpHistory.Location = new System.Drawing.Point(0, 0);
             this.grpHistory.Name = "grpHistory";
-            this.grpHistory.Size = new System.Drawing.Size(585, 700);
+            this.grpHistory.Size = new System.Drawing.Size(631, 700);
             this.grpHistory.TabIndex = 0;
             this.grpHistory.TabStop = false;
             this.grpHistory.Text = "📋 Lịch sử phản hồi";
@@ -197,7 +197,7 @@ namespace FloriSys._3_BanHang
             this.dgvPhanHoi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(242)))), ((int)(((byte)(244)))));
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
@@ -209,7 +209,7 @@ namespace FloriSys._3_BanHang
             this.dgvPhanHoi.RowHeadersVisible = false;
             this.dgvPhanHoi.RowHeadersWidth = 51;
             this.dgvPhanHoi.RowTemplate.Height = 35;
-            this.dgvPhanHoi.Size = new System.Drawing.Size(579, 671);
+            this.dgvPhanHoi.Size = new System.Drawing.Size(625, 671);
             this.dgvPhanHoi.TabIndex = 0;
             // 
             // ucPhanHoi

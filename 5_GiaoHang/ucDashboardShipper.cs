@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Services;
+using FloriSys.Shared;
 
 namespace FloriSys._5_GiaoHang
 {
-    public partial class ucDashboardShipper : UserControl
+    public partial class ucDashboardShipper : BaseUserControl
     {
-        private string currentUserMaNV = FloriSys.Services.SessionManager.MaNV;
+        private readonly GiaoHangRepository _ghRepo = new GiaoHangRepository();
+        private string currentUserMaNV = SessionManager.MaNV;
         private string currentMaGH = "";
 
-        public ucDashboardShipper()
-        {
-            InitializeComponent();
-        }
+        public ucDashboardShipper() { InitializeComponent(); }
 
-        private void ucDashboardShipper_Load(object sender, EventArgs e)
-        {
-            LoadData();
-        }
+        private void ucDashboardShipper_Load(object sender, EventArgs e) { LoadData(); }
 
-        private void LoadData()
+        public override void LoadData()
         {
             LoadStats();
             LoadList();
@@ -30,7 +27,7 @@ namespace FloriSys._5_GiaoHang
 
         private void LoadStats()
         {
-            ThongKeShipper stats = GiaoHangDAO.ThongKeShipper(currentUserMaNV);
+            ThongKeShipper stats = _ghRepo.ThongKe(currentUserMaNV);
             if (stats != null)
             {
                 lblValTongDon.Text = stats.TongDonHnay.ToString();
@@ -42,24 +39,39 @@ namespace FloriSys._5_GiaoHang
 
         private void LoadList()
         {
-            List<GiaoHang> dsGH = GiaoHangDAO.LayDonCuaShipper(currentUserMaNV);
+            List<GiaoHang> dsGH = _ghRepo.LayDonCuaShipper(currentUserMaNV);
+            dgvAllDon.DataSource = null; // Reset to ensure columns are refreshed if needed
             dgvAllDon.DataSource = dsGH;
+            
             if (dgvAllDon.Columns.Count > 0)
             {
-                dgvAllDon.Columns["MaGiaoHang"].Visible = false;
+                var visibleCols = new List<string> { "MaDon", "TenKH", "DiaChi", "SoDienThoai", "TrangThaiDisplay", "TongTien", "GhiChuDon", "GhiChuGiaoHang" };
+                foreach (DataGridViewColumn col in dgvAllDon.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
+                // Configure visible columns
                 dgvAllDon.Columns["MaDon"].HeaderText = "Mã đơn";
                 dgvAllDon.Columns["TenKH"].HeaderText = "Khách hàng";
                 dgvAllDon.Columns["DiaChi"].HeaderText = "Địa chỉ";
                 dgvAllDon.Columns["SoDienThoai"].HeaderText = "SĐT";
-                dgvAllDon.Columns["TrangThai"].HeaderText = "Trạng thái";
+                
+                if (dgvAllDon.Columns.Contains("TrangThaiDisplay"))
+                {
+                    dgvAllDon.Columns["TrangThaiDisplay"].HeaderText = "Trạng thái";
+                    dgvAllDon.Columns["TrangThaiDisplay"].DisplayIndex = 4; // Position after SĐT
+                }
+
                 dgvAllDon.Columns["TongTien"].HeaderText = "Tổng tiền";
                 dgvAllDon.Columns["TongTien"].DefaultCellStyle.Format = "N0";
+                
+                if (dgvAllDon.Columns.Contains("GhiChuDon"))
+                    dgvAllDon.Columns["GhiChuDon"].HeaderText = "Ghi chú đơn";
+
+                if (dgvAllDon.Columns.Contains("GhiChuGiaoHang"))
+                    dgvAllDon.Columns["GhiChuGiaoHang"].HeaderText = "Ghi chú giao";
             }
-            
             dgvAllDon.ReadOnly = true;
             dgvAllDon.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvAllDon.MultiSelect = false;
-            dgvAllDon.AllowUserToResizeRows = false;
         }
 
         private void LoadCurrentDelivery()
@@ -68,31 +80,12 @@ namespace FloriSys._5_GiaoHang
             GiaoHang current = null;
             if (dsGH != null)
             {
-                // Prioritize the specifically selected order
                 if (!string.IsNullOrEmpty(currentMaGH))
-                {
                     foreach (GiaoHang gh in dsGH)
-                    {
-                        if (gh.TrangThai == "DangGiao" && gh.MaGiaoHang == currentMaGH)
-                        {
-                            current = gh;
-                            break;
-                        }
-                    }
-                }
-
-                // Fallback to the first available DangGiao
+                        if (gh.TrangThai == "DangGiao" && gh.MaGiaoHang == currentMaGH) { current = gh; break; }
                 if (current == null)
-                {
                     foreach (GiaoHang gh in dsGH)
-                    {
-                        if (gh.TrangThai == "DangGiao")
-                        {
-                            current = gh;
-                            break;
-                        }
-                    }
-                }
+                        if (gh.TrangThai == "DangGiao") { current = gh; break; }
             }
 
             if (current != null)
@@ -104,33 +97,30 @@ namespace FloriSys._5_GiaoHang
                 lblCurPhone.Text = "📞 SĐT: " + current.SoDienThoai;
                 lblCurAddress.Text = "📍 Địa chỉ: " + current.DiaChi;
             }
-            else
-            {
-                pnlCurrent.Visible = false;
-            }
+            else { pnlCurrent.Visible = false; }
         }
 
         private void btnThanhCong_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(currentMaGH)) return;
-            GiaoHangDAO.CapNhatTrangThai(currentMaGH, "GiaoThanhCong");
-            MessageBox.Show("Đã cập nhật giao hàng thành công!");
+            _ghRepo.CapNhatTrangThai(currentMaGH, "GiaoThanhCong");
+            ShowSuccess("Đã cập nhật giao hàng thành công!");
             LoadData();
         }
 
         private void btnKhachVang_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(currentMaGH)) return;
-            GiaoHangDAO.CapNhatTrangThai(currentMaGH, "GiaoLai");
-            MessageBox.Show("Ghi nhận khách vắng mặt.");
+            _ghRepo.CapNhatTrangThai(currentMaGH, "GiaoLai");
+            ShowSuccess("Ghi nhận khách vắng mặt.");
             LoadData();
         }
 
         private void btnHoanHang_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(currentMaGH)) return;
-            GiaoHangDAO.CapNhatTrangThai(currentMaGH, "HoanHang");
-            MessageBox.Show("Đã ghi nhận hoàn hàng.");
+            _ghRepo.CapNhatTrangThai(currentMaGH, "HoanHang");
+            ShowSuccess("Đã ghi nhận hoàn hàng.");
             LoadData();
         }
 
@@ -140,12 +130,11 @@ namespace FloriSys._5_GiaoHang
             {
                 GiaoHang gh = dgvAllDon.Rows[e.RowIndex].DataBoundItem as GiaoHang;
                 if (gh == null) return;
-
                 if (gh.TrangThai == "ChoPhanCong" || gh.TrangThai == "GiaoLai")
                 {
-                    if (MessageBox.Show("Bạn muốn bắt đầu giao đơn này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (Confirm("Bạn muốn bắt đầu giao đơn này?"))
                     {
-                        GiaoHangDAO.CapNhatTrangThai(gh.MaGiaoHang, "DangGiao");
+                        _ghRepo.CapNhatTrangThai(gh.MaGiaoHang, "DangGiao");
                         currentMaGH = gh.MaGiaoHang;
                         LoadData();
                     }

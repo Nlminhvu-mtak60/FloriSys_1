@@ -369,7 +369,7 @@ namespace FloriSys.Shared
             this.lblNhomTaiKhoan.TabIndex = 5;
             this.lblNhomTaiKhoan.Text = "TÀI KHOẢN";
             this.lblNhomTaiKhoan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblNhomTaiKhoan.Click += new System.EventHandler(this.lblNhomTaiKhoan_Click);
+
             // 
             // lblNhomQuanLy
             // 
@@ -381,7 +381,7 @@ namespace FloriSys.Shared
             this.lblNhomQuanLy.TabIndex = 4;
             this.lblNhomQuanLy.Text = "QUẢN LÝ";
             this.lblNhomQuanLy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblNhomQuanLy.Click += new System.EventHandler(this.lblNhomQuanLy_Click);
+
             // 
             // lblNhomGiaoHang
             // 
@@ -393,7 +393,7 @@ namespace FloriSys.Shared
             this.lblNhomGiaoHang.TabIndex = 3;
             this.lblNhomGiaoHang.Text = "GIAO HÀNG";
             this.lblNhomGiaoHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblNhomGiaoHang.Click += new System.EventHandler(this.lblNhomGiaoHang_Click);
+
             // 
             // btnPhanCong
             // 
@@ -423,7 +423,7 @@ namespace FloriSys.Shared
             this.lblNhomKhoHang.TabIndex = 2;
             this.lblNhomKhoHang.Text = "KHO HÀNG";
             this.lblNhomKhoHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblNhomKhoHang.Click += new System.EventHandler(this.lblNhomKhoHang_Click);
+
             // 
             // btnDanhSachGiao
             // 
@@ -525,7 +525,7 @@ namespace FloriSys.Shared
             this.lblNhomDonHang.TabIndex = 1;
             this.lblNhomDonHang.Text = "ĐƠN HÀNG";
             this.lblNhomDonHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblNhomDonHang.Click += new System.EventHandler(this.lblNhomDonHang_Click);
+
             // 
             // lblNhomTongQuan
             // 
@@ -537,7 +537,7 @@ namespace FloriSys.Shared
             this.lblNhomTongQuan.TabIndex = 0;
             this.lblNhomTongQuan.Text = "TỔNG QUAN";
             this.lblNhomTongQuan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblNhomTongQuan.Click += new System.EventHandler(this.lblNhomTongQuan_Click);
+
             // 
             // pnlNguoiDung
             // 

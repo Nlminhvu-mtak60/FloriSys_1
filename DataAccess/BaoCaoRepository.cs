@@ -6,9 +6,14 @@ using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
-    public class BaoCaoDAO
+    /// <summary>
+    /// BaoCaoRepository - reporting/statistics repository.
+    /// Instance methods (OOP) instead of static.
+    /// Does not inherit BaseRepository because it returns multiple DTO types, not a single entity.
+    /// </summary>
+    public class BaoCaoRepository
     {
-        public static BaoCaoDoanhThu DoanhThuNgay(DateTime ngay)
+        public BaoCaoDoanhThu DoanhThuNgay(DateTime ngay)
         {
             return DatabaseHelper.ExecuteSingle<BaoCaoDoanhThu>("sp_BaoCaoDoanhThuNgay", new SqlParameter[]
             {
@@ -16,7 +21,7 @@ namespace FloriSys.DataAccess
             });
         }
 
-        public static BaoCaoDoanhThu DoanhThuThang(int thang, int nam)
+        public BaoCaoDoanhThu DoanhThuThang(int thang, int nam)
         {
             return DatabaseHelper.ExecuteSingle<BaoCaoDoanhThu>("sp_BaoCaoDoanhThuThang", new SqlParameter[]
             {
@@ -25,7 +30,7 @@ namespace FloriSys.DataAccess
             });
         }
 
-        public static List<SanPhamBanChay> SanPhamBanChay(int? thang = null, int? nam = null)
+        public List<SanPhamBanChay> SanPhamBanChay(int? thang = null, int? nam = null)
         {
             return DatabaseHelper.ExecuteList<SanPhamBanChay>("sp_SanPhamBanChay", new SqlParameter[]
             {
@@ -34,7 +39,7 @@ namespace FloriSys.DataAccess
             });
         }
 
-        public static List<HieuSuatNhanVien> HieuSuatNhanVien(int? thang = null, int? nam = null)
+        public List<HieuSuatNhanVien> HieuSuatNhanVien(int? thang = null, int? nam = null)
         {
             return DatabaseHelper.ExecuteList<HieuSuatNhanVien>("sp_HieuSuatNhanVien", new SqlParameter[]
             {
@@ -43,12 +48,12 @@ namespace FloriSys.DataAccess
             });
         }
 
-        public static List<SanPham> BaoCaoTonKho()
+        public List<SanPham> BaoCaoTonKho()
         {
             return DatabaseHelper.ExecuteList<SanPham>("sp_CanhBaoTonKho");
         }
 
-        public static List<TopSanPhamNgay> TopSanPhamNgay(DateTime ngay)
+        public List<TopSanPhamNgay> TopSanPhamNgay(DateTime ngay)
         {
             string sql = @"SELECT TOP 10 sp.TenSP, SUM(ct.SoLuong) AS SLBan, SUM(ct.ThanhTien) AS DoanhThu
                           FROM CHI_TIET_DON_HANG ct
@@ -59,7 +64,7 @@ namespace FloriSys.DataAccess
             return DatabaseHelper.ExecuteRawList<TopSanPhamNgay>(sql, new SqlParameter[] { new SqlParameter("@Ngay", ngay.Date) });
         }
 
-        public static int SoLuongSanPhamBanNgay(DateTime ngay)
+        public int SoLuongSanPhamBanNgay(DateTime ngay)
         {
             string sql = @"SELECT ISNULL(SUM(ct.SoLuong),0) AS TongSP
                           FROM CHI_TIET_DON_HANG ct
@@ -69,7 +74,7 @@ namespace FloriSys.DataAccess
             return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0]["TongSP"]) : 0;
         }
 
-        public static ThongKeDashboard ThongKeDashboard()
+        public ThongKeDashboard ThongKeDashboard()
         {
             string sql = @"SELECT 
                 (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai != N'Huy') AS DonHomNay,
@@ -82,13 +87,13 @@ namespace FloriSys.DataAccess
             return DatabaseHelper.ExecuteRawSingle<ThongKeDashboard>(sql);
         }
 
-        public static List<SanPhamSapHet> LaySanPhamSapHet()
+        public List<SanPhamSapHet> LaySanPhamSapHet()
         {
             string sql = "SELECT TenSP, SoLuongTon FROM SAN_PHAM WHERE TrangThai=N'DangBan' AND SoLuongTon <= MucTonToiThieu";
             return DatabaseHelper.ExecuteRawList<SanPhamSapHet>(sql);
         }
 
-        public static List<DonHangGanDay> DonHangGanDay(int top = 5)
+        public List<DonHangGanDay> DonHangGanDay(int top = 5)
         {
             string sql = @"SELECT TOP (@Top) dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.TrangThai
                           FROM DON_HANG dh
@@ -97,17 +102,17 @@ namespace FloriSys.DataAccess
             return DatabaseHelper.ExecuteRawList<DonHangGanDay>(sql, new SqlParameter[] { new SqlParameter("@Top", top) });
         }
 
-        public static ThongKeKho ThongKeKho()
+        public ThongKeKho ThongKeKho()
         {
             string sql = @"SELECT 
                 (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'Moi') AS DonChoXuat,
                 (SELECT COUNT(*) FROM SAN_PHAM WHERE SoLuongTon <= MucTonToiThieu) AS SPSapHet,
-                (SELECT COUNT(*) FROM DON_HANG WHERE CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE) AND TrangThai NOT IN (N'Moi', N'Huy')) AS DaXuatHomNay,
+                (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'DangXuLy') AS DaXuatHomNay,
                 (SELECT COUNT(*) FROM PHIEU_NHAP_KHO WHERE MONTH(NgayNhap)=MONTH(GETDATE()) AND YEAR(NgayNhap)=YEAR(GETDATE())) AS PhieuNhapThang";
             return DatabaseHelper.ExecuteRawSingle<ThongKeKho>(sql);
         }
 
-        public static ThongKeBanHang ThongKeBanHang(string maNV)
+        public ThongKeBanHang ThongKeBanHang(string maNV)
         {
             string sql = @"SELECT 
                 (SELECT COUNT(*) FROM DON_HANG WHERE MaNV_TaoDon=@MaNV AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DonHomNay,
@@ -117,7 +122,7 @@ namespace FloriSys.DataAccess
             return DatabaseHelper.ExecuteRawSingle<ThongKeBanHang>(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV) });
         }
 
-        public static List<DonHangGanDay> DonHangCuaNV(string maNV, int top = 10)
+        public List<DonHangGanDay> DonHangCuaNV(string maNV, int top = 10)
         {
             string sql = @"SELECT TOP (@Top) dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.NgayTao, dh.TrangThai
                           FROM DON_HANG dh
@@ -127,7 +132,7 @@ namespace FloriSys.DataAccess
             return DatabaseHelper.ExecuteRawList<DonHangGanDay>(sql, new SqlParameter[] { new SqlParameter("@MaNV", maNV), new SqlParameter("@Top", top) });
         }
 
-        public static List<DonHangGanDay> DonHangChoXuat()
+        public List<DonHangGanDay> DonHangChoXuat()
         {
             string sql = @"SELECT dh.MaDon, kh.HoTen AS TenKH, dh.NgayTao, dh.TrangThai
                           FROM DON_HANG dh
@@ -137,7 +142,7 @@ namespace FloriSys.DataAccess
             return DatabaseHelper.ExecuteRawList<DonHangGanDay>(sql);
         }
 
-        public static List<DoanhThuNgay> DoanhThu7Ngay()
+        public List<DoanhThuNgay> DoanhThu7Ngay()
         {
             string sql = @"WITH Last7Days AS (
                                 SELECT CAST(GETDATE() AS DATE) AS Ngay
@@ -154,7 +159,7 @@ namespace FloriSys.DataAccess
             return DatabaseHelper.ExecuteRawList<DoanhThuNgay>(sql);
         }
 
-        public static List<DoanhThuNgay> DoanhThuTheoNgayTrongThang(int thang, int nam)
+        public List<DoanhThuNgay> DoanhThuTheoNgayTrongThang(int thang, int nam)
         {
             return DatabaseHelper.ExecuteList<DoanhThuNgay>("sp_DoanhThuTheoNgayTrongThang", new SqlParameter[]
             {

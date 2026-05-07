@@ -22,6 +22,7 @@ namespace FloriSys._7_DanhMuc
             this.lblSubTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlActions = new System.Windows.Forms.Panel();
+            this.btnXoa = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnFilter = new System.Windows.Forms.Button();
             this.cboLoai = new System.Windows.Forms.ComboBox();
@@ -66,6 +67,7 @@ namespace FloriSys._7_DanhMuc
             // 
             // pnlActions
             // 
+            this.pnlActions.Controls.Add(this.btnXoa);
             this.pnlActions.Controls.Add(this.btnAdd);
             this.pnlActions.Controls.Add(this.btnFilter);
             this.pnlActions.Controls.Add(this.cboLoai);
@@ -91,6 +93,23 @@ namespace FloriSys._7_DanhMuc
             this.btnAdd.Text = "+ Thêm sản phẩm";
             this.btnAdd.UseVisualStyleBackColor = false;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            // 
+            // btnXoa
+            // 
+            this.btnXoa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnXoa.BackColor = System.Drawing.Color.White;
+            this.btnXoa.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.btnXoa.FlatAppearance.BorderSize = 1;
+            this.btnXoa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnXoa.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.btnXoa.Location = new System.Drawing.Point(670, 12);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(150, 35);
+            this.btnXoa.TabIndex = 4;
+            this.btnXoa.Text = "🗑️ Xóa sản phẩm";
+            this.btnXoa.UseVisualStyleBackColor = false;
+            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
             // 
             // btnFilter
             // 
@@ -182,5 +201,6 @@ namespace FloriSys._7_DanhMuc
         private System.Windows.Forms.ComboBox cboLoai;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.DataGridView dgvSanPham;
+        private System.Windows.Forms.Button btnXoa;
     }
 }

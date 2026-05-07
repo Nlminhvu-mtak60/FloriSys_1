@@ -1,36 +1,44 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
-    public class HangHuDAO
+    /// <summary>
+    /// HangHu repository - inherits BaseRepository&lt;HangHu&gt;.
+    /// </summary>
+    public class HangHuRepository : BaseRepository<HangHu>
     {
-        public static void GhiNhan(HangHu hh)
+        public override string TableName => "HANG_HU";
+        public override string IdColumn => "MaPhieuHuy";
+        public override string IdPrefix => "PHH";
+
+        public void GhiNhan(HangHu hh)
         {
-            string maPhieu = DatabaseHelper.GenerateCode("PHH", "HANG_HU", "MaPhieuHuy");
-            DatabaseHelper.ExecuteNonQuery("sp_GhiNhanHangHu", new SqlParameter[]
+            string maPhieu = TaoMoi();
+            hh.MaPhieuHuy = maPhieu;
+            ExecuteSP("sp_GhiNhanHangHu", new SqlParameter[]
             {
                 new SqlParameter("@MaPhieuHuy", maPhieu),
                 new SqlParameter("@MaSP", hh.MaSP),
                 new SqlParameter("@SoLuong", hh.SoLuong),
                 new SqlParameter("@LyDo", hh.LyDo),
-                new SqlParameter("@GhiChu", (object)hh.GhiChu ?? DBNull.Value)
+                NullableParam("@GhiChu", hh.GhiChu)
             });
         }
 
-        public static List<HangHu> LayLichSu(int thang = 0, int nam = 0)
+        public List<HangHu> LayLichSu(int thang = 0, int nam = 0)
         {
-            string sql = @"SELECT h.MaPhieuHuy, s.TenSP, h.SoLuong, h.LyDo, h.NgayHuy, h.GhiChu 
+            string sql = @"SELECT h.MaPhieuHuy, s.TenSP, h.SoLuong, h.LyDo, h.NgayHuy, h.GhiChu, s.GiaNhap 
                           FROM HANG_HU h JOIN SAN_PHAM s ON h.MaSP = s.MaSP";
             if (thang > 0 && nam > 0)
             {
                 sql += " WHERE MONTH(NgayHuy) = @Thang AND YEAR(NgayHuy) = @Nam";
             }
             sql += " ORDER BY NgayHuy DESC";
-            return DatabaseHelper.ExecuteRawList<HangHu>(sql, new SqlParameter[] {
+            return GetList(sql, new List<SqlParameter>
+            {
                 new SqlParameter("@Thang", thang),
                 new SqlParameter("@Nam", nam)
             });

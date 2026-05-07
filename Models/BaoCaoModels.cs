@@ -126,5 +126,17 @@ namespace FloriSys.Models
         public int SoLuong { get; set; }
         public int SoLuongTon { get; set; }
         public string TinhTrangKho { get; set; }
+        public string HinhThucNhanHang { get; set; }
+    }
+
+    /// <summary>
+    /// Lịch sử trạng thái đơn hàng
+    /// </summary>
+    public class LichSuDonHang
+    {
+        public string MaDon { get; set; }
+        public string TrangThai { get; set; }
+        public DateTime ThoiGian { get; set; }
+        public string GhiChu { get; set; }
     }
 }

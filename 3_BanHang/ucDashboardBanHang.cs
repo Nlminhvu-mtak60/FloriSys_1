@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._3_BanHang
 {
-    public partial class ucDashboardBanHang : UserControl
+    public partial class ucDashboardBanHang : BaseUserControl
     {
+        private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
+        private readonly SanPhamRepository _spRepo = new SanPhamRepository();
         private string currentUserMaNV = FloriSys.Services.SessionManager.MaNV;
 
         public ucDashboardBanHang()
@@ -20,7 +23,7 @@ namespace FloriSys._3_BanHang
             LoadData();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             LoadStats();
             LoadDonHang();
@@ -29,7 +32,7 @@ namespace FloriSys._3_BanHang
 
         private void LoadStats()
         {
-            ThongKeBanHang stats = BaoCaoDAO.ThongKeBanHang(currentUserMaNV);
+            ThongKeBanHang stats = _bcRepo.ThongKeBanHang(currentUserMaNV);
             if (stats != null)
             {
                 lblValDonToi.Text = stats.DonHomNay.ToString();
@@ -47,10 +50,15 @@ namespace FloriSys._3_BanHang
 
         private void LoadDonHang()
         {
-            List<DonHangGanDay> dsDH = BaoCaoDAO.DonHangCuaNV(currentUserMaNV);
+            List<DonHangGanDay> dsDH = _bcRepo.DonHangCuaNV(currentUserMaNV);
+            dgvDonGanDay.DataSource = null;
             dgvDonGanDay.DataSource = dsDH;
+            
             if (dgvDonGanDay.Columns.Count > 0)
             {
+                var visibleCols = new List<string> { "MaDon", "TenKH", "TongTien", "NgayTao", "TrangThai" };
+                foreach (DataGridViewColumn col in dgvDonGanDay.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                 dgvDonGanDay.Columns["MaDon"].HeaderText = "Mã đơn";
                 dgvDonGanDay.Columns["TenKH"].HeaderText = "Khách hàng";
                 dgvDonGanDay.Columns["TongTien"].HeaderText = "Tổng tiền";
@@ -63,12 +71,15 @@ namespace FloriSys._3_BanHang
 
         private void LoadLookup(string keyword)
         {
-            List<SanPham> dsSP = SanPhamDAO.LaySanPhamDangBan(keyword);
+            List<SanPham> dsSP = _spRepo.LaySanPhamDangBan(keyword);
+            dgvLookup.DataSource = null;
             dgvLookup.DataSource = dsSP;
+            
             if (dgvLookup.Columns.Count > 0)
             {
-                dgvLookup.Columns["MaSP"].Visible = false;
-                dgvLookup.Columns["LoaiHoa"].Visible = false;
+                var visibleCols = new List<string> { "TenSP", "GiaBan", "SoLuongTon" };
+                foreach (DataGridViewColumn col in dgvLookup.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                 dgvLookup.Columns["TenSP"].HeaderText = "Sản phẩm";
                 dgvLookup.Columns["GiaBan"].HeaderText = "Giá bán";
                 dgvLookup.Columns["GiaBan"].DefaultCellStyle.Format = "N0";

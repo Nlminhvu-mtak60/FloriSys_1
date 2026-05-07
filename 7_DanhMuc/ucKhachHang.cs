@@ -4,11 +4,13 @@ using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._7_DanhMuc
 {
-    public partial class ucKhachHang : UserControl
+    public partial class ucKhachHang : BaseUserControl
     {
+        private readonly KhachHangRepository _khRepo = new KhachHangRepository();
         private string editingMaKH = null; // null = add mode, not null = edit mode
 
         public ucKhachHang()
@@ -21,24 +23,27 @@ namespace FloriSys._7_DanhMuc
             LoadData();
         }
 
-        public void LoadData()
+        public override void LoadData()
         {
             try
             {
                 string key = txtSearch.Text.Trim();
-                List<KhachHang> dsKH = KhachHangDAO.LayDanhSach(key);
+                List<KhachHang> dsKH = _khRepo.LayDanhSach(key);
                 dgvKhachHang.DataSource = dsKH;
                 FormatGrid();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError("Lỗi tải dữ liệu: " + ex.Message);
             }
         }
 
-        private void FormatGrid()
+        public override void FormatGrid()
         {
             if (dgvKhachHang.Columns.Count == 0) return;
+
+            var visibleCols = new List<string> { "MaKH", "HoTen", "SoDienThoai", "DiaChi", "Email", "NgayTao", "TongDon" };
+            foreach (DataGridViewColumn col in dgvKhachHang.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
 
             dgvKhachHang.Columns["MaKH"].HeaderText = "Mã KH";
             dgvKhachHang.Columns["HoTen"].HeaderText = "Họ tên";
@@ -66,7 +71,8 @@ namespace FloriSys._7_DanhMuc
         private void ShowEditDialog(string title, string hoTen, string sdt, string diaChi, string email)
         {
             // Create inline edit form
-            Form frm = new Form();
+            using (Form frm = new Form())
+            {
             frm.Text = title;
             frm.Size = new Size(460, 360);
             frm.StartPosition = FormStartPosition.CenterParent;
@@ -134,7 +140,7 @@ namespace FloriSys._7_DanhMuc
             {
                 if (string.IsNullOrWhiteSpace(txtHoTen.Text) || string.IsNullOrWhiteSpace(txtSDT.Text))
                 {
-                    MessageBox.Show("Vui lòng nhập Họ tên và SĐT.", "Thiếu thông tin", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ShowWarning("Vui lòng nhập Họ tên và SĐT.");
                     return;
                 }
 
@@ -151,20 +157,20 @@ namespace FloriSys._7_DanhMuc
 
                     if (editingMaKH == null)
                     {
-                        KhachHangDAO.ThemKhachHang(kh);
-                        MessageBox.Show("Thêm khách hàng thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        _khRepo.ThemKhachHang(kh);
+                        ShowSuccess("Thêm khách hàng thành công!");
                     }
                     else
                     {
-                        KhachHangDAO.CapNhatKhachHang(kh);
-                        MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        _khRepo.CapNhatKhachHang(kh);
+                        ShowSuccess("Cập nhật thành công!");
                     }
                     frm.DialogResult = DialogResult.OK;
                     frm.Close();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ShowError("Lỗi: " + ex.Message);
                 }
             };
 
@@ -177,6 +183,7 @@ namespace FloriSys._7_DanhMuc
             {
                 LoadData();
             }
+            } // end using
         }
 
         protected override void OnLoad(EventArgs e)
@@ -216,19 +223,17 @@ namespace FloriSys._7_DanhMuc
             KhachHang kh = dgvKhachHang.CurrentRow.DataBoundItem as KhachHang;
             if (kh == null) return;
 
-            if (MessageBox.Show(
-                string.Format("Bạn có chắc muốn xóa khách hàng \"{0}\" ({1})?", kh.HoTen, kh.MaKH),
-                "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (Confirm(string.Format("Bạn có chắc muốn xóa khách hàng \"{0}\" ({1})?", kh.HoTen, kh.MaKH)))
             {
                 try
                 {
-                    KhachHangDAO.XoaKhachHang(kh.MaKH);
-                    MessageBox.Show("Đã xóa thành công.", "Thông báo");
+                    _khRepo.XoaKhachHang(kh.MaKH);
+                    ShowSuccess("Đã xóa thành công.");
                     LoadData();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ShowWarning(ex.Message);
                 }
             }
         }

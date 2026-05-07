@@ -3,7 +3,11 @@ using System.Collections.Generic;
 
 namespace FloriSys.Models
 {
-    public class PhieuNhapKho
+    /// <summary>
+    /// PhieuNhapKho model - inherits BaseEntity.
+    /// Demonstrates: INHERITANCE, ENCAPSULATION (TongTienFormatted).
+    /// </summary>
+    public class PhieuNhapKho : BaseEntity
     {
         public string MaPhieu { get; set; }
         public DateTime NgayNhap { get; set; }
@@ -18,8 +22,21 @@ namespace FloriSys.Models
 
         // Navigation property
         public List<ChiTietNhapKho> ChiTiet { get; set; } = new List<ChiTietNhapKho>();
+
+        // POLYMORPHISM: Override abstract members from BaseEntity
+        public override string DisplayText => MaPhieu ?? "";
+        public override string Id => MaPhieu;
+
+        public override bool IsValid => !string.IsNullOrEmpty(MaPhieu);
+
+        // ENCAPSULATION: Business logic
+        public string TongTienFormatted => TongTien.ToString("N0") + " VNĐ";
+        public bool HasChiTiet => ChiTiet.Count > 0;
     }
 
+    /// <summary>
+    /// ChiTietNhapKho - detail model (child entity).
+    /// </summary>
     public class ChiTietNhapKho
     {
         public string MaPhieu { get; set; }

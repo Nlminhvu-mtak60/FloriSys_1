@@ -182,8 +182,8 @@ namespace FloriSys._6_BaoCao
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlMain.ColumnCount = 2;
-            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.pnlMain.Controls.Add(this.pnlChartCard, 0, 0);
             this.pnlMain.Controls.Add(this.pnlTableCard, 1, 0);
             this.pnlMain.Location = new System.Drawing.Point(30, 230);
@@ -255,6 +255,8 @@ namespace FloriSys._6_BaoCao
             this.dgvTopSP.RowHeadersVisible = false;
             this.dgvTopSP.RowTemplate.Height = 35;
             this.dgvTopSP.Size = new System.Drawing.Size(330, 374);
+            this.dgvTopSP.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvTopSP.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTopSP.TabIndex = 1;
             // 
             // lblTableTitle

@@ -4,12 +4,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using FloriSys.DataAccess;
+using FloriSys.Shared;
 using FloriSys.Models;
 
 namespace FloriSys._6_BaoCao
 {
-    public partial class ucBaoCaoSanPham : UserControl
+    public partial class ucBaoCaoSanPham : BaseUserControl
     {
+        private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
         public ucBaoCaoSanPham()
         {
             InitializeComponent();
@@ -29,18 +31,21 @@ namespace FloriSys._6_BaoCao
             LoadData();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             try
             {
                 int? thang = cboThang.SelectedItem as int?;
                 int? nam = cboNam.SelectedItem as int?;
 
-                List<SanPhamBanChay> dsSP = BaoCaoDAO.SanPhamBanChay(thang, nam);
+                List<SanPhamBanChay> dsSP = _bcRepo.SanPhamBanChay(thang, nam);
                 dgvSanPham.DataSource = dsSP;
 
                 if (dgvSanPham.Columns.Count > 0)
                 {
+                    var visibleCols = new List<string> { "TenSP", "TongSoLuong", "TongDoanhThu" };
+                    foreach (DataGridViewColumn col in dgvSanPham.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                     dgvSanPham.Columns["TenSP"].HeaderText = "Tên sản phẩm";
                     dgvSanPham.Columns["TongSoLuong"].HeaderText = "Số lượng đã bán";
                     dgvSanPham.Columns["TongDoanhThu"].HeaderText = "Tổng doanh thu";
@@ -74,23 +79,19 @@ namespace FloriSys._6_BaoCao
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu sản phẩm: " + ex.Message);
+                ShowError("Lỗi tải dữ liệu sản phẩm: " + ex.Message);
             }
         }
 
         private void DrawPieChart(List<SanPhamBanChay> dsSP)
         {
-            string chartName = "chartSP";
-            Control existing = pnlGridCard.Controls[chartName];
-            if (existing != null) pnlGridCard.Controls.Remove(existing);
+            pnlChartArea.Controls.Clear();
 
             if (dsSP.Count == 0) return;
 
             Chart chart = new Chart();
-            chart.Name = chartName;
-            chart.Size = new Size(280, 200);
-            chart.Location = new Point(pnlGridCard.Width - 310, 20);
-            chart.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chart.Name = "chartSP";
+            chart.Dock = DockStyle.Fill;
             chart.BackColor = Color.White;
 
             ChartArea area = new ChartArea("Main");
@@ -102,8 +103,9 @@ namespace FloriSys._6_BaoCao
             Series series = new Series("SP");
             series.ChartType = SeriesChartType.Pie;
             series.Label = "#PERCENT{P0}";
-            series.Font = new Font("Segoe UI", 7f);
+            series.Font = new Font("Segoe UI", 8f);
             series["PieLabelStyle"] = "Outside";
+            series["PieLineColor"] = "Gray";
             series.Palette = ChartColorPalette.Pastel;
             chart.Series.Add(series);
 
@@ -119,8 +121,10 @@ namespace FloriSys._6_BaoCao
                 count++;
             }
 
-            pnlGridCard.Controls.Add(chart);
-            chart.BringToFront();
+            Title title = new Title("TỶ TRỌNG DOANH THU", Docking.Top, new Font("Segoe UI", 10f, FontStyle.Bold), Color.FromArgb(64, 64, 64));
+            chart.Titles.Add(title);
+
+            pnlChartArea.Controls.Add(chart);
         }
 
         private void btnLoc_Click(object sender, EventArgs e)

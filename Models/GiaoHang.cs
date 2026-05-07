@@ -2,7 +2,12 @@ using System;
 
 namespace FloriSys.Models
 {
-    public class GiaoHang
+    /// <summary>
+    /// GiaoHang model - inherits BaseEntity.
+    /// Demonstrates: ENCAPSULATION (ChoPhanCong, DangGiao status checks),
+    /// INHERITANCE (from BaseEntity), POLYMORPHISM (overrides).
+    /// </summary>
+    public class GiaoHang : BaseEntity
     {
         public string MaGiaoHang { get; set; }
         public string MaDon { get; set; }
@@ -19,6 +24,19 @@ namespace FloriSys.Models
         public decimal TongTien { get; set; }
         public string GhiChuDon { get; set; }
 
+        // POLYMORPHISM: Override abstract members from BaseEntity
+        public override string DisplayText => MaGiaoHang ?? MaDon ?? "";
+        public override string Id => MaGiaoHang;
+
+        public override bool IsValid => !string.IsNullOrEmpty(MaGiaoHang) && !string.IsNullOrEmpty(MaDon);
+
+        // ENCAPSULATION: Business logic inside the model
+        public bool ChoPhanCong => TrangThai == "ChoPhanCong";
+        public bool DangGiao => TrangThai == "DangGiao";
+        public bool GiaoThanhCong => TrangThai == "GiaoThanhCong";
+        public bool DaPhanCong => !string.IsNullOrEmpty(MaNV_Shipper);
+
+        // Computed display properties
         public string TrangThaiDisplay
         {
             get
@@ -36,6 +54,9 @@ namespace FloriSys.Models
         }
     }
 
+    /// <summary>
+    /// ThongKeShipper - DTO for shipper statistics (no BaseEntity).
+    /// </summary>
     public class ThongKeShipper
     {
         public int TongDonHnay { get; set; }

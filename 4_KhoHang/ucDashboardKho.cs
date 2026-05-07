@@ -4,17 +4,26 @@ using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._4_KhoHang
 {
-    public partial class ucDashboardKho : UserControl
+    public partial class ucDashboardKho : BaseUserControl
     {
+        private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
+        private readonly SanPhamRepository _spRepo = new SanPhamRepository();
+
         public ucDashboardKho()
         {
             InitializeComponent();
         }
 
         private void ucDashboardKho_Load(object sender, EventArgs e)
+        {
+            LoadData();
+        }
+
+        public override void LoadData()
         {
             LoadStats();
             LoadDonChoXuat();
@@ -23,7 +32,7 @@ namespace FloriSys._4_KhoHang
 
         private void LoadStats()
         {
-            ThongKeKho stats = BaoCaoDAO.ThongKeKho();
+            ThongKeKho stats = _bcRepo.ThongKeKho();
             if (stats != null)
             {
                 lblValChoXuat.Text = stats.DonChoXuat.ToString();
@@ -35,10 +44,13 @@ namespace FloriSys._4_KhoHang
 
         private void LoadDonChoXuat()
         {
-            List<DonHangGanDay> dsDH = BaoCaoDAO.DonHangChoXuat();
+            List<DonHangGanDay> dsDH = _bcRepo.DonHangChoXuat();
             dgvDonChoXuat.DataSource = dsDH;
             if (dgvDonChoXuat.Columns.Count > 0)
             {
+                var visibleCols = new List<string> { "MaDon", "TenKH", "NgayTao", "TrangThai" };
+                foreach (DataGridViewColumn col in dgvDonChoXuat.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                 dgvDonChoXuat.Columns["MaDon"].HeaderText = "Mã đơn";
                 dgvDonChoXuat.Columns["TenKH"].HeaderText = "Khách hàng";
                 dgvDonChoXuat.Columns["NgayTao"].HeaderText = "Ngày đặt";
@@ -50,7 +62,7 @@ namespace FloriSys._4_KhoHang
         private void LoadCanhBao()
         {
             flpCanhBao.Controls.Clear();
-            List<SanPham> dsSP = SanPhamDAO.LayCanhBaoTonKho();
+            List<SanPham> dsSP = _spRepo.LayCanhBaoTonKho();
 
             foreach (SanPham sp in dsSP)
             {
@@ -82,7 +94,6 @@ namespace FloriSys._4_KhoHang
             pnl.Controls.Add(lblName);
             pnl.Controls.Add(lblDetail);
 
-            // Simple progress indicator
             Panel bar = new Panel { 
                 Size = new Size(100, 10), 
                 Location = new Point(220, 25),

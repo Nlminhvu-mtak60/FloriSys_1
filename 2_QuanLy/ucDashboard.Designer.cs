@@ -52,7 +52,6 @@ namespace FloriSys._2_QuanLy
             this.lblStat1Sub = new System.Windows.Forms.Label();
             this.pnlCanhBao = new System.Windows.Forms.Panel();
             this.lblCanhBao = new System.Windows.Forms.Label();
-            this.btnTaoDon = new System.Windows.Forms.Button();
             this.btnCanhBao = new System.Windows.Forms.Button();
             this.lblDate = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
@@ -77,7 +76,6 @@ namespace FloriSys._2_QuanLy
             this.pnlContent.Controls.Add(this.pnlStat2);
             this.pnlContent.Controls.Add(this.pnlStat1);
             this.pnlContent.Controls.Add(this.pnlCanhBao);
-            this.pnlContent.Controls.Add(this.btnTaoDon);
             this.pnlContent.Controls.Add(this.btnCanhBao);
             this.pnlContent.Controls.Add(this.lblDate);
             this.pnlContent.Controls.Add(this.lblTitle);
@@ -87,7 +85,6 @@ namespace FloriSys._2_QuanLy
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(1024, 720);
             this.pnlContent.TabIndex = 3;
-            // 
             // 
             // pnlBieuDo
             // 
@@ -126,12 +123,12 @@ namespace FloriSys._2_QuanLy
             // 
             // dgvDonHang
             // 
-            this.dgvDonHang.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvDonHang.AllowUserToAddRows = false;
             this.dgvDonHang.AllowUserToDeleteRows = false;
             this.dgvDonHang.AllowUserToResizeRows = false;
+            this.dgvDonHang.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvDonHang.BackgroundColor = System.Drawing.Color.White;
             this.dgvDonHang.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvDonHang.ColumnHeadersHeight = 36;
@@ -352,26 +349,6 @@ namespace FloriSys._2_QuanLy
             this.lblCanhBao.Text = "⚠️  3 sản phẩm sắp hết hàng: Hoa hồng đỏ (còn 5), Ly trắng (còn 8), Cúc vàng (còn" +
     " 3)";
             // 
-            // btnTaoDon
-            // 
-            this.btnTaoDon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTaoDon.AutoSize = true;
-            this.btnTaoDon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
-            this.btnTaoDon.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnTaoDon.FlatAppearance.BorderSize = 0;
-            this.btnTaoDon.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(199)))), ((int)(((byte)(46)))), ((int)(((byte)(64)))));
-            this.btnTaoDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTaoDon.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnTaoDon.ForeColor = System.Drawing.Color.White;
-            this.btnTaoDon.Location = new System.Drawing.Point(861, 38);
-            this.btnTaoDon.Name = "btnTaoDon";
-            this.btnTaoDon.Size = new System.Drawing.Size(137, 36);
-            this.btnTaoDon.TabIndex = 6;
-            this.btnTaoDon.TabStop = false;
-            this.btnTaoDon.Text = "➕  Tạo đơn mới";
-            this.btnTaoDon.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnTaoDon.UseVisualStyleBackColor = false;
-            // 
             // btnCanhBao
             // 
             this.btnCanhBao.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -420,7 +397,6 @@ namespace FloriSys._2_QuanLy
             this.Name = "ucDashboard";
             this.Size = new System.Drawing.Size(1024, 720);
             this.pnlContent.ResumeLayout(false);
-            this.pnlContent.PerformLayout();
             this.pnlBieuDo.ResumeLayout(false);
             this.pnlDonHang.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvDonHang)).EndInit();
@@ -462,7 +438,6 @@ namespace FloriSys._2_QuanLy
         private System.Windows.Forms.Label lblStat1Sub;
         private System.Windows.Forms.Panel pnlCanhBao;
         private System.Windows.Forms.Label lblCanhBao;
-        private System.Windows.Forms.Button btnTaoDon;
         private System.Windows.Forms.Button btnCanhBao;
         private System.Windows.Forms.Label lblDate;
         private System.Windows.Forms.Label lblTitle;

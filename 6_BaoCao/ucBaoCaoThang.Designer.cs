@@ -49,7 +49,7 @@ namespace FloriSys._6_BaoCao
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.lblTitle.Location = new System.Drawing.Point(30, 25);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(270, 39);
+            this.lblTitle.Size = new System.Drawing.Size(263, 39);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Báo cáo tháng";
             // 
@@ -60,7 +60,7 @@ namespace FloriSys._6_BaoCao
             this.lblMonth.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
             this.lblMonth.Location = new System.Drawing.Point(33, 65);
             this.lblMonth.Name = "lblMonth";
-            this.lblMonth.Size = new System.Drawing.Size(121, 23);
+            this.lblMonth.Size = new System.Drawing.Size(124, 23);
             this.lblMonth.TabIndex = 1;
             this.lblMonth.Text = "Tháng 03/2026";
             // 
@@ -92,7 +92,7 @@ namespace FloriSys._6_BaoCao
             this.lblDoanhThuValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
             this.lblDoanhThuValue.Location = new System.Drawing.Point(15, 40);
             this.lblDoanhThuValue.Name = "lblDoanhThuValue";
-            this.lblDoanhThuValue.Size = new System.Drawing.Size(117, 46);
+            this.lblDoanhThuValue.Size = new System.Drawing.Size(75, 46);
             this.lblDoanhThuValue.TabIndex = 1;
             this.lblDoanhThuValue.Text = "0đ";
             // 
@@ -103,7 +103,7 @@ namespace FloriSys._6_BaoCao
             this.lblDoanhThuTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
             this.lblDoanhThuTitle.Location = new System.Drawing.Point(15, 15);
             this.lblDoanhThuTitle.Name = "lblDoanhThuTitle";
-            this.lblDoanhThuTitle.Size = new System.Drawing.Size(155, 20);
+            this.lblDoanhThuTitle.Size = new System.Drawing.Size(158, 20);
             this.lblDoanhThuTitle.TabIndex = 0;
             this.lblDoanhThuTitle.Text = "DOANH THU THÁNG";
             // 
@@ -114,7 +114,7 @@ namespace FloriSys._6_BaoCao
             this.pnlStat2.Controls.Add(this.lblCompareTitle);
             this.pnlStat2.Location = new System.Drawing.Point(359, 3);
             this.pnlStat2.Name = "pnlStat2";
-            this.pnlStat2.Size = new System.Drawing.Size(250, 100);
+            this.pnlStat2.Size = new System.Drawing.Size(350, 100);
             this.pnlStat2.TabIndex = 1;
             // 
             // lblCompareValue
@@ -124,7 +124,7 @@ namespace FloriSys._6_BaoCao
             this.lblCompareValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(106)))), ((int)(((byte)(79)))));
             this.lblCompareValue.Location = new System.Drawing.Point(15, 50);
             this.lblCompareValue.Name = "lblCompareValue";
-            this.lblCompareValue.Size = new System.Drawing.Size(51, 28);
+            this.lblCompareValue.Size = new System.Drawing.Size(55, 28);
             this.lblCompareValue.TabIndex = 1;
             this.lblCompareValue.Text = "+0%";
             // 
@@ -135,7 +135,7 @@ namespace FloriSys._6_BaoCao
             this.lblCompareTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
             this.lblCompareTitle.Location = new System.Drawing.Point(15, 15);
             this.lblCompareTitle.Name = "lblCompareTitle";
-            this.lblCompareTitle.Size = new System.Drawing.Size(164, 20);
+            this.lblCompareTitle.Size = new System.Drawing.Size(173, 20);
             this.lblCompareTitle.TabIndex = 0;
             this.lblCompareTitle.Text = "SO VỚI THÁNG TRƯỚC";
             // 
@@ -175,7 +175,7 @@ namespace FloriSys._6_BaoCao
             this.lblChartTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
             this.lblChartTitle.Location = new System.Drawing.Point(20, 20);
             this.lblChartTitle.Name = "lblChartTitle";
-            this.lblChartTitle.Size = new System.Drawing.Size(282, 28);
+            this.lblChartTitle.Size = new System.Drawing.Size(280, 28);
             this.lblChartTitle.TabIndex = 0;
             this.lblChartTitle.Text = "📊 Doanh thu theo ngày (đ)";
             // 
@@ -217,6 +217,7 @@ namespace FloriSys._6_BaoCao
             this.dgvTopSP.Name = "dgvTopSP";
             this.dgvTopSP.ReadOnly = true;
             this.dgvTopSP.RowHeadersVisible = false;
+            this.dgvTopSP.RowHeadersWidth = 51;
             this.dgvTopSP.RowTemplate.Height = 35;
             this.dgvTopSP.Size = new System.Drawing.Size(894, 194);
             this.dgvTopSP.TabIndex = 1;
@@ -228,7 +229,7 @@ namespace FloriSys._6_BaoCao
             this.lblTableTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
             this.lblTableTitle.Location = new System.Drawing.Point(20, 20);
             this.lblTableTitle.Name = "lblTableTitle";
-            this.lblTableTitle.Size = new System.Drawing.Size(273, 28);
+            this.lblTableTitle.Size = new System.Drawing.Size(296, 28);
             this.lblTableTitle.TabIndex = 0;
             this.lblTableTitle.Text = "🔥 Top sản phẩm trong tháng";
             // 

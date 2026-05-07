@@ -3,15 +3,20 @@ using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Services;
+using FloriSys.Shared;
 
 namespace FloriSys._1_DangNhap
 {
-    public partial class ucDoiMatKhau : UserControl
+    public partial class ucDoiMatKhau : BaseUserControl
     {
+        private readonly AuthService _authService = new AuthService();
+
         public ucDoiMatKhau()
         {
             InitializeComponent();
         }
+
+        public override void LoadData() { /* No data to load */ }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -39,20 +44,18 @@ namespace FloriSys._1_DangNhap
 
             try
             {
-                string oldHash = SessionManager.HashSHA256(oldPass);
-                string newHash = SessionManager.HashSHA256(newPass);
-
-                bool success = NhanVienDAO.DoiMatKhau(SessionManager.MaNV, oldHash, newHash);
+                string error;
+                bool success = _authService.DoiMatKhau(oldPass, newPass, out error);
 
                 if (success)
                 {
                     ShowMessage("Đổi mật khẩu thành công!", Color.Green);
                     ClearForm();
-                    MessageBox.Show("Đổi mật khẩu thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowSuccess("Đổi mật khẩu thành công!");
                 }
                 else
                 {
-                    ShowMessage("Mật khẩu hiện tại không đúng.", Color.Red);
+                    ShowMessage(error, Color.Red);
                 }
             }
             catch (Exception ex)

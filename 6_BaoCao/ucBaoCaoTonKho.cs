@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Shared;
 using FloriSys.Models;
 
 namespace FloriSys._6_BaoCao
 {
-    public partial class ucBaoCaoTonKho : UserControl
+    public partial class ucBaoCaoTonKho : BaseUserControl
     {
+        private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
         public ucBaoCaoTonKho()
         {
             InitializeComponent();
@@ -19,15 +21,19 @@ namespace FloriSys._6_BaoCao
             LoadData();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             try
             {
-                List<SanPham> dsSP = BaoCaoDAO.BaoCaoTonKho();
+                List<SanPham> dsSP = _bcRepo.BaoCaoTonKho();
                 dgvTonKho.DataSource = dsSP;
 
                 if (dgvTonKho.Columns.Count > 0)
                 {
+                    // Chỉ hiển thị các cột cần thiết
+                    var visibleCols = new List<string> { "TenSP", "SoLuongTon", "MucTonToiThieu", "TinhTrang" };
+                    foreach (DataGridViewColumn col in dgvTonKho.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                     dgvTonKho.Columns["TenSP"].HeaderText = "Tên sản phẩm";
                     dgvTonKho.Columns["SoLuongTon"].HeaderText = "Tồn kho";
                     dgvTonKho.Columns["MucTonToiThieu"].HeaderText = "Mức tối thiểu";
@@ -58,7 +64,7 @@ namespace FloriSys._6_BaoCao
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu tồn kho: " + ex.Message);
+                ShowError("Lỗi tải dữ liệu tồn kho: " + ex.Message);
             }
         }
 

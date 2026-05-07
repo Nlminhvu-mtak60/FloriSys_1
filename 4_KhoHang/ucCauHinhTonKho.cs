@@ -4,11 +4,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._4_KhoHang
 {
-    public partial class ucCauHinhTonKho : UserControl
+    public partial class ucCauHinhTonKho : BaseUserControl
     {
+        private readonly SanPhamRepository _spRepo = new SanPhamRepository();
+
         public ucCauHinhTonKho()
         {
             InitializeComponent();
@@ -19,16 +22,16 @@ namespace FloriSys._4_KhoHang
             LoadData();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
-            List<SanPham> dsSP = SanPhamDAO.LayDanhSach(txtTimKiem.Text);
+            List<SanPham> dsSP = _spRepo.LayDanhSach(txtTimKiem.Text);
             dgvSanPham.DataSource = dsSP;
 
-            // Format columns
             foreach (DataGridViewColumn col in dgvSanPham.Columns)
-            {
                 col.ReadOnly = true;
-            }
+
+            var visibleCols = new List<string> { "MaSP", "TenSP", "LoaiHoa", "SoLuongTon", "MucTonToiThieu" };
+            foreach (DataGridViewColumn col in dgvSanPham.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
 
             if (dgvSanPham.Columns.Contains("MaSP")) dgvSanPham.Columns["MaSP"].HeaderText = "Mã SP";
             if (dgvSanPham.Columns.Contains("TenSP")) dgvSanPham.Columns["TenSP"].HeaderText = "Tên sản phẩm";
@@ -38,11 +41,10 @@ namespace FloriSys._4_KhoHang
             if (dgvSanPham.Columns.Contains("MucTonToiThieu"))
             {
                 dgvSanPham.Columns["MucTonToiThieu"].HeaderText = "Ngưỡng tối thiểu";
-                dgvSanPham.Columns["MucTonToiThieu"].ReadOnly = false; // For editing
+                dgvSanPham.Columns["MucTonToiThieu"].ReadOnly = false;
                 dgvSanPham.Columns["MucTonToiThieu"].DefaultCellStyle.BackColor = Color.LightYellow;
             }
 
-            // Hide unneeded
             if (dgvSanPham.Columns.Contains("GiaBan")) dgvSanPham.Columns["GiaBan"].Visible = false;
             if (dgvSanPham.Columns.Contains("GiaNhap")) dgvSanPham.Columns["GiaNhap"].Visible = false;
             if (dgvSanPham.Columns.Contains("TrangThai")) dgvSanPham.Columns["TrangThai"].Visible = false;
@@ -65,7 +67,7 @@ namespace FloriSys._4_KhoHang
                     string maSP = row.Cells["MaSP"].Value.ToString();
                     if (int.TryParse(row.Cells["MucTonToiThieu"].Value.ToString(), out int mucTon))
                     {
-                        SanPhamDAO.CapNhatMucTonToiThieu(maSP, mucTon);
+                        _spRepo.CapNhatMucTonToiThieu(maSP, mucTon);
                     }
                     else
                     {
@@ -75,13 +77,9 @@ namespace FloriSys._4_KhoHang
             }
 
             if (hasError)
-            {
-                MessageBox.Show("Có một số giá trị không hợp lệ (không phải số nguyên).", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+                ShowWarning("Có một số giá trị không hợp lệ (không phải số nguyên).");
             else
-            {
-                MessageBox.Show("Đã lưu cấu hình ngưỡng tồn kho thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+                ShowSuccess("Đã lưu cấu hình ngưỡng tồn kho thành công!");
             LoadData();
         }
 

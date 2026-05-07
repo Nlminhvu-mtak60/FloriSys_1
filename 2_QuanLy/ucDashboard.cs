@@ -4,12 +4,15 @@ using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FloriSys._2_QuanLy
 {
-    public partial class ucDashboard : UserControl
+    public partial class ucDashboard : BaseUserControl
     {
+        private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
+
         public ucDashboard()
         {
             InitializeComponent();
@@ -21,27 +24,30 @@ namespace FloriSys._2_QuanLy
             if (!this.DesignMode)
             {
                 lblDate.Text = "Hôm nay, " + DateTime.Now.ToString("dd/MM/yyyy");
-                LoadStats();
-                LoadDonHangGanDay();
-                LoadChart();
+                LoadData();
             }
+        }
+
+        public override void LoadData()
+        {
+            LoadStats();
+            LoadDonHangGanDay();
+            LoadChart();
         }
 
         private void LoadStats()
         {
             try
             {
-                ThongKeDashboard stats = BaoCaoDAO.ThongKeDashboard();
+                ThongKeDashboard stats = _bcRepo.ThongKeDashboard();
                 if (stats != null)
                 {
-                    // === Stat 1: Đơn hàng hôm nay ===
                     lblStat1Value.Text = stats.DonHomNay.ToString();
                     lblStat1Sub.Text = TinhPhanTram(stats.DonHomNay, stats.DonHomQua, "so với hôm qua");
                     lblStat1Sub.ForeColor = stats.DonHomNay >= stats.DonHomQua
                         ? Color.FromArgb(22, 101, 52)
                         : Color.FromArgb(185, 28, 28);
 
-                    // === Stat 2: Doanh thu hôm nay ===
                     if (stats.DoanhThuHomNay >= 1000000)
                         lblStat2Value.Text = (stats.DoanhThuHomNay / 1000000).ToString("N1") + "M";
                     else
@@ -51,25 +57,22 @@ namespace FloriSys._2_QuanLy
                         ? Color.FromArgb(22, 101, 52)
                         : Color.FromArgb(185, 28, 28);
 
-                    // === Stat 3: Đơn đang giao ===
                     lblStat3Value.Text = stats.DonDangGiao.ToString();
                     lblStat3Sub.Text = stats.ShipperDangGiao > 0
                         ? $"{stats.ShipperDangGiao} shipper đang giao"
                         : "Không có đơn đang giao";
 
-                    // === Stat 4: SP sắp hết ===
                     lblStat4Value.Text = stats.SPSapHet.ToString();
                     lblStat4Sub.Text = stats.SPSapHet > 0 ? "↓ Cần nhập thêm" : "✓ Đủ hàng";
                     lblStat4Sub.ForeColor = stats.SPSapHet > 0
                         ? Color.FromArgb(232, 57, 77)
                         : Color.FromArgb(22, 101, 52);
 
-                    // === Cảnh báo ===
                     if (stats.SPSapHet > 0)
                     {
                         pnlCanhBao.Visible = true;
                         
-                        List<SanPhamSapHet> dsSapHet = BaoCaoDAO.LaySanPhamSapHet();
+                        List<SanPhamSapHet> dsSapHet = _bcRepo.LaySanPhamSapHet();
                         List<string> tenSapHet = new List<string>();
                         foreach (SanPhamSapHet sp in dsSapHet)
                         {
@@ -113,10 +116,13 @@ namespace FloriSys._2_QuanLy
         {
             try
             {
-                List<DonHangGanDay> dsDH = BaoCaoDAO.DonHangGanDay(5);
+                List<DonHangGanDay> dsDH = _bcRepo.DonHangGanDay(5);
                 dgvDonHang.DataSource = dsDH;
                 if (dgvDonHang.Columns.Count > 0)
                 {
+                    var visibleCols = new List<string> { "MaDon", "TenKH", "TongTien", "TrangThai" };
+                    foreach (DataGridViewColumn col in dgvDonHang.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                     if (dgvDonHang.Columns.Contains("MaDon")) dgvDonHang.Columns["MaDon"].HeaderText = "Mã đơn";
                     if (dgvDonHang.Columns.Contains("TenKH")) dgvDonHang.Columns["TenKH"].HeaderText = "Khách hàng";
                     if (dgvDonHang.Columns.Contains("TongTien")) 
@@ -206,7 +212,7 @@ namespace FloriSys._2_QuanLy
                 series["PointWidth"] = "0.6";
                 chart.Series.Add(series);
                 
-                List<DoanhThuNgay> dsDoanhThu = BaoCaoDAO.DoanhThu7Ngay();
+                List<DoanhThuNgay> dsDoanhThu = _bcRepo.DoanhThu7Ngay();
                 foreach (DoanhThuNgay item in dsDoanhThu)
                 {
                     series.Points.AddXY(item.Ngay.ToString("dd/MM"), item.DoanhThu);

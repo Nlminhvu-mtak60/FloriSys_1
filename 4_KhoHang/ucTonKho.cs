@@ -3,24 +3,30 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._4_KhoHang
 {
-    public partial class ucTonKho : UserControl
+    public partial class ucTonKho : BaseUserControl
     {
+        private readonly SanPhamRepository _spRepo = new SanPhamRepository();
+
         public ucTonKho() { InitializeComponent(); }
         private void ucTonKho_Load(object sender, EventArgs e) { LoadData(); }
-        public void LoadData()
+
+        public override void LoadData()
         {
             try
             {
                 string key = txtTimKiem.Text.Trim();
-                // Bỏ qua placeholder text
                 if (key == "🔍 Tìm tên sản phẩm...") key = "";
-                List<SanPham> dsSP = SanPhamDAO.LayDanhSach(key, "", "DangBan");
+                List<SanPham> dsSP = _spRepo.LayDanhSach(key, "", "DangBan");
                 dgvTonKho.DataSource = dsSP;
                 if (dgvTonKho.Columns.Count > 0)
                 {
+                    var visibleCols = new List<string> { "MaSP", "TenSP", "LoaiHoa", "SoLuongTon", "MucTonToiThieu", "GiaBan", "GiaNhap" };
+                    foreach (DataGridViewColumn col in dgvTonKho.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                     if (dgvTonKho.Columns.Contains("MaSP")) dgvTonKho.Columns["MaSP"].HeaderText = "Mã SP";
                     if (dgvTonKho.Columns.Contains("TenSP")) dgvTonKho.Columns["TenSP"].HeaderText = "Tên sản phẩm";
                     if (dgvTonKho.Columns.Contains("LoaiHoa")) dgvTonKho.Columns["LoaiHoa"].HeaderText = "Loại";
@@ -32,7 +38,7 @@ namespace FloriSys._4_KhoHang
                     dgvTonKho.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
                 }
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex) { ShowError(ex.Message); }
         }
 
         private void txtTimKiem_Enter(object sender, EventArgs e)

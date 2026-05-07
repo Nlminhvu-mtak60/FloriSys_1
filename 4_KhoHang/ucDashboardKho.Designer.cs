@@ -204,7 +204,7 @@ namespace FloriSys._4_KhoHang
             this.lblTitleDaXuat.Name = "lblTitleDaXuat";
             this.lblTitleDaXuat.Size = new System.Drawing.Size(155, 20);
             this.lblTitleDaXuat.TabIndex = 0;
-            this.lblTitleDaXuat.Text = "Đã xuất kho hôm nay";
+            this.lblTitleDaXuat.Text = "Đang chờ giao";
             // 
             // pnlPhieuNhap
             // 

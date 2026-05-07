@@ -101,57 +101,58 @@ namespace FloriSys.Shared
 
         public void PhanQuyen(string chucVu)
         {
-            // Admin: hiển thị tất cả
-            // Cashier: đơn hàng + danh mục + báo cáo (read-only)
-            // Warehouse: kho hàng
-            // Shipper: giao hàng
-
-            // Hide all first, then show based on role
-            bool isAdmin = chucVu == "Admin";
-
-            // Nhóm đơn hàng - Admin + Cashier
-            bool showDonHang = isAdmin || chucVu == "Cashier";
-            lblNhomDonHang.Visible = showDonHang;
-            btnDanhSachDon.Visible = showDonHang;
-            btnTaoDon.Visible = showDonHang;
-            btnPhanHoi.Visible = showDonHang;
-            btnTraHang.Visible = isAdmin; // Chỉ Admin mới có quyền trả hàng (DH-06)
-
-            // Nhóm kho hàng - Admin + Warehouse
-            bool showKhoHang = isAdmin || chucVu == "Warehouse";
-            lblNhomKhoHang.Visible = showKhoHang;
-            btnTonKho.Visible = showKhoHang;
-            btnNhapKho.Visible = showKhoHang;
-            btnXuatKho.Visible = showKhoHang;
-            btnHangHu.Visible = showKhoHang;
-            btnLichSuNhapKho.Visible = showKhoHang;
-
-            // Nhóm giao hàng - Admin + Shipper
-            bool showGiaoHang = isAdmin || chucVu == "Shipper";
-            lblNhomGiaoHang.Visible = showGiaoHang;
-            btnDanhSachGiao.Visible = showGiaoHang;
-            btnPhanCong.Visible = isAdmin; // Chỉ Admin phân công
+            var repo = new FloriSys.DataAccess.PhanQuyenRepository();
+            var qList = repo.LayPhanQuyen(chucVu);
             
-            // Nhóm quản lý
-            lblNhomQuanLy.Visible = isAdmin || chucVu == "Cashier";
-            btnNhanVien.Visible = isAdmin;
-            btnPhanQuyen.Visible = isAdmin;
-            btnSanPham.Visible = isAdmin || chucVu == "Cashier";
-            btnKhachHang.Visible = isAdmin || chucVu == "Cashier";
+            bool HasReadAccess(string moduleCode)
+            {
+                var q = qList.Find(x => x.Module == moduleCode);
+                return q != null && q.Xem;
+            }
 
-            // Báo cáo - Admin only
-            lblNhomBaoCao.Visible = isAdmin;
-            btnBaoCao.Visible = isAdmin;
+            bool donHang = HasReadAccess("DonHang");
+            bool khoHang = HasReadAccess("KhoHang");
+            bool giaoHang = HasReadAccess("GiaoHang");
+            bool phanHoi = HasReadAccess("PhanHoi");
+            bool traHang = HasReadAccess("TraHang");
+            bool sanPham = HasReadAccess("SanPham");
+            bool khachHang = HasReadAccess("KhachHang");
+            bool nhanVien = HasReadAccess("NhanVien");
+            bool baoCao = HasReadAccess("BaoCao");
+            bool pq = HasReadAccess("PhanQuyen");
+
+            // Bật/tắt các module con
+            btnDanhSachDon.Visible = donHang;
+            btnTaoDon.Visible = donHang;
+            btnPhanHoi.Visible = phanHoi;
+            btnTraHang.Visible = traHang;
+
+            btnTonKho.Visible = khoHang;
+            btnNhapKho.Visible = khoHang;
+            btnXuatKho.Visible = khoHang;
+            btnHangHu.Visible = khoHang;
+            btnLichSuNhapKho.Visible = khoHang;
+
+            btnDanhSachGiao.Visible = giaoHang;
+            // Shipper không được phép truy cập menu Phân công giao hàng
+            btnPhanCong.Visible = giaoHang && !FloriSys.Services.SessionManager.IsShipper; 
+
+            btnNhanVien.Visible = nhanVien;
+            btnPhanQuyen.Visible = pq;
+            btnSanPham.Visible = sanPham;
+            btnKhachHang.Visible = khachHang;
+            btnBaoCao.Visible = baoCao;
+
+            // Cập nhật hiển thị Label nhóm
+            lblNhomDonHang.Visible = btnDanhSachDon.Visible || btnTaoDon.Visible || btnPhanHoi.Visible || btnTraHang.Visible;
+            lblNhomKhoHang.Visible = btnTonKho.Visible || btnNhapKho.Visible || btnXuatKho.Visible || btnHangHu.Visible || btnLichSuNhapKho.Visible;
+            lblNhomGiaoHang.Visible = btnDanhSachGiao.Visible || btnPhanCong.Visible;
+            lblNhomQuanLy.Visible = btnNhanVien.Visible || btnPhanQuyen.Visible || btnSanPham.Visible || btnKhachHang.Visible;
+            lblNhomBaoCao.Visible = btnBaoCao.Visible;
         }
 
         // Empty event handlers kept for Designer compatibility
-        private void pnlMenu_Paint(object sender, PaintEventArgs e) { }
-        private void lblNhomTongQuan_Click(object sender, EventArgs e) { }
-        private void lblNhomDonHang_Click(object sender, EventArgs e) { }
-        private void lblNhomKhoHang_Click(object sender, EventArgs e) { }
-        private void lblNhomGiaoHang_Click(object sender, EventArgs e) { }
-        private void lblNhomQuanLy_Click(object sender, EventArgs e) { }
-        private void lblNhomTaiKhoan_Click(object sender, EventArgs e) { }
+
         private void btnDoiMatKhau_Click(object sender, EventArgs e) { Navigate("DoiMatKhau", btnDoiMatKhau); }
     }
 }

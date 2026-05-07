@@ -18,7 +18,6 @@ namespace FloriSys._3_BanHang
         private void InitializeComponent()
         {
             this.pnlHeader = new System.Windows.Forms.Panel();
-            this.btnTaoDon = new System.Windows.Forms.Button();
             this.lblSubTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlKPI = new System.Windows.Forms.TableLayoutPanel();
@@ -69,7 +68,6 @@ namespace FloriSys._3_BanHang
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.White;
-            this.pnlHeader.Controls.Add(this.btnTaoDon);
             this.pnlHeader.Controls.Add(this.lblSubTitle);
             this.pnlHeader.Controls.Add(this.lblTitle);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -77,21 +75,6 @@ namespace FloriSys._3_BanHang
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1000, 80);
             this.pnlHeader.TabIndex = 0;
-            // 
-            // btnTaoDon
-            // 
-            this.btnTaoDon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTaoDon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
-            this.btnTaoDon.FlatAppearance.BorderSize = 0;
-            this.btnTaoDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTaoDon.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnTaoDon.ForeColor = System.Drawing.Color.White;
-            this.btnTaoDon.Location = new System.Drawing.Point(820, 20);
-            this.btnTaoDon.Name = "btnTaoDon";
-            this.btnTaoDon.Size = new System.Drawing.Size(150, 40);
-            this.btnTaoDon.TabIndex = 2;
-            this.btnTaoDon.Text = "➕ Tạo đơn hàng";
-            this.btnTaoDon.UseVisualStyleBackColor = false;
             // 
             // lblSubTitle
             // 
@@ -110,7 +93,7 @@ namespace FloriSys._3_BanHang
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblTitle.Location = new System.Drawing.Point(15, 10);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(296, 37);
+            this.lblTitle.Size = new System.Drawing.Size(290, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Dashboard Bán hàng ";
             // 
@@ -164,7 +147,7 @@ namespace FloriSys._3_BanHang
             this.lblTitleDonToi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(27)))), ((int)(((byte)(27)))));
             this.lblTitleDonToi.Location = new System.Drawing.Point(10, 10);
             this.lblTitleDonToi.Name = "lblTitleDonToi";
-            this.lblTitleDonToi.Size = new System.Drawing.Size(130, 20);
+            this.lblTitleDonToi.Size = new System.Drawing.Size(126, 20);
             this.lblTitleDonToi.TabIndex = 0;
             this.lblTitleDonToi.Text = "Đơn tôi hôm nay";
             // 
@@ -187,7 +170,7 @@ namespace FloriSys._3_BanHang
             this.lblValDoanhThu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(163)))), ((int)(((byte)(74)))));
             this.lblValDoanhThu.Location = new System.Drawing.Point(10, 35);
             this.lblValDoanhThu.Name = "lblValDoanhThu";
-            this.lblValDoanhThu.Size = new System.Drawing.Size(91, 41);
+            this.lblValDoanhThu.Size = new System.Drawing.Size(89, 41);
             this.lblValDoanhThu.TabIndex = 1;
             this.lblValDoanhThu.Text = "2.8M";
             // 
@@ -232,7 +215,7 @@ namespace FloriSys._3_BanHang
             this.lblTitleDangXuLy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(146)))), ((int)(((byte)(64)))), ((int)(((byte)(14)))));
             this.lblTitleDangXuLy.Location = new System.Drawing.Point(10, 10);
             this.lblTitleDangXuLy.Name = "lblTitleDangXuLy";
-            this.lblTitleDangXuLy.Size = new System.Drawing.Size(107, 20);
+            this.lblTitleDangXuLy.Size = new System.Drawing.Size(115, 20);
             this.lblTitleDangXuLy.TabIndex = 0;
             this.lblTitleDangXuLy.Text = "Đơn đang xử lý";
             // 
@@ -266,7 +249,7 @@ namespace FloriSys._3_BanHang
             this.lblTitleHoanThanh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(64)))), ((int)(((byte)(175)))));
             this.lblTitleHoanThanh.Location = new System.Drawing.Point(10, 10);
             this.lblTitleHoanThanh.Name = "lblTitleHoanThanh";
-            this.lblTitleHoanThanh.Size = new System.Drawing.Size(117, 20);
+            this.lblTitleHoanThanh.Size = new System.Drawing.Size(122, 20);
             this.lblTitleHoanThanh.TabIndex = 0;
             this.lblTitleHoanThanh.Text = "Đơn hoàn thành";
             // 
@@ -292,10 +275,10 @@ namespace FloriSys._3_BanHang
             this.pnlLeft.Controls.Add(this.lblTableTitle);
             this.pnlLeft.Controls.Add(this.dgvDonGanDay);
             this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlLeft.Location = new System.Drawing.Point(15, 15);
+            this.pnlLeft.Location = new System.Drawing.Point(13, 13);
             this.pnlLeft.Name = "pnlLeft";
             this.pnlLeft.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlLeft.Size = new System.Drawing.Size(582, 490);
+            this.pnlLeft.Size = new System.Drawing.Size(582, 494);
             this.pnlLeft.TabIndex = 0;
             // 
             // lblTableTitle
@@ -304,7 +287,7 @@ namespace FloriSys._3_BanHang
             this.lblTableTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblTableTitle.Location = new System.Drawing.Point(13, 10);
             this.lblTableTitle.Name = "lblTableTitle";
-            this.lblTableTitle.Size = new System.Drawing.Size(248, 23);
+            this.lblTableTitle.Size = new System.Drawing.Size(250, 23);
             this.lblTableTitle.TabIndex = 1;
             this.lblTableTitle.Text = "📋 Đơn hàng tôi tạo hôm nay";
             // 
@@ -321,7 +304,7 @@ namespace FloriSys._3_BanHang
             this.dgvDonGanDay.Name = "dgvDonGanDay";
             this.dgvDonGanDay.RowHeadersVisible = false;
             this.dgvDonGanDay.RowHeadersWidth = 51;
-            this.dgvDonGanDay.Size = new System.Drawing.Size(562, 440);
+            this.dgvDonGanDay.Size = new System.Drawing.Size(562, 444);
             this.dgvDonGanDay.TabIndex = 2;
             // 
             // pnlRight
@@ -330,9 +313,9 @@ namespace FloriSys._3_BanHang
             this.pnlRight.Controls.Add(this.pnlKhaNang);
             this.pnlRight.Controls.Add(this.pnlLookup);
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlRight.Location = new System.Drawing.Point(603, 15);
+            this.pnlRight.Location = new System.Drawing.Point(601, 13);
             this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Size = new System.Drawing.Size(384, 490);
+            this.pnlRight.Size = new System.Drawing.Size(386, 494);
             this.pnlRight.TabIndex = 1;
             // 
             // pnlKhaNang
@@ -348,7 +331,7 @@ namespace FloriSys._3_BanHang
             this.pnlKhaNang.Location = new System.Drawing.Point(0, 0);
             this.pnlKhaNang.Name = "pnlKhaNang";
             this.pnlKhaNang.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlKhaNang.Size = new System.Drawing.Size(384, 180);
+            this.pnlKhaNang.Size = new System.Drawing.Size(386, 180);
             this.pnlKhaNang.TabIndex = 0;
             // 
             // lblRank
@@ -358,7 +341,7 @@ namespace FloriSys._3_BanHang
             this.lblRank.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
             this.lblRank.Location = new System.Drawing.Point(10, 140);
             this.lblRank.Name = "lblRank";
-            this.lblRank.Size = new System.Drawing.Size(188, 23);
+            this.lblRank.Size = new System.Drawing.Size(197, 23);
             this.lblRank.TabIndex = 5;
             this.lblRank.Text = "🥇 Xếp hạng: #1 / 3 nv";
             // 
@@ -367,7 +350,7 @@ namespace FloriSys._3_BanHang
             this.lblTargetDoanhThu.AutoSize = true;
             this.lblTargetDoanhThu.Location = new System.Drawing.Point(10, 90);
             this.lblTargetDoanhThu.Name = "lblTargetDoanhThu";
-            this.lblTargetDoanhThu.Size = new System.Drawing.Size(161, 16);
+            this.lblTargetDoanhThu.Size = new System.Drawing.Size(148, 16);
             this.lblTargetDoanhThu.TabIndex = 4;
             this.lblTargetDoanhThu.Text = "Doanh thu (48.6M / 50M)";
             // 
@@ -384,7 +367,7 @@ namespace FloriSys._3_BanHang
             this.lblTargetDon.AutoSize = true;
             this.lblTargetDon.Location = new System.Drawing.Point(10, 40);
             this.lblTargetDon.Name = "lblTargetDon";
-            this.lblTargetDon.Size = new System.Drawing.Size(152, 16);
+            this.lblTargetDon.Size = new System.Drawing.Size(146, 16);
             this.lblTargetDon.TabIndex = 2;
             this.lblTargetDon.Text = "Số đơn hàng (187 / 200)";
             // 
@@ -402,7 +385,7 @@ namespace FloriSys._3_BanHang
             this.lblHieuSuatTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblHieuSuatTitle.Location = new System.Drawing.Point(10, 10);
             this.lblHieuSuatTitle.Name = "lblHieuSuatTitle";
-            this.lblHieuSuatTitle.Size = new System.Drawing.Size(252, 23);
+            this.lblHieuSuatTitle.Size = new System.Drawing.Size(229, 23);
             this.lblHieuSuatTitle.TabIndex = 0;
             this.lblHieuSuatTitle.Text = "📈 Hiệu suất tháng 3/2026";
             // 
@@ -416,7 +399,7 @@ namespace FloriSys._3_BanHang
             this.pnlLookup.Location = new System.Drawing.Point(0, 0);
             this.pnlLookup.Name = "pnlLookup";
             this.pnlLookup.Padding = new System.Windows.Forms.Padding(10, 200, 10, 10);
-            this.pnlLookup.Size = new System.Drawing.Size(384, 490);
+            this.pnlLookup.Size = new System.Drawing.Size(386, 494);
             this.pnlLookup.TabIndex = 1;
             // 
             // dgvLookup
@@ -432,7 +415,7 @@ namespace FloriSys._3_BanHang
             this.dgvLookup.Name = "dgvLookup";
             this.dgvLookup.RowHeadersVisible = false;
             this.dgvLookup.RowHeadersWidth = 51;
-            this.dgvLookup.Size = new System.Drawing.Size(360, 220);
+            this.dgvLookup.Size = new System.Drawing.Size(362, 224);
             this.dgvLookup.TabIndex = 3;
             // 
             // btnTimLookup
@@ -458,7 +441,7 @@ namespace FloriSys._3_BanHang
             this.lblLookupTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.lblLookupTitle.Location = new System.Drawing.Point(10, 195);
             this.lblLookupTitle.Name = "lblLookupTitle";
-            this.lblLookupTitle.Size = new System.Drawing.Size(221, 23);
+            this.lblLookupTitle.Size = new System.Drawing.Size(219, 23);
             this.lblLookupTitle.TabIndex = 0;
             this.lblLookupTitle.Text = "🌸 Tra cứu nhanh tồn kho";
             // 
@@ -500,7 +483,6 @@ namespace FloriSys._3_BanHang
         #endregion
 
         private System.Windows.Forms.Panel pnlHeader;
-        private System.Windows.Forms.Button btnTaoDon;
         private System.Windows.Forms.Label lblSubTitle;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.TableLayoutPanel pnlKPI;

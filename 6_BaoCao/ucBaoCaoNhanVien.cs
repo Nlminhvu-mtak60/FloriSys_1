@@ -4,12 +4,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using FloriSys.DataAccess;
+using FloriSys.Shared;
 using FloriSys.Models;
 
 namespace FloriSys._6_BaoCao
 {
-    public partial class ucBaoCaoNhanVien : UserControl
+    public partial class ucBaoCaoNhanVien : BaseUserControl
     {
+        private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
         public ucBaoCaoNhanVien()
         {
             InitializeComponent();
@@ -26,17 +28,20 @@ namespace FloriSys._6_BaoCao
             LoadData();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             try
             {
                 int? thang = cboThang.SelectedItem as int?;
                 int? nam = cboNam.SelectedItem as int?;
-                List<HieuSuatNhanVien> dsNV = BaoCaoDAO.HieuSuatNhanVien(thang, nam);
+                List<HieuSuatNhanVien> dsNV = _bcRepo.HieuSuatNhanVien(thang, nam);
                 dgvNhanVien.DataSource = dsNV;
 
                 if (dgvNhanVien.Columns.Count > 0)
                 {
+                    var visibleCols = new List<string> { "HoTen", "SoDonTao", "TongDoanhThu" };
+                    foreach (DataGridViewColumn col in dgvNhanVien.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                     dgvNhanVien.Columns["HoTen"].HeaderText = "Họ tên nhân viên";
                     dgvNhanVien.Columns["SoDonTao"].HeaderText = "Số đơn hàng";
                     dgvNhanVien.Columns["TongDoanhThu"].HeaderText = "Tổng doanh thu";
@@ -48,23 +53,19 @@ namespace FloriSys._6_BaoCao
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải hiệu suất nhân viên: " + ex.Message);
+                ShowError("Lỗi tải hiệu suất nhân viên: " + ex.Message);
             }
         }
 
         private void DrawBarChart(List<HieuSuatNhanVien> dsNV)
         {
-            string chartName = "chartNV";
-            Control existing = pnlGridCard.Controls[chartName];
-            if (existing != null) pnlGridCard.Controls.Remove(existing);
+            pnlChartArea.Controls.Clear();
 
             if (dsNV.Count == 0) return;
 
             Chart chart = new Chart();
-            chart.Name = chartName;
-            chart.Size = new Size(380, 220);
-            chart.Location = new Point(pnlGridCard.Width - 400, 15);
-            chart.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            chart.Name = "chartNV";
+            chart.Dock = DockStyle.Fill;
             chart.BackColor = Color.White;
 
             ChartArea area = new ChartArea("Main");
@@ -95,7 +96,7 @@ namespace FloriSys._6_BaoCao
             legend.Docking = Docking.Bottom;
             chart.Legends.Add(legend);
 
-            Title title = new Title("So sánh hiệu suất NV", Docking.Top, new Font("Segoe UI", 9f, FontStyle.Bold), Color.FromArgb(31, 41, 55));
+            Title title = new Title("SO SÁNH HIỆU SUẤT NV", Docking.Top, new Font("Segoe UI", 10f, FontStyle.Bold), Color.FromArgb(31, 41, 55));
             chart.Titles.Add(title);
 
             int count = 0;
@@ -109,8 +110,7 @@ namespace FloriSys._6_BaoCao
                 count++;
             }
 
-            pnlGridCard.Controls.Add(chart);
-            chart.BringToFront();
+            pnlChartArea.Controls.Add(chart);
         }
 
         private void btnLoc_Click(object sender, EventArgs e)

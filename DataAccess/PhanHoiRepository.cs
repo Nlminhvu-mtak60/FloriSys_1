@@ -4,9 +4,16 @@ using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
-    public class PhanHoiDAO
+    /// <summary>
+    /// PhanHoi repository - inherits BaseRepository&lt;PhanHoi&gt;.
+    /// </summary>
+    public class PhanHoiRepository : BaseRepository<PhanHoi>
     {
-        public static List<PhanHoi> LayDanhSach(string maDon = "")
+        public override string TableName => "PHAN_HOI";
+        public override string IdColumn => "MaPH";
+        public override string IdPrefix => "PH";
+
+        public new List<PhanHoi> LayDanhSach(string maDon = "")
         {
             string sql = @"SELECT ph.MaPH, ph.MaDon, ph.NoiDung, ph.NgayGhi, ph.TrangThaiXuLy, ph.KetQuaXuLy,
                           kh.HoTen AS TenKH
@@ -21,13 +28,13 @@ namespace FloriSys.DataAccess
                 parms.Add(new SqlParameter("@MaDon", maDon));
             }
             sql += " ORDER BY ph.NgayGhi DESC";
-            return DatabaseHelper.ExecuteRawList<PhanHoi>(sql, parms.ToArray());
+            return GetList(sql, parms);
         }
 
-        public static string GhiNhan(string maDon, string noiDung)
+        public string GhiNhan(string maDon, string noiDung)
         {
-            string maPH = DatabaseHelper.GenerateCode("PH", "PHAN_HOI", "MaPH");
-            DatabaseHelper.ExecuteNonQuery("sp_GhiNhanPhanHoi", new SqlParameter[]
+            string maPH = TaoMoi();
+            ExecuteSP("sp_GhiNhanPhanHoi", new SqlParameter[]
             {
                 new SqlParameter("@MaPH", maPH),
                 new SqlParameter("@MaDon", maDon),
@@ -36,10 +43,10 @@ namespace FloriSys.DataAccess
             return maPH;
         }
 
-        public static void CapNhatXuLy(string maPH, string trangThai, string ketQua)
+        public void CapNhatXuLy(string maPH, string trangThai, string ketQua)
         {
             string sql = "UPDATE PHAN_HOI SET TrangThaiXuLy=@TrangThai, KetQuaXuLy=@KetQua WHERE MaPH=@MaPH";
-            DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
+            ExecuteSql(sql, new SqlParameter[]
             {
                 new SqlParameter("@MaPH", maPH),
                 new SqlParameter("@TrangThai", trangThai),

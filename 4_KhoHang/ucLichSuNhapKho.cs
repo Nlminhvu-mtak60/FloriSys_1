@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._4_KhoHang
 {
-    public partial class ucLichSuNhapKho : UserControl
+    public partial class ucLichSuNhapKho : BaseUserControl
     {
+        private readonly NhanVienRepository _nvRepo = new NhanVienRepository();
+        private readonly PhieuNhapKhoRepository _pnkRepo = new PhieuNhapKhoRepository();
+
         public ucLichSuNhapKho()
         {
             InitializeComponent();
@@ -17,35 +21,34 @@ namespace FloriSys._4_KhoHang
         {
             dtpTuNgay.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             dtpDenNgay.Value = DateTime.Now;
-
             LoadNhanVien();
             LoadData();
         }
 
         private void LoadNhanVien()
         {
-            List<NhanVien> dsNV = NhanVienDAO.LayDanhSach();
-            // Insert "All" option at beginning
+            List<NhanVien> dsNV = _nvRepo.LayDanhSach();
             dsNV.Insert(0, new NhanVien { MaNV = "", HoTen = "Tất cả nhân viên" });
-
             cboNhanVien.DataSource = dsNV;
             cboNhanVien.DisplayMember = "HoTen";
             cboNhanVien.ValueMember = "MaNV";
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             string keyword = txtTimKiem.Text;
             string maNV = cboNhanVien.SelectedValue?.ToString();
             DateTime fromDate = dtpTuNgay.Value;
             DateTime toDate = dtpDenNgay.Value;
 
-            List<PhieuNhapKho> dsPNK = PhieuNhapKhoDAO.LayDanhSach(keyword, maNV, fromDate, toDate);
+            List<PhieuNhapKho> dsPNK = _pnkRepo.LayDanhSach(keyword, maNV, fromDate, toDate);
             dgvPhieuNhap.DataSource = dsPNK;
             
-            // Format columns
             if (dgvPhieuNhap.Columns.Count > 0)
             {
+                var visibleCols = new List<string> { "MaPhieu", "NgayNhap", "TenNV", "SoLoaiSP", "TongSL", "TongTien", "GhiChu" };
+                foreach (DataGridViewColumn col in dgvPhieuNhap.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                 dgvPhieuNhap.Columns["MaPhieu"].HeaderText = "Mã phiếu";
                 dgvPhieuNhap.Columns["NgayNhap"].HeaderText = "Ngày nhập";
                 dgvPhieuNhap.Columns["NgayNhap"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
@@ -76,11 +79,14 @@ namespace FloriSys._4_KhoHang
         private void LoadChiTiet(string maPhieu)
         {
             lblDetailTitle.Text = "Chi tiết phiếu nhập: " + maPhieu;
-            List<ChiTietNhapKho> dsCT = PhieuNhapKhoDAO.LayChiTiet(maPhieu);
+            List<ChiTietNhapKho> dsCT = _pnkRepo.LayChiTiet(maPhieu);
             dgvChiTiet.DataSource = dsCT;
 
             if (dgvChiTiet.Columns.Count > 0)
             {
+                var visibleCols = new List<string> { "MaSP", "TenSP", "SoLuong", "GiaNhap", "ThanhTien" };
+                foreach (DataGridViewColumn col in dgvChiTiet.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                 dgvChiTiet.Columns["MaSP"].HeaderText = "Mã SP";
                 dgvChiTiet.Columns["TenSP"].HeaderText = "Tên sản phẩm";
                 dgvChiTiet.Columns["SoLuong"].HeaderText = "Số lượng";

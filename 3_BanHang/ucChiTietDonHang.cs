@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._3_BanHang
 {
-    public partial class ucChiTietDonHang : UserControl
+    public partial class ucChiTietDonHang : BaseUserControl
     {
+        private readonly DonHangRepository _dhRepo = new DonHangRepository();
         private string _maDon;
 
         public ucChiTietDonHang()
@@ -25,6 +27,11 @@ namespace FloriSys._3_BanHang
         public void SetMaDon(string maDon)
         {
             _maDon = maDon;
+            LoadData();
+        }
+
+        public override void LoadData()
+        {
             LoadInfo();
             LoadItems();
             LoadTimeline();
@@ -34,7 +41,7 @@ namespace FloriSys._3_BanHang
         {
             try
             {
-                DonHang dh = DonHangDAO.LayThongTinDon(_maDon);
+                DonHang dh = _dhRepo.LayThongTinDon(_maDon);
                 if (dh != null)
                 {
                     lblMaDon.Text = "Đơn hàng " + _maDon;
@@ -47,11 +54,13 @@ namespace FloriSys._3_BanHang
                     
                     lblStatusBadge.Text = dh.TrangThai;
                     cboStatus.SelectedItem = dh.TrangThai;
+                    cboStatus.Enabled = false;
+                    btnUpdateStatus.Visible = false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải thông tin đơn: " + ex.Message);
+                ShowError("Lỗi tải thông tin đơn: " + ex.Message);
             }
         }
 
@@ -59,19 +68,23 @@ namespace FloriSys._3_BanHang
         {
             try
             {
-                List<ChiTietDonHang> dsCT = DonHangDAO.LayChiTiet(_maDon);
+                List<ChiTietDonHang> dsCT = _dhRepo.LayChiTiet(_maDon);
                 dgvChiTiet.DataSource = dsCT;
                 FormatGrid();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải chi tiết sản phẩm: " + ex.Message);
+                ShowError("Lỗi tải chi tiết sản phẩm: " + ex.Message);
             }
         }
 
-        private void FormatGrid()
+        public override void FormatGrid()
         {
             if (dgvChiTiet.Columns.Count == 0) return;
+
+            var visibleCols = new List<string> { "MaSP", "TenSP", "SoLuong", "DonGia", "ThanhTien" };
+            foreach (DataGridViewColumn col in dgvChiTiet.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
             dgvChiTiet.Columns["MaSP"].HeaderText = "Mã SP";
             dgvChiTiet.Columns["TenSP"].HeaderText = "Tên sản phẩm";
             dgvChiTiet.Columns["SoLuong"].HeaderText = "Số lượng";
@@ -89,13 +102,100 @@ namespace FloriSys._3_BanHang
         private void LoadTimeline()
         {
             pnlTimeline.Controls.Clear();
-            // In a real app, we'd query a LIC_SU_TRANG_THAI table.
-            // For now, we'll just show a placeholder label.
-            Label lblPlaceholder = new Label();
-            lblPlaceholder.Text = "Lịch sử xử lý:\n- 08:40: Đơn hàng mới\n- 09:00: Đang chuẩn bị hàng";
-            lblPlaceholder.AutoSize = true;
-            lblPlaceholder.Location = new System.Drawing.Point(10, 10);
-            pnlTimeline.Controls.Add(lblPlaceholder);
+            try
+            {
+                List<LichSuDonHang> dsLS = _dhRepo.LayLichSuDonHang(_maDon);
+
+                if (dsLS == null || dsLS.Count == 0)
+                {
+                    Label lblEmpty = new Label
+                    {
+                        Text = "Chưa có lịch sử xử lý.",
+                        AutoSize = true,
+                        ForeColor = System.Drawing.Color.FromArgb(156, 163, 175),
+                        Font = new System.Drawing.Font("Segoe UI", 10f, System.Drawing.FontStyle.Italic),
+                        Location = new System.Drawing.Point(15, 15)
+                    };
+                    pnlTimeline.Controls.Add(lblEmpty);
+                    return;
+                }
+
+                int y = 10;
+                for (int i = 0; i < dsLS.Count; i++)
+                {
+                    LichSuDonHang ls = dsLS[i];
+                    bool isLast = (i == dsLS.Count - 1);
+
+                    // Icon dựa theo trạng thái
+                    string icon;
+                    System.Drawing.Color iconColor;
+                    switch (ls.TrangThai)
+                    {
+                        case "Moi":       icon = "🆕"; iconColor = System.Drawing.Color.FromArgb(59, 130, 246); break;
+                        case "DangXuLy":  icon = "📦"; iconColor = System.Drawing.Color.FromArgb(245, 158, 11); break;
+                        case "DaGiao":    icon = "🚚"; iconColor = System.Drawing.Color.FromArgb(16, 185, 129); break;
+                        case "HoanThanh": icon = "✅"; iconColor = System.Drawing.Color.FromArgb(34, 197, 94); break;
+                        case "Huy":       icon = "❌"; iconColor = System.Drawing.Color.FromArgb(239, 68, 68); break;
+                        case "HoanHang":  icon = "↩️"; iconColor = System.Drawing.Color.FromArgb(168, 85, 247); break;
+                        default:          icon = "●";  iconColor = System.Drawing.Color.Gray; break;
+                    }
+
+                    // Tên trạng thái hiển thị
+                    string statusName;
+                    switch (ls.TrangThai)
+                    {
+                        case "Moi":       statusName = "Đơn hàng mới"; break;
+                        case "DangXuLy":  statusName = "Đang xử lý"; break;
+                        case "DaGiao":    statusName = "Đã giao shipper"; break;
+                        case "HoanThanh": statusName = "Hoàn thành"; break;
+                        case "Huy":       statusName = "Đã hủy"; break;
+                        case "HoanHang":  statusName = "Hoàn hàng"; break;
+                        default:          statusName = ls.TrangThai; break;
+                    }
+
+                    // Dòng thời gian + trạng thái
+                    string timeStr = ls.ThoiGian.ToString("dd/MM/yyyy HH:mm");
+                    Label lblEntry = new Label
+                    {
+                        Text = $"{icon}  {timeStr} — {statusName}",
+                        AutoSize = true,
+                        Font = new System.Drawing.Font("Segoe UI", 10f, isLast ? System.Drawing.FontStyle.Bold : System.Drawing.FontStyle.Regular),
+                        ForeColor = isLast ? iconColor : System.Drawing.Color.FromArgb(55, 65, 81),
+                        Location = new System.Drawing.Point(15, y)
+                    };
+                    pnlTimeline.Controls.Add(lblEntry);
+                    y += 24;
+
+                    // Ghi chú (nếu có)
+                    if (!string.IsNullOrWhiteSpace(ls.GhiChu))
+                    {
+                        Label lblNote = new Label
+                        {
+                            Text = "     " + ls.GhiChu,
+                            AutoSize = true,
+                            Font = new System.Drawing.Font("Segoe UI", 8.5f, System.Drawing.FontStyle.Italic),
+                            ForeColor = System.Drawing.Color.FromArgb(156, 163, 175),
+                            Location = new System.Drawing.Point(15, y)
+                        };
+                        pnlTimeline.Controls.Add(lblNote);
+                        y += 20;
+                    }
+                    y += 4; // spacing between entries
+                }
+            }
+            catch
+            {
+                // Bảng LICH_SU_DON_HANG chưa tồn tại → hiển thị fallback
+                Label lblFallback = new Label
+                {
+                    Text = "⚠ Chưa có dữ liệu lịch sử.\nVui lòng chạy script SQL_LichSuDonHang.sql",
+                    AutoSize = true,
+                    ForeColor = System.Drawing.Color.FromArgb(202, 138, 4),
+                    Font = new System.Drawing.Font("Segoe UI", 9.5f),
+                    Location = new System.Drawing.Point(15, 15)
+                };
+                pnlTimeline.Controls.Add(lblFallback);
+            }
         }
 
         private void btnUpdateStatus_Click(object sender, EventArgs e)
@@ -104,19 +204,18 @@ namespace FloriSys._3_BanHang
             try
             {
                 string newStatus = cboStatus.SelectedItem.ToString();
-                DonHangDAO.CapNhatTrangThai(_maDon, newStatus);
-                MessageBox.Show("Cập nhật trạng thái thành công!", "Thông báo");
+                _dhRepo.CapNhatTrangThai(_maDon, newStatus);
+                ShowSuccess("Cập nhật trạng thái thành công!");
                 LoadInfo();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi cập nhật: " + ex.Message);
+                ShowError("Lỗi cập nhật: " + ex.Message);
             }
         }
 
         private void lblBack_Click(object sender, EventArgs e)
         {
-            // Trigger navigation back to list
             Control parent = this.Parent;
             while (parent != null && !(parent is Form))
             {

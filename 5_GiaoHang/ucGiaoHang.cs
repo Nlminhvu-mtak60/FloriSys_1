@@ -5,16 +5,18 @@ using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._5_GiaoHang
 {
-    public partial class ucGiaoHang : UserControl
+    public partial class ucGiaoHang : BaseUserControl
     {
+        private readonly GiaoHangRepository _ghRepo = new GiaoHangRepository();
+
         public ucGiaoHang()
         {
             InitializeComponent();
             this.Load += ucGiaoHang_Load;
-            btnPhanCong.Click += btnPhanCong_Click;
         }
 
         private void ucGiaoHang_Load(object sender, EventArgs e)
@@ -22,18 +24,19 @@ namespace FloriSys._5_GiaoHang
             LoadData();
         }
 
-        public void LoadData()
+        public override void LoadData()
         {
             try
             {
                 // Load KPI stats
                 LoadStats();
 
-                // Load DataGridView
-                List<GiaoHang> dsGH = GiaoHangDAO.LayDanhSach();
-                dgvGiaoHang.AutoGenerateColumns = false;
+                // Lọc theo shipper nếu tài khoản là Shipper
+                string maShipper = FloriSys.Services.SessionManager.IsShipper ? FloriSys.Services.SessionManager.MaNV : "";
+                List<GiaoHang> dsGH = _ghRepo.LayDanhSach("", maShipper);
 
-                // Map default columns
+                dgvGiaoHang.AutoGenerateColumns = false;
+                // ... (rest of mapping)
                 colMaDon.DataPropertyName = "MaDon";
                 colKhach.DataPropertyName = "TenKH";
                 colDiaChi.DataPropertyName = "DiaChi";
@@ -60,7 +63,7 @@ namespace FloriSys._5_GiaoHang
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh sách giao hàng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError("Lỗi tải danh sách giao hàng: " + ex.Message);
             }
         }
 
@@ -68,7 +71,9 @@ namespace FloriSys._5_GiaoHang
         {
             try
             {
-                List<GiaoHang> dsGH = GiaoHangDAO.LayDanhSach();
+                string maShipper = FloriSys.Services.SessionManager.IsShipper ? FloriSys.Services.SessionManager.MaNV : "";
+                List<GiaoHang> dsGH = _ghRepo.LayDanhSach("", maShipper);
+
                 int choPhanCong = 0, dangGiao = 0, thanhCong = 0, hoanHang = 0;
 
                 foreach (GiaoHang gh in dsGH)
@@ -131,8 +136,7 @@ namespace FloriSys._5_GiaoHang
 
         private void btnPhanCong_Click(object sender, EventArgs e)
         {
-            // Trigger navigation to PhanCong screen via frmMain
-            MessageBox.Show("Vui lòng chọn menu 'Phân công' ở thanh điều hướng để phân công shipper.", "Thông báo");
+            ShowWarning("Vui lòng chọn menu 'Phân công' ở thanh điều hướng để phân công shipper.");
         }
     }
 }

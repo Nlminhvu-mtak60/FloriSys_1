@@ -3,7 +3,12 @@ using System.Collections.Generic;
 
 namespace FloriSys.Models
 {
-    public class DonHang
+    /// <summary>
+    /// DonHang model - inherits BaseEntity.
+    /// Demonstrates: ENCAPSULATION (TongTienFormatted, CanCancel, CanProcess),
+    /// INHERITANCE (from BaseEntity), POLYMORPHISM (overrides).
+    /// </summary>
+    public class DonHang : BaseEntity
     {
         public string MaDon { get; set; }
         public DateTime NgayTao { get; set; }
@@ -24,6 +29,21 @@ namespace FloriSys.Models
         // Navigation property
         public List<ChiTietDonHang> ChiTiet { get; set; } = new List<ChiTietDonHang>();
 
+        // POLYMORPHISM: Override abstract members from BaseEntity
+        public override string DisplayText => MaDon ?? "";
+        public override string Id => MaDon;
+
+        public override bool IsValid => !string.IsNullOrEmpty(MaDon) && !string.IsNullOrEmpty(MaKH);
+
+        // ENCAPSULATION: Business logic inside the model
+        public bool CanCancel => TrangThai == "Moi" || TrangThai == "DangXuLy";
+        public bool CanProcess => TrangThai == "Moi";
+        public bool IsComplete => TrangThai == "HoanThanh";
+        public bool IsCancelled => TrangThai == "Huy";
+        public bool IsGiaoTanNoi => HinhThucNhanHang == "GiaoTanNoi";
+        public string TongTienFormatted => TongTien.ToString("N0") + " VNĐ";
+
+        // Computed display properties
         public string TrangThaiDisplay
         {
             get
@@ -41,15 +61,12 @@ namespace FloriSys.Models
             }
         }
 
-        public string HinhThucDisplay
-        {
-            get
-            {
-                return HinhThucNhanHang == "TaiQuay" ? "Tại quầy" : "Giao tận nơi";
-            }
-        }
+        public string HinhThucDisplay => HinhThucNhanHang == "TaiQuay" ? "Tại quầy" : "Giao tận nơi";
     }
 
+    /// <summary>
+    /// ChiTietDonHang - detail model (does not inherit BaseEntity, it's a child entity).
+    /// </summary>
     public class ChiTietDonHang
     {
         public string MaDon { get; set; }

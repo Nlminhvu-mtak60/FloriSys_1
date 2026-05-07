@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
+using FloriSys.Shared;
 using FloriSys.Models;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FloriSys._6_BaoCao
 {
-    public partial class ucBaoCaoNgay : UserControl
+    public partial class ucBaoCaoNgay : BaseUserControl
     {
+        private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
         public ucBaoCaoNgay()
         {
             InitializeComponent();
@@ -20,7 +22,7 @@ namespace FloriSys._6_BaoCao
             LoadData();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             try
             {
@@ -28,21 +30,24 @@ namespace FloriSys._6_BaoCao
                 lblDate.Text = today.ToString("dddd, dd/MM/yyyy");
 
                 // Load KPIs
-                ThongKeDashboard stats = BaoCaoDAO.ThongKeDashboard();
+                ThongKeDashboard stats = _bcRepo.ThongKeDashboard();
                 if (stats != null)
                 {
                     lblTongDonValue.Text = stats.DonHomNay.ToString();
                     lblDoanhThuValue.Text = stats.DoanhThuHomNay.ToString("N0") + "đ";
                 }
 
-                int slSP = BaoCaoDAO.SoLuongSanPhamBanNgay(today);
+                int slSP = _bcRepo.SoLuongSanPhamBanNgay(today);
                 lblSoLuongSPValue.Text = slSP.ToString();
 
                 // Load Top Products
-                List<TopSanPhamNgay> dsTopSP = BaoCaoDAO.TopSanPhamNgay(today);
+                List<TopSanPhamNgay> dsTopSP = _bcRepo.TopSanPhamNgay(today);
                 dgvTopSP.DataSource = dsTopSP;
                 if (dgvTopSP.Columns.Count > 0)
                 {
+                    var visibleCols = new List<string> { "TenSP", "SLBan", "DoanhThu" };
+                    foreach (DataGridViewColumn col in dgvTopSP.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                     dgvTopSP.Columns["TenSP"].HeaderText = "Tên sản phẩm";
                     dgvTopSP.Columns["SLBan"].HeaderText = "SL bán";
                     dgvTopSP.Columns["DoanhThu"].HeaderText = "Doanh thu";
@@ -92,7 +97,7 @@ namespace FloriSys._6_BaoCao
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu báo cáo: " + ex.Message);
+                ShowError("Lỗi tải dữ liệu báo cáo: " + ex.Message);
             }
         }
     }

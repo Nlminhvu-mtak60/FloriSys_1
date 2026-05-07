@@ -6,29 +6,19 @@ using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
-    public class NhanVienDAO
+    /// <summary>
+    /// NhanVien repository - inherits BaseRepository&lt;NhanVien&gt;.
+    /// Demonstrates: INHERITANCE (base helper methods),
+    /// POLYMORPHISM (overrides LayDanhSach with custom JOIN + 3 filters).
+    /// </summary>
+    public class NhanVienRepository : BaseRepository<NhanVien>
     {
-        public static NhanVien DangNhap(string taiKhoan, string matKhauHash)
-        {
-            return DatabaseHelper.ExecuteSingle<NhanVien>("sp_DangNhap", new SqlParameter[]
-            {
-                new SqlParameter("@TaiKhoan", taiKhoan),
-                new SqlParameter("@MatKhau", matKhauHash)
-            });
-        }
+        public override string TableName => "NHAN_VIEN";
+        public override string IdColumn => "MaNV";
+        public override string IdPrefix => "NV";
 
-        public static bool DoiMatKhau(string maNV, string matKhauCuHash, string matKhauMoiHash)
-        {
-            DataTable dt = DatabaseHelper.ExecuteQuery("sp_DoiMatKhau", new SqlParameter[]
-            {
-                new SqlParameter("@MaNV", maNV),
-                new SqlParameter("@MatKhauCu", matKhauCuHash),
-                new SqlParameter("@MatKhauMoi", matKhauMoiHash)
-            });
-            return dt.Rows.Count > 0 && dt.Rows[0]["KetQua"].ToString() == "1";
-        }
-
-        public static List<NhanVien> LayDanhSach(string keyword = "", string chucVu = "", string trangThai = "")
+        // POLYMORPHISM: Override with custom 3-filter search
+        public List<NhanVien> LayDanhSach(string keyword = "", string chucVu = "", string trangThai = "")
         {
             string sql = @"SELECT MaNV, HoTen, ChucVu, SoDienThoai, TaiKhoan, TrangThai 
                           FROM NHAN_VIEN WHERE 1=1";
@@ -49,14 +39,34 @@ namespace FloriSys.DataAccess
                 parms.Add(new SqlParameter("@TrangThai", trangThai));
             }
             sql += " ORDER BY MaNV";
-            return DatabaseHelper.ExecuteRawList<NhanVien>(sql, parms.ToArray());
+            return GetList(sql, parms);
         }
 
-        public static void ThemNhanVien(NhanVien nv)
+        public NhanVien DangNhap(string taiKhoan, string matKhauHash)
+        {
+            return GetSingleFromSP("sp_DangNhap", new SqlParameter[]
+            {
+                new SqlParameter("@TaiKhoan", taiKhoan),
+                new SqlParameter("@MatKhau", matKhauHash)
+            });
+        }
+
+        public bool DoiMatKhau(string maNV, string matKhauCuHash, string matKhauMoiHash)
+        {
+            DataTable dt = DatabaseHelper.ExecuteQuery("sp_DoiMatKhau", new SqlParameter[]
+            {
+                new SqlParameter("@MaNV", maNV),
+                new SqlParameter("@MatKhauCu", matKhauCuHash),
+                new SqlParameter("@MatKhauMoi", matKhauMoiHash)
+            });
+            return dt.Rows.Count > 0 && dt.Rows[0]["KetQua"].ToString() == "1";
+        }
+
+        public void ThemNhanVien(NhanVien nv)
         {
             string sql = @"INSERT INTO NHAN_VIEN (MaNV, HoTen, ChucVu, SoDienThoai, TaiKhoan, MatKhau) 
                           VALUES (@MaNV, @HoTen, @ChucVu, @SoDienThoai, @TaiKhoan, @MatKhau)";
-            DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
+            ExecuteSql(sql, new SqlParameter[]
             {
                 new SqlParameter("@MaNV", nv.MaNV),
                 new SqlParameter("@HoTen", nv.HoTen),
@@ -67,10 +77,10 @@ namespace FloriSys.DataAccess
             });
         }
 
-        public static void CapNhatNhanVien(NhanVien nv)
+        public void CapNhatNhanVien(NhanVien nv)
         {
             string sql = @"UPDATE NHAN_VIEN SET HoTen=@HoTen, ChucVu=@ChucVu, SoDienThoai=@SoDienThoai WHERE MaNV=@MaNV";
-            DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
+            ExecuteSql(sql, new SqlParameter[]
             {
                 new SqlParameter("@MaNV", nv.MaNV),
                 new SqlParameter("@HoTen", nv.HoTen),
@@ -79,20 +89,30 @@ namespace FloriSys.DataAccess
             });
         }
 
-        public static void CapNhatTrangThai(string maNV, string trangThai)
+        public void CapNhatTrangThai(string maNV, string trangThai)
         {
             string sql = "UPDATE NHAN_VIEN SET TrangThai=@TrangThai WHERE MaNV=@MaNV";
-            DatabaseHelper.ExecuteRawNonQuery(sql, new SqlParameter[]
+            ExecuteSql(sql, new SqlParameter[]
             {
                 new SqlParameter("@MaNV", maNV),
                 new SqlParameter("@TrangThai", trangThai)
             });
         }
 
-        public static List<NhanVien> LayShippers()
+        public List<NhanVien> LayShippers()
         {
             string sql = "SELECT MaNV, HoTen FROM NHAN_VIEN WHERE ChucVu=N'Shipper' AND TrangThai=N'DangLam'";
-            return DatabaseHelper.ExecuteRawList<NhanVien>(sql);
+            return GetList(sql);
+        }
+
+        public void ResetMatKhau(string maNV, string matKhauMoiHash)
+        {
+            string sql = "UPDATE NHAN_VIEN SET MatKhau=@MK WHERE MaNV=@Ma";
+            ExecuteSql(sql, new SqlParameter[]
+            {
+                new SqlParameter("@MK", matKhauMoiHash),
+                new SqlParameter("@Ma", maNV)
+            });
         }
     }
 }

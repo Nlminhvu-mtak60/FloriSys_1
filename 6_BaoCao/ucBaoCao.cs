@@ -1,15 +1,18 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using FloriSys.Shared;
 
 namespace FloriSys._6_BaoCao
 {
-    public partial class ucBaoCao : UserControl
+    public partial class ucBaoCao : BaseUserControl
     {
         public ucBaoCao()
         {
             InitializeComponent();
         }
+
+        public override void LoadData() { }
 
         private void ucBaoCao_Load(object sender, EventArgs e)
         {

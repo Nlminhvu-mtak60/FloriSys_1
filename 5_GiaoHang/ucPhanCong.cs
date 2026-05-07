@@ -5,11 +5,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
+using FloriSys.Shared;
 
 namespace FloriSys._5_GiaoHang
 {
-    public partial class ucPhanCong : UserControl
+    public partial class ucPhanCong : BaseUserControl
     {
+        private readonly GiaoHangRepository _ghRepo = new GiaoHangRepository();
+        private readonly NhanVienRepository _nvRepo = new NhanVienRepository();
         private List<GiaoHang> dsDonCho;
         private DataTable dtShippers;
         private string selectedMaGH = "";
@@ -39,18 +42,23 @@ namespace FloriSys._5_GiaoHang
             dgvShipper.CellClick += dgvShipper_CellClick;
         }
 
+        public override void LoadData()
+        {
+            LoadDonChoGiao();
+            LoadShipperList();
+        }
+
         private void ucPhanCong_Load(object sender, EventArgs e)
         {
             btnXacNhanPC.Visible = true;
-            LoadDonChoGiao();
-            LoadShipperList();
+            LoadData();
         }
 
         private void LoadDonChoGiao()
         {
             try
             {
-                dsDonCho = GiaoHangDAO.LayDonChoGiao();
+                dsDonCho = _ghRepo.LayDonChoGiao();
                 cboDonCho.Items.Clear();
                 
                 if (dsDonCho.Count > 0)
@@ -78,7 +86,7 @@ namespace FloriSys._5_GiaoHang
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải đơn chờ giao: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError("Lỗi tải đơn chờ giao: " + ex.Message);
             }
         }
 
@@ -142,7 +150,7 @@ namespace FloriSys._5_GiaoHang
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh sách shipper: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError("Lỗi tải danh sách shipper: " + ex.Message);
             }
         }
 
@@ -175,38 +183,34 @@ namespace FloriSys._5_GiaoHang
         {
             if (string.IsNullOrEmpty(selectedMaGH))
             {
-                MessageBox.Show("Không có đơn hàng nào cần phân công.", "Thông báo");
+                ShowWarning("Không có đơn hàng nào cần phân công.");
                 return;
             }
 
             int shipperIndex = cboShipper.SelectedIndex - 1;
             if (shipperIndex < 0 || dtShippers == null || shipperIndex >= dtShippers.Rows.Count)
             {
-                MessageBox.Show("Vui lòng chọn shipper để phân công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ShowWarning("Vui lòng chọn shipper để phân công.");
                 return;
             }
 
             string maNV = dtShippers.Rows[shipperIndex]["MaNV"].ToString();
             string tenShipper = dtShippers.Rows[shipperIndex]["HoTen"].ToString();
 
-            if (MessageBox.Show(
-                string.Format("Phân công đơn {0} cho {1}?\n\nGhi chú: {2}", selectedMaDon, tenShipper, txtGhiChu.Text),
-                "Xác nhận phân công",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Confirm(string.Format("Phân công đơn {0} cho {1}?\n\nGhi chú: {2}", selectedMaDon, tenShipper, txtGhiChu.Text)))
             {
                 try
                 {
-                    GiaoHangDAO.PhanCongShipper(selectedMaGH, maNV);
-                    MessageBox.Show("Đã phân công thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _ghRepo.PhanCongShipper(selectedMaGH, maNV);
+                    ShowSuccess("Đã phân công thành công!");
 
                     // Reload data
                     txtGhiChu.Clear();
-                    LoadDonChoGiao();
-                    LoadShipperList();
+                    LoadData();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lỗi phân công: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ShowError("Lỗi phân công: " + ex.Message);
                 }
             }
         }

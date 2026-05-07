@@ -340,12 +340,12 @@ BEGIN
         WHERE ct.MaDon = @MaDon;
     END
     -- Khi Hủy từ Moi → không cần hoàn kho (chưa trừ)
-    -- Khi HoanHang từ DangXuLy → hoàn lại tồn kho
-    IF @TrangThai = N'HoanHang'
+    -- Khi Hủy từ DangXuLy → hoàn lại tồn kho (đã trừ khi xuất kho)
+    IF @TrangThai = N'Huy'
     BEGIN
         DECLARE @TrangThaiHienTai NVARCHAR(20);
         SELECT @TrangThaiHienTai = TrangThai FROM DON_HANG WHERE MaDon = @MaDon;
-        IF @TrangThaiHienTai IN (N'DangXuLy', N'DaGiao')
+        IF @TrangThaiHienTai = N'DangXuLy'
         BEGIN
             UPDATE sp SET sp.SoLuongTon = sp.SoLuongTon + ct.SoLuong
             FROM SAN_PHAM sp
@@ -353,6 +353,7 @@ BEGIN
             WHERE ct.MaDon = @MaDon;
         END
     END
+    -- HoanHang: KHÔNG hoàn kho tại đây. Tồn kho được quản lý bởi phiếu TRA_HANG (CT_TRA_HANG.CoNhapKho)
     UPDATE DON_HANG SET TrangThai = @TrangThai WHERE MaDon = @MaDon;
 END;
 GO
@@ -443,8 +444,35 @@ AS
 BEGIN
     UPDATE GIAO_HANG 
     SET TrangThai = @TrangThai, 
-        GhiChuGiaoHang = ISNULL(@GhiChu, GhiChuGiaoHang)
+        GhiChuGiaoHang = ISNULL(@GhiChu, GhiChuGiaoHang),
+        NgayGiao = CASE WHEN @TrangThai = N'GiaoThanhCong' THEN GETDATE() ELSE NgayGiao END
     WHERE MaGiaoHang = @MaGiaoHang;
+
+    IF @TrangThai = N'GiaoThanhCong'
+    BEGIN
+        UPDATE DON_HANG 
+        SET TrangThai = N'DaGiao' 
+        WHERE MaDon = (SELECT MaDon FROM GIAO_HANG WHERE MaGiaoHang = @MaGiaoHang);
+    END
+    ELSE IF @TrangThai = N'HoanHang'
+    BEGIN
+        DECLARE @MaDonHoan NVARCHAR(20);
+        SELECT @MaDonHoan = MaDon FROM GIAO_HANG WHERE MaGiaoHang = @MaGiaoHang;
+        
+        UPDATE DON_HANG 
+        SET TrangThai = N'HoanHang' 
+        WHERE MaDon = @MaDonHoan;
+        
+        -- KHÔNG hoàn kho tại đây. Tồn kho được quản lý bởi phiếu TRA_HANG (CT_TRA_HANG.CoNhapKho)
+        -- Cashier sẽ tạo phiếu trả hàng với chi tiết từng SP + quyết định nhập lại kho hay không
+    END
+    ELSE IF @TrangThai = N'GiaoLai' OR @TrangThai = N'DangGiao'
+    BEGIN
+        -- Đổi lại thành 'DangXuLy' vì bảng DON_HANG không có trạng thái 'DangGiao'
+        UPDATE DON_HANG 
+        SET TrangThai = N'DangXuLy' 
+        WHERE MaDon = (SELECT MaDon FROM GIAO_HANG WHERE MaGiaoHang = @MaGiaoHang);
+    END
 END;
 GO
 
@@ -572,7 +600,10 @@ INSERT INTO NHAN_VIEN VALUES
 (N'NV002', N'Trần Thu Hương',      N'Cashier',   N'0912333444', N'thuhuong',  N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'DangLam'),
 (N'NV003', N'Lê Minh Khoa',        N'Warehouse', N'0923555666', N'minhkho',   N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'DangLam'),
 (N'NV004', N'Nguyễn Văn Sơn',      N'Shipper',   N'0934777888', N'shipper1',  N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'DangLam'),
-(N'NV005', N'Hoàng Thị Xuân',      N'Cashier',   N'0945999000', N'xuanxuan',  N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'DaNghi');
+(N'NV005', N'Hoàng Thị Xuân',      N'Cashier',   N'0945999000', N'xuanxuan',  N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'DangLam'),
+(N'NV006', N'Phạm Thu Thảo',       N'Cashier',   N'0956111222', N'thuthao',   N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'DangLam'),
+(N'NV007', N'Trần Tuấn Anh',       N'Shipper',   N'0967222333', N'shipper2',  N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'DangLam'),
+(N'NV008', N'Đặng Văn Hùng',       N'Shipper',   N'0978333444', N'shipper3',  N'8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', N'DangLam');
 
 -- Sản phẩm
 INSERT INTO SAN_PHAM VALUES
@@ -597,7 +628,27 @@ INSERT INTO DON_HANG VALUES
 (N'DH000001', '2026-03-11 09:15', N'KH001', N'NV002', N'GiaoTanNoi', N'Moi',      0, N'Giao trước 10h sáng'),
 (N'DH000002', '2026-03-11 08:40', N'KH002', N'NV002', N'GiaoTanNoi', N'DangXuLy', 0, N'Gói quà đẹp, có thiệp'),
 (N'DH000003', '2026-03-11 08:20', N'KH003', N'NV002', N'TaiQuay',    N'HoanThanh',0, NULL),
-(N'DH000004', '2026-03-10 17:55', N'KH004', N'NV002', N'GiaoTanNoi', N'DaGiao',   0, NULL);
+(N'DH000004', '2026-03-10 17:55', N'KH004', N'NV002', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000005', '2026-03-12 10:00', N'KH001', N'NV002', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000006', '2026-03-12 11:30', N'KH002', N'NV005', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000007', '2026-03-13 09:20', N'KH003', N'NV006', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000008', '2026-03-13 14:10', N'KH004', N'NV002', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000009', '2026-03-14 08:45', N'KH001', N'NV005', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000010', '2026-03-14 15:00', N'KH002', N'NV006', N'TaiQuay',    N'HoanThanh',0, NULL),
+(N'DH000011', '2026-03-15 10:30', N'KH003', N'NV002', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000012', '2026-03-15 16:20', N'KH004', N'NV005', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000013', '2026-03-16 09:15', N'KH001', N'NV006', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000014', '2026-03-16 11:40', N'KH002', N'NV002', N'TaiQuay',    N'HoanThanh',0, NULL),
+(N'DH000015', '2026-03-17 14:05', N'KH003', N'NV005', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000016', '2026-03-17 17:30', N'KH004', N'NV006', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000017', '2026-03-18 08:50', N'KH001', N'NV002', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000018', '2026-03-18 10:15', N'KH002', N'NV005', N'TaiQuay',    N'HoanThanh',0, NULL),
+(N'DH000019', '2026-03-19 13:45', N'KH003', N'NV006', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000020', '2026-03-19 15:20', N'KH004', N'NV002', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000021', '2026-03-20 09:00', N'KH001', N'NV005', N'TaiQuay',    N'HoanThanh',0, NULL),
+(N'DH000022', '2026-03-20 11:30', N'KH002', N'NV006', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000023', '2026-03-21 14:10', N'KH003', N'NV002', N'GiaoTanNoi', N'DaGiao',   0, NULL),
+(N'DH000024', '2026-03-21 16:45', N'KH004', N'NV005', N'TaiQuay',    N'HoanThanh',0, NULL);
 
 -- Chi tiết đơn hàng
 INSERT INTO CHI_TIET_DON_HANG (MaDon, MaSP, SoLuong, DonGia, ThanhTien) VALUES
@@ -607,7 +658,27 @@ INSERT INTO CHI_TIET_DON_HANG (MaDon, MaSP, SoLuong, DonGia, ThanhTien) VALUES
 (N'DH000002', N'SP002', 1, 220000, 220000),
 (N'DH000003', N'SP003', 2, 80000,  160000),
 (N'DH000004', N'SP001', 1, 180000, 180000),
-(N'DH000004', N'SP004', 2, 150000, 300000);
+(N'DH000004', N'SP004', 2, 150000, 300000),
+(N'DH000005', N'SP002', 1, 220000, 220000),
+(N'DH000006', N'SP003', 3, 80000,  240000),
+(N'DH000007', N'SP001', 1, 180000, 180000),
+(N'DH000008', N'SP005', 2, 160000, 320000),
+(N'DH000009', N'SP004', 1, 150000, 150000),
+(N'DH000010', N'SP002', 2, 220000, 440000),
+(N'DH000011', N'SP003', 1, 80000,  80000),
+(N'DH000012', N'SP001', 3, 180000, 540000),
+(N'DH000013', N'SP005', 1, 160000, 160000),
+(N'DH000014', N'SP004', 2, 150000, 300000),
+(N'DH000015', N'SP002', 1, 220000, 220000),
+(N'DH000016', N'SP003', 2, 80000,  160000),
+(N'DH000017', N'SP001', 1, 180000, 180000),
+(N'DH000018', N'SP005', 3, 160000, 480000),
+(N'DH000019', N'SP004', 1, 150000, 150000),
+(N'DH000020', N'SP002', 2, 220000, 440000),
+(N'DH000021', N'SP003', 1, 80000,  80000),
+(N'DH000022', N'SP001', 2, 180000, 360000),
+(N'DH000023', N'SP005', 1, 160000, 160000),
+(N'DH000024', N'SP004', 2, 150000, 300000);
 
 -- Cập nhật TongTien dựa trên chi tiết
 UPDATE dh SET dh.TongTien = (SELECT ISNULL(SUM(ThanhTien),0) FROM CHI_TIET_DON_HANG WHERE MaDon = dh.MaDon)
@@ -617,7 +688,22 @@ FROM DON_HANG dh;
 INSERT INTO GIAO_HANG VALUES
 (N'GH000001', N'DH000001', N'NV004', NULL,                  N'ChoPhanCong', NULL),
 (N'GH000002', N'DH000002', N'NV004', '2026-03-11 09:30',    N'DangGiao',    N'Có thiệp sinh nhật'),
-(N'GH000004', N'DH000004', N'NV004', '2026-03-10 18:30',    N'GiaoThanhCong', NULL);
+(N'GH000004', N'DH000004', N'NV004', '2026-03-10 18:30',    N'GiaoThanhCong', NULL),
+(N'GH000005', N'DH000005', N'NV007', '2026-03-12 11:00',    N'GiaoThanhCong', NULL),
+(N'GH000006', N'DH000006', N'NV008', '2026-03-12 12:30',    N'GiaoThanhCong', NULL),
+(N'GH000007', N'DH000007', N'NV004', '2026-03-13 10:20',    N'GiaoThanhCong', NULL),
+(N'GH000008', N'DH000008', N'NV007', '2026-03-13 15:10',    N'GiaoThanhCong', NULL),
+(N'GH000009', N'DH000009', N'NV008', '2026-03-14 09:45',    N'GiaoThanhCong', NULL),
+(N'GH000010', N'DH000011', N'NV004', '2026-03-15 11:30',    N'GiaoThanhCong', NULL),
+(N'GH000011', N'DH000012', N'NV007', '2026-03-15 17:20',    N'GiaoThanhCong', NULL),
+(N'GH000012', N'DH000013', N'NV008', '2026-03-16 10:15',    N'GiaoThanhCong', NULL),
+(N'GH000013', N'DH000015', N'NV004', '2026-03-17 15:05',    N'GiaoThanhCong', NULL),
+(N'GH000014', N'DH000016', N'NV007', '2026-03-17 18:30',    N'GiaoThanhCong', NULL),
+(N'GH000015', N'DH000017', N'NV008', '2026-03-18 09:50',    N'GiaoThanhCong', NULL),
+(N'GH000016', N'DH000019', N'NV004', '2026-03-19 14:45',    N'GiaoThanhCong', NULL),
+(N'GH000017', N'DH000020', N'NV007', '2026-03-19 16:20',    N'GiaoThanhCong', NULL),
+(N'GH000018', N'DH000022', N'NV008', '2026-03-20 12:30',    N'GiaoThanhCong', NULL),
+(N'GH000019', N'DH000023', N'NV004', '2026-03-21 15:10',    N'GiaoThanhCong', NULL);
 
 -- Phiếu nhập kho
 INSERT INTO PHIEU_NHAP_KHO VALUES
@@ -637,7 +723,29 @@ GO
 
 -- Phản hồi
 INSERT INTO PHAN_HOI VALUES
-(N'PH000001', N'DH000004', N'Khách phản hồi hoa hồng bị héo sau 1 ngày', '2026-03-10 14:00', N'DangXuLy', NULL);
+-- 10 Phản hồi tốt
+(N'PH000001', N'DH000005', N'Hoa rất đẹp và tươi, giao hàng đúng giờ.', '2026-03-12 12:00', N'ChuaXuLy', NULL),
+(N'PH000002', N'DH000006', N'Dịch vụ tuyệt vời, nhân viên tư vấn nhiệt tình.', '2026-03-12 14:00', N'ChuaXuLy', NULL),
+(N'PH000003', N'DH000007', N'Rất hài lòng với bó hoa kỷ niệm, bạn gái tôi rất thích.', '2026-03-13 11:00', N'ChuaXuLy', NULL),
+(N'PH000004', N'DH000008', N'Chất lượng hoa vượt mong đợi, sẽ tiếp tục ủng hộ.', '2026-03-13 16:00', N'ChuaXuLy', NULL),
+(N'PH000005', N'DH000009', N'Hoa giống hệt hình mẫu trên web, gói ghém cẩn thận.', '2026-03-14 10:00', N'ChuaXuLy', NULL),
+(N'PH000006', N'DH000010', N'Lấy hoa tại quầy rất nhanh, hoa được chuẩn bị sẵn rất đẹp.', '2026-03-14 16:00', N'ChuaXuLy', NULL),
+(N'PH000007', N'DH000011', N'Shipper lịch sự, hoa giao tới không bị dập nát.', '2026-03-15 12:00', N'ChuaXuLy', NULL),
+(N'PH000008', N'DH000012', N'Đặt hàng online rất dễ dàng và tiện lợi.', '2026-03-15 18:00', N'ChuaXuLy', NULL),
+(N'PH000009', N'DH000013', N'Giá cả hợp lý so với chất lượng hoa nhận được.', '2026-03-16 11:00', N'ChuaXuLy', NULL),
+(N'PH000010', N'DH000014', N'Giấy gói hoa rất sang trọng, tôi rất ưng ý.', '2026-03-16 13:00', N'ChuaXuLy', NULL),
+-- 5 Phản hồi bình thường
+(N'PH000011', N'DH000015', N'Hoa đẹp nhưng bó hơi nhỏ so với tưởng tượng.', '2026-03-17 16:00', N'DangXuLy', NULL),
+(N'PH000012', N'DH000016', N'Giao hàng hơi trễ 15 phút nhưng hoa vẫn tươi.', '2026-03-17 19:00', N'ChuaXuLy', NULL),
+(N'PH000013', N'DH000017', N'Giấy gói màu hơi nhạt hơn so với ảnh, nhưng nhìn chung ổn.', '2026-03-18 11:00', N'DangXuLy', NULL),
+(N'PH000014', N'DH000018', N'Hoa tạm ổn, có 1 bông có vẻ hơi dập cánh ngoài.', '2026-03-18 12:00', N'ChuaXuLy', NULL),
+(N'PH000015', N'DH000019', N'Không có gì đặc biệt, dịch vụ ở mức chấp nhận được.', '2026-03-19 15:00', N'ChuaXuLy', NULL),
+-- 5 Phản hồi tệ
+(N'PH000016', N'DH000020', N'Hoa bị héo khá nhiều, không đáng tiền chút nào.', '2026-03-19 17:00', N'DangXuLy', NULL),
+(N'PH000017', N'DH000021', N'Nhân viên ở quầy không niềm nở, thái độ phục vụ kém.', '2026-03-20 11:00', N'DangXuLy', NULL),
+(N'PH000018', N'DH000022', N'Nhân viên tư vấn sai loại hoa tôi yêu cầu.', '2026-03-20 13:00', N'DangXuLy', NULL),
+(N'PH000019', N'DH000023', N'Hoa dập nát nhiều, yêu cầu hoàn tiền hoặc đổi trả.', '2026-03-21 16:00', N'DaXuLy', N'Đã đồng ý hoàn trả 100%'),
+(N'PH000020', N'DH000024', N'Dịch vụ tệ, gói hoa rất cẩu thả.', '2026-03-21 18:00', N'ChuaXuLy', NULL);
 
 -- Phân quyền mẫu
 INSERT INTO PHAN_QUYEN VALUES

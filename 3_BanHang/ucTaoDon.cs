@@ -5,11 +5,15 @@ using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 using FloriSys.Services;
+using FloriSys.Shared;
 
 namespace FloriSys._3_BanHang
 {
-    public partial class ucTaoDon : UserControl
+    public partial class ucTaoDon : BaseUserControl
     {
+        private readonly SanPhamRepository _spRepo = new SanPhamRepository();
+        private readonly KhachHangRepository _khRepo = new KhachHangRepository();
+        private readonly DonHangRepository _dhRepo = new DonHangRepository();
         private DataTable _gioHang;
         public event Action DonDaTao;
 
@@ -23,6 +27,8 @@ namespace FloriSys._3_BanHang
             _gioHang.Columns.Add("DonGia", typeof(decimal));
             _gioHang.Columns.Add("ThanhTien", typeof(decimal));
         }
+
+        public override void LoadData() { LoadSanPham(); }
 
         private void ucTaoDon_Load(object sender, EventArgs e)
         {
@@ -39,22 +45,25 @@ namespace FloriSys._3_BanHang
         {
             try
             {
-                List<SanPham> dsSP = SanPhamDAO.LaySanPhamDangBan(key);
+                List<SanPham> dsSP = _spRepo.LaySanPhamDangBan(key);
                 dgvSanPham.DataSource = dsSP;
                 FormatGridSP();
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex) { ShowError(ex.Message); }
         }
 
         private void FormatGridSP()
         {
             if (dgvSanPham.Columns.Count == 0) return;
-            dgvSanPham.Columns["MaSP"].Visible = false;
+
+            var visibleCols = new List<string> { "TenSP", "GiaBan", "SoLuongTon" };
+            foreach (DataGridViewColumn col in dgvSanPham.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
             dgvSanPham.Columns["TenSP"].HeaderText = "Sản phẩm";
             dgvSanPham.Columns["GiaBan"].HeaderText = "Giá bán";
             dgvSanPham.Columns["GiaBan"].DefaultCellStyle.Format = "#,##0";
             dgvSanPham.Columns["SoLuongTon"].HeaderText = "Tồn kho";
-            if (dgvSanPham.Columns.Contains("LoaiHoa")) dgvSanPham.Columns["LoaiHoa"].Visible = false;
+            
             dgvSanPham.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
@@ -66,14 +75,14 @@ namespace FloriSys._3_BanHang
             SanPham sp = dgvSanPham.CurrentRow.DataBoundItem as SanPham;
             if (sp == null) return;
 
-            if (sp.SoLuongTon <= 0) { MessageBox.Show("Sản phẩm đã hết hàng!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (sp.SoLuongTon <= 0) { ShowWarning("Sản phẩm đã hết hàng!"); return; }
 
             foreach (DataRow row in _gioHang.Rows)
             {
                 if (row["MaSP"].ToString() == sp.MaSP)
                 {
                     int sl = Convert.ToInt32(row["SoLuong"]) + 1;
-                    if (sl > sp.SoLuongTon) { MessageBox.Show("Vượt quá tồn kho!"); return; }
+                    if (sl > sp.SoLuongTon) { ShowWarning("Vượt quá tồn kho!"); return; }
                     row["SoLuong"] = sl;
                     row["ThanhTien"] = sl * sp.GiaBan;
                     TinhTong();
@@ -102,44 +111,21 @@ namespace FloriSys._3_BanHang
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtTenKH.Text.Trim()) || string.IsNullOrEmpty(txtSDT.Text.Trim()))
-            { MessageBox.Show("Vui lòng nhập thông tin khách hàng!"); return; }
+            { ShowWarning("Vui lòng nhập thông tin khách hàng!"); return; }
             if (_gioHang.Rows.Count == 0)
-            { MessageBox.Show("Giỏ hàng trống!"); return; }
+            { ShowWarning("Giỏ hàng trống!"); return; }
 
             try
             {
                 // Tìm hoặc tạo khách hàng
-                KhachHang khTim = KhachHangDAO.TimTheoSDT(txtSDT.Text.Trim());
-                string maKH;
-                if (khTim != null)
-                {
-                    maKH = khTim.MaKH;
-                }
-                else
-                {
-                    KhachHang khMoi = new KhachHang
-                    {
-                        HoTen = txtTenKH.Text.Trim(),
-                        SoDienThoai = txtSDT.Text.Trim(),
-                        DiaChi = txtDiaChi.Text.Trim()
-                    };
-                    maKH = KhachHangDAO.ThemKhachHang(khMoi);
-                }
+                string maKH = _khRepo.TimHoacTao(txtTenKH.Text.Trim(), txtSDT.Text.Trim(), txtDiaChi.Text.Trim());
 
                 string hinhThuc = cboHinhThuc.SelectedIndex == 0 ? "TaiQuay" : "GiaoTanNoi";
-                string maDon = DonHangDAO.TaoDonHang(maKH, SessionManager.MaNV, hinhThuc, txtGhiChu.Text.Trim());
 
-                foreach (DataRow row in _gioHang.Rows)
-                {
-                    DonHangDAO.ThemChiTiet(maDon, row["MaSP"].ToString(),
-                        Convert.ToInt32(row["SoLuong"]), Convert.ToDecimal(row["DonGia"]));
-                }
+                // Gọi hàm Transaction tập trung (TaoDon + ChiTiet + GiaoHang trong 1 transaction)
+                string maDon = _dhRepo.TaoDonHangHoanChinh(maKH, SessionManager.MaNV, hinhThuc, txtGhiChu.Text.Trim(), _gioHang);
 
-                // Nếu giao tận nơi → tạo lệnh giao hàng
-                if (hinhThuc == "GiaoTanNoi")
-                    GiaoHangDAO.TaoGiaoHang(maDon);
-
-                MessageBox.Show("Tạo đơn hàng " + maDon + " thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowSuccess("Tạo đơn hàng " + maDon + " thành công!");
                 _gioHang.Clear();
                 txtTenKH.Clear(); txtSDT.Clear(); txtDiaChi.Clear(); txtGhiChu.Clear();
                 TinhTong();
@@ -147,7 +133,7 @@ namespace FloriSys._3_BanHang
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowError("Lỗi: " + ex.Message);
             }
         }
 

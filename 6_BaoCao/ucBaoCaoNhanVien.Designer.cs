@@ -24,12 +24,18 @@ namespace FloriSys._6_BaoCao
             this.lblNam = new System.Windows.Forms.Label();
             this.cboThang = new System.Windows.Forms.ComboBox();
             this.lblThang = new System.Windows.Forms.Label();
+            this.pnlMain = new System.Windows.Forms.TableLayoutPanel();
             this.pnlGridCard = new System.Windows.Forms.Panel();
             this.dgvNhanVien = new System.Windows.Forms.DataGridView();
             this.lblGridTitle = new System.Windows.Forms.Label();
+            this.pnlChartCard = new System.Windows.Forms.Panel();
+            this.pnlChartArea = new System.Windows.Forms.Panel();
+            this.lblChartTitle = new System.Windows.Forms.Label();
             this.pnlFilter.SuspendLayout();
+            this.pnlMain.SuspendLayout();
             this.pnlGridCard.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNhanVien)).BeginInit();
+            this.pnlChartCard.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -109,19 +115,34 @@ namespace FloriSys._6_BaoCao
             this.lblThang.TabIndex = 0;
             this.lblThang.Text = "Tháng:";
             // 
-            // pnlGridCard
+            // pnlMain
             // 
-            this.pnlGridCard.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.pnlMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlMain.ColumnCount = 2;
+            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.pnlMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.pnlMain.Controls.Add(this.pnlGridCard, 0, 0);
+            this.pnlMain.Controls.Add(this.pnlChartCard, 1, 0);
+            this.pnlMain.Location = new System.Drawing.Point(30, 155);
+            this.pnlMain.Name = "pnlMain";
+            this.pnlMain.RowCount = 1;
+            this.pnlMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.pnlMain.Size = new System.Drawing.Size(940, 535);
+            this.pnlMain.TabIndex = 4;
+            // 
+            // pnlGridCard
+            // 
             this.pnlGridCard.BackColor = System.Drawing.Color.White;
             this.pnlGridCard.Controls.Add(this.dgvNhanVien);
             this.pnlGridCard.Controls.Add(this.lblGridTitle);
-            this.pnlGridCard.Location = new System.Drawing.Point(30, 155);
+            this.pnlGridCard.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlGridCard.Location = new System.Drawing.Point(3, 3);
             this.pnlGridCard.Name = "pnlGridCard";
             this.pnlGridCard.Padding = new System.Windows.Forms.Padding(20);
-            this.pnlGridCard.Size = new System.Drawing.Size(940, 535);
-            this.pnlGridCard.TabIndex = 4;
+            this.pnlGridCard.Size = new System.Drawing.Size(464, 529);
+            this.pnlGridCard.TabIndex = 0;
             // 
             // dgvNhanVien
             // 
@@ -139,7 +160,8 @@ namespace FloriSys._6_BaoCao
             this.dgvNhanVien.ReadOnly = true;
             this.dgvNhanVien.RowHeadersVisible = false;
             this.dgvNhanVien.RowTemplate.Height = 35;
-            this.dgvNhanVien.Size = new System.Drawing.Size(520, 455);
+            this.dgvNhanVien.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvNhanVien.Size = new System.Drawing.Size(424, 449);
             this.dgvNhanVien.TabIndex = 1;
             // 
             // lblGridTitle
@@ -154,12 +176,46 @@ namespace FloriSys._6_BaoCao
             this.lblGridTitle.UseCompatibleTextRendering = true;
             this.lblGridTitle.Text = "👤 Bảng xếp hạng doanh số nhân viên";
             // 
+            // pnlChartCard
+            // 
+            this.pnlChartCard.BackColor = System.Drawing.Color.White;
+            this.pnlChartCard.Controls.Add(this.pnlChartArea);
+            this.pnlChartCard.Controls.Add(this.lblChartTitle);
+            this.pnlChartCard.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlChartCard.Location = new System.Drawing.Point(473, 3);
+            this.pnlChartCard.Name = "pnlChartCard";
+            this.pnlChartCard.Padding = new System.Windows.Forms.Padding(20);
+            this.pnlChartCard.Size = new System.Drawing.Size(464, 529);
+            this.pnlChartCard.TabIndex = 1;
+            // 
+            // pnlChartArea
+            // 
+            this.pnlChartArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlChartArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.pnlChartArea.Location = new System.Drawing.Point(20, 60);
+            this.pnlChartArea.Name = "pnlChartArea";
+            this.pnlChartArea.Size = new System.Drawing.Size(424, 449);
+            this.pnlChartArea.TabIndex = 1;
+            // 
+            // lblChartTitle
+            // 
+            this.lblChartTitle.AutoSize = true;
+            this.lblChartTitle.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.lblChartTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
+            this.lblChartTitle.Location = new System.Drawing.Point(20, 20);
+            this.lblChartTitle.Name = "lblChartTitle";
+            this.lblChartTitle.Size = new System.Drawing.Size(310, 28);
+            this.lblChartTitle.TabIndex = 0;
+            this.lblChartTitle.Text = "📊 So sánh hiệu suất nhân viên";
+            // 
             // ucBaoCaoNhanVien
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(245)))), ((int)(((byte)(246)))));
-            this.Controls.Add(this.pnlGridCard);
+            this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.pnlFilter);
             this.Controls.Add(this.lblTitle);
             this.Name = "ucBaoCaoNhanVien";
@@ -167,9 +223,12 @@ namespace FloriSys._6_BaoCao
             this.Load += new System.EventHandler(this.ucBaoCaoNhanVien_Load);
             this.pnlFilter.ResumeLayout(false);
             this.pnlFilter.PerformLayout();
+            this.pnlMain.ResumeLayout(false);
             this.pnlGridCard.ResumeLayout(false);
             this.pnlGridCard.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNhanVien)).EndInit();
+            this.pnlChartCard.ResumeLayout(false);
+            this.pnlChartCard.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -184,8 +243,12 @@ namespace FloriSys._6_BaoCao
         private System.Windows.Forms.Label lblNam;
         private System.Windows.Forms.ComboBox cboThang;
         private System.Windows.Forms.Label lblThang;
+        private System.Windows.Forms.TableLayoutPanel pnlMain;
         private System.Windows.Forms.Panel pnlGridCard;
         private System.Windows.Forms.Label lblGridTitle;
         private System.Windows.Forms.DataGridView dgvNhanVien;
+        private System.Windows.Forms.Panel pnlChartCard;
+        private System.Windows.Forms.Panel pnlChartArea;
+        private System.Windows.Forms.Label lblChartTitle;
     }
 }

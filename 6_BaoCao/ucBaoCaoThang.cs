@@ -4,12 +4,14 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using FloriSys.DataAccess;
+using FloriSys.Shared;
 using FloriSys.Models;
 
 namespace FloriSys._6_BaoCao
 {
-    public partial class ucBaoCaoThang : UserControl
+    public partial class ucBaoCaoThang : BaseUserControl
     {
+        private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
         public ucBaoCaoThang()
         {
             InitializeComponent();
@@ -20,7 +22,7 @@ namespace FloriSys._6_BaoCao
             LoadData();
         }
 
-        private void LoadData()
+        public override void LoadData()
         {
             try
             {
@@ -29,7 +31,7 @@ namespace FloriSys._6_BaoCao
                 lblMonth.Text = "Tháng " + thang + "/" + nam;
 
                 // KPI - Doanh thu tháng
-                BaoCaoDoanhThu doanhThu = BaoCaoDAO.DoanhThuThang(thang, nam);
+                BaoCaoDoanhThu doanhThu = _bcRepo.DoanhThuThang(thang, nam);
                 if (doanhThu != null)
                 {
                     lblDoanhThuValue.Text = doanhThu.TongDoanhThu.ToString("N0") + "đ";
@@ -38,7 +40,7 @@ namespace FloriSys._6_BaoCao
                 // So sánh với tháng trước
                 int thangTruoc = thang == 1 ? 12 : thang - 1;
                 int namTruoc = thang == 1 ? nam - 1 : nam;
-                BaoCaoDoanhThu dtTruoc = BaoCaoDAO.DoanhThuThang(thangTruoc, namTruoc);
+                BaoCaoDoanhThu dtTruoc = _bcRepo.DoanhThuThang(thangTruoc, namTruoc);
                 if (doanhThu != null && dtTruoc != null)
                 {
                     if (dtTruoc.TongDoanhThu > 0)
@@ -55,10 +57,13 @@ namespace FloriSys._6_BaoCao
                 }
 
                 // Top sản phẩm tháng
-                List<SanPhamBanChay> dsTopSP = BaoCaoDAO.SanPhamBanChay(thang, nam);
+                List<SanPhamBanChay> dsTopSP = _bcRepo.SanPhamBanChay(thang, nam);
                 dgvTopSP.DataSource = dsTopSP;
                 if (dgvTopSP.Columns.Count > 0)
                 {
+                    var visibleCols = new List<string> { "TenSP", "TongSoLuong", "TongDoanhThu" };
+                    foreach (DataGridViewColumn col in dgvTopSP.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+
                     dgvTopSP.Columns["TenSP"].HeaderText = "Sản phẩm";
                     dgvTopSP.Columns["TongSoLuong"].HeaderText = "SL bán";
                     dgvTopSP.Columns["TongDoanhThu"].HeaderText = "Doanh thu";
@@ -70,7 +75,7 @@ namespace FloriSys._6_BaoCao
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải báo cáo tháng: " + ex.Message);
+                ShowError("Lỗi tải báo cáo tháng: " + ex.Message);
             }
         }
 
@@ -103,7 +108,7 @@ namespace FloriSys._6_BaoCao
 
             try
             {
-                List<DoanhThuNgay> dsNgay = BaoCaoDAO.DoanhThuTheoNgayTrongThang(thang, nam);
+                List<DoanhThuNgay> dsNgay = _bcRepo.DoanhThuTheoNgayTrongThang(thang, nam);
                 foreach (DoanhThuNgay item in dsNgay)
                 {
                     int idx = series.Points.AddXY(item.Ngay.Day, item.DoanhThu);

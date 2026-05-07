@@ -5,12 +5,16 @@ using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 using FloriSys.Services;
+using FloriSys.Shared;
 
 namespace FloriSys._4_KhoHang
 {
-    public partial class ucNhapKho : UserControl
+    public partial class ucNhapKho : BaseUserControl
     {
+        private readonly SanPhamRepository _spRepo = new SanPhamRepository();
+        private readonly PhieuNhapKhoRepository _pnkRepo = new PhieuNhapKhoRepository();
         private DataTable _danhSachNhap;
+
         public ucNhapKho()
         {
             InitializeComponent();
@@ -20,45 +24,58 @@ namespace FloriSys._4_KhoHang
             _danhSachNhap.Columns.Add("SoLuong", typeof(int));
             _danhSachNhap.Columns.Add("GiaNhap", typeof(decimal));
         }
+
+        public override void LoadData() { LoadSanPham(); }
+
         private void ucNhapKho_Load(object sender, EventArgs e)
         {
             LoadSanPham();
             dgvNhap.DataSource = _danhSachNhap;
         }
+
         private void LoadSanPham()
         {
             try
             {
-                List<SanPham> dsSP = SanPhamDAO.LaySanPhamDangBan();
+                List<SanPham> dsSP = _spRepo.LaySanPhamDangBan();
                 cboSanPham.DataSource = dsSP;
                 cboSanPham.DisplayMember = "TenSP";
                 cboSanPham.ValueMember = "MaSP";
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex) { ShowError(ex.Message); }
         }
+
         private void btnThemDong_Click(object sender, EventArgs e)
         {
             if (cboSanPham.SelectedValue == null || numSoLuong.Value <= 0 || numGiaNhap.Value <= 0)
-            { MessageBox.Show("Vui lòng chọn sản phẩm, nhập số lượng và giá nhập!"); return; }
-            _danhSachNhap.Rows.Add(cboSanPham.SelectedValue.ToString(), cboSanPham.Text, (int)numSoLuong.Value, numGiaNhap.Value);
+            { ShowWarning("Vui lòng chọn sản phẩm, nhập số lượng và giá nhập!"); return; }
+
+            string maSP = cboSanPham.SelectedValue.ToString();
+            int soLuong = (int)numSoLuong.Value;
+            decimal giaNhap = numGiaNhap.Value;
+
+            foreach (DataRow row in _danhSachNhap.Rows)
+            {
+                if (row["MaSP"].ToString() == maSP)
+                {
+                    row["SoLuong"] = Convert.ToInt32(row["SoLuong"]) + soLuong;
+                    row["GiaNhap"] = giaNhap;
+                    return;
+                }
+            }
+            _danhSachNhap.Rows.Add(maSP, cboSanPham.Text, soLuong, giaNhap);
         }
+
         private void btnLuu_Click(object sender, EventArgs e)
         {
-            if (_danhSachNhap.Rows.Count == 0) { MessageBox.Show("Chưa có sản phẩm nhập!"); return; }
+            if (_danhSachNhap.Rows.Count == 0) { ShowWarning("Chưa có sản phẩm nhập!"); return; }
             try
             {
-                string maPhieu = PhieuNhapKhoDAO.TaoPhieuNhap(SessionManager.MaNV, txtGhiChu.Text.Trim());
-                foreach (DataRow row in _danhSachNhap.Rows)
-                    PhieuNhapKhoDAO.ThemChiTiet(maPhieu, row["MaSP"].ToString(), Convert.ToInt32(row["SoLuong"]), Convert.ToDecimal(row["GiaNhap"]));
-                MessageBox.Show("Phiếu nhập " + maPhieu + " đã được tạo!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string maPhieu = _pnkRepo.TaoPhieuNhapHoanChinh(SessionManager.MaNV, txtGhiChu.Text.Trim(), _danhSachNhap);
+                ShowSuccess("Phiếu nhập " + maPhieu + " đã được tạo!");
                 _danhSachNhap.Clear(); txtGhiChu.Clear();
             }
-            catch (Exception ex) { MessageBox.Show("Lỗi: " + ex.Message); }
-        }
-
-        private void lblSP_Click(object sender, EventArgs e)
-        {
-
+            catch (Exception ex) { ShowError("Lỗi: " + ex.Message); }
         }
     }
 }

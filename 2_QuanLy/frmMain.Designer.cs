@@ -49,6 +49,7 @@ namespace FloriSys._2_QuanLy
             this.ucThanhMenu1.Name = "ucThanhMenu1";
             this.ucThanhMenu1.Size = new System.Drawing.Size(220, 553);
             this.ucThanhMenu1.TabIndex = 1;
+            this.ucThanhMenu1.Load += new System.EventHandler(this.ucThanhMenu1_Load);
             // 
             // frmMain
             // 

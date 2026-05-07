@@ -3,7 +3,11 @@ using System.Collections.Generic;
 
 namespace FloriSys.Models
 {
-    public class TraHang
+    /// <summary>
+    /// TraHang model - inherits BaseEntity.
+    /// Demonstrates: INHERITANCE, ENCAPSULATION (HinhThucDisplay, status checks).
+    /// </summary>
+    public class TraHang : BaseEntity
     {
         public string MaPhieuTra { get; set; }
         public string MaDon { get; set; }
@@ -15,6 +19,19 @@ namespace FloriSys.Models
         // Navigation property
         public List<ChiTietTraHang> ChiTiet { get; set; } = new List<ChiTietTraHang>();
 
+        // POLYMORPHISM: Override abstract members from BaseEntity
+        public override string DisplayText => MaPhieuTra ?? "";
+        public override string Id => MaPhieuTra;
+
+        public override bool IsValid => !string.IsNullOrEmpty(MaPhieuTra) && !string.IsNullOrEmpty(MaDon);
+
+        // ENCAPSULATION: Business logic inside the model
+        public bool HoanTienMat => HinhThucHoanTien == "TienMat";
+        public bool HoanChuyenKhoan => HinhThucHoanTien == "ChuyenKhoan";
+        public bool DoiHang => HinhThucHoanTien == "DoiHang";
+        public bool HasChiTiet => ChiTiet.Count > 0;
+
+        // Computed display properties
         public string HinhThucDisplay
         {
             get
@@ -30,6 +47,9 @@ namespace FloriSys.Models
         }
     }
 
+    /// <summary>
+    /// ChiTietTraHang - detail model (child entity).
+    /// </summary>
     public class ChiTietTraHang
     {
         public string MaPhieuTra { get; set; }

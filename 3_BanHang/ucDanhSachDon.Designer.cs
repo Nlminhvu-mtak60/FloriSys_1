@@ -17,29 +17,40 @@ namespace FloriSys._3_BanHang
             this.dgvDonHang = new System.Windows.Forms.DataGridView();
             this.lblTongDon = new System.Windows.Forms.Label();
             this.btnXem = new System.Windows.Forms.Button();
+            this.chkLocNgay = new System.Windows.Forms.CheckBox();
+            this.dtpNgay = new System.Windows.Forms.DateTimePicker();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.pnlFilter = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDonHang)).BeginInit();
             this.pnlHeader.SuspendLayout();
             this.pnlFilter.SuspendLayout();
             this.SuspendLayout();
+            // 
             // lblTitle
+            // 
             this.lblTitle.Font = new System.Drawing.Font("Georgia", 16F, System.Drawing.FontStyle.Bold);
-            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(17, 24, 39);
+            this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
             this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(400, 30);
+            this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "Danh sách đơn hàng";
+            // 
             // lblSubtitle
+            // 
             this.lblSubtitle.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(156, 163, 175);
+            this.lblSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
             this.lblSubtitle.Location = new System.Drawing.Point(0, 32);
             this.lblSubtitle.Name = "lblSubtitle";
             this.lblSubtitle.Size = new System.Drawing.Size(400, 20);
+            this.lblSubtitle.TabIndex = 1;
             this.lblSubtitle.Text = "Tất cả đơn hàng trong hệ thống";
+            // 
             // btnTaoDon
-            this.btnTaoDon.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            this.btnTaoDon.BackColor = System.Drawing.Color.FromArgb(232, 57, 77);
+            // 
+            this.btnTaoDon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTaoDon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            this.btnTaoDon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnTaoDon.FlatAppearance.BorderSize = 0;
             this.btnTaoDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTaoDon.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
@@ -47,63 +58,48 @@ namespace FloriSys._3_BanHang
             this.btnTaoDon.Location = new System.Drawing.Point(660, 5);
             this.btnTaoDon.Name = "btnTaoDon";
             this.btnTaoDon.Size = new System.Drawing.Size(140, 36);
+            this.btnTaoDon.TabIndex = 2;
             this.btnTaoDon.Text = "➕ Tạo đơn mới";
             this.btnTaoDon.UseVisualStyleBackColor = false;
-            this.btnTaoDon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnTaoDon.Click += new System.EventHandler(this.btnTaoDon_Click);
-            // pnlHeader
-            this.pnlHeader.Controls.Add(this.lblTitle);
-            this.pnlHeader.Controls.Add(this.lblSubtitle);
-            this.pnlHeader.Controls.Add(this.btnTaoDon);
-            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlHeader.Location = new System.Drawing.Point(20, 20);
-            this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(800, 56);
+            // 
             // txtTimKiem
+            // 
             this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtTimKiem.ForeColor = System.Drawing.Color.Gray;
             this.txtTimKiem.Location = new System.Drawing.Point(0, 4);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(250, 30);
+            this.txtTimKiem.Size = new System.Drawing.Size(200, 30);
+            this.txtTimKiem.TabIndex = 0;
             this.txtTimKiem.Text = "🔍 Tìm mã đơn, tên khách...";
-            this.txtTimKiem.ForeColor = System.Drawing.Color.Gray;
             this.txtTimKiem.Enter += new System.EventHandler(this.txtTimKiem_Enter);
             this.txtTimKiem.Leave += new System.EventHandler(this.txtTimKiem_Leave);
+            // 
             // cboTrangThai
+            // 
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.cboTrangThai.Location = new System.Drawing.Point(260, 4);
+            this.cboTrangThai.Location = new System.Drawing.Point(210, 4);
             this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(160, 30);
+            this.cboTrangThai.Size = new System.Drawing.Size(140, 31);
+            this.cboTrangThai.TabIndex = 1;
+            // 
             // btnLoc
+            // 
             this.btnLoc.BackColor = System.Drawing.Color.White;
-            this.btnLoc.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(229, 231, 235);
+            this.btnLoc.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
             this.btnLoc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLoc.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnLoc.Location = new System.Drawing.Point(430, 4);
+            this.btnLoc.Location = new System.Drawing.Point(466, 5);
             this.btnLoc.Name = "btnLoc";
             this.btnLoc.Size = new System.Drawing.Size(60, 30);
+            this.btnLoc.TabIndex = 4;
             this.btnLoc.Text = "Lọc";
+            this.btnLoc.UseVisualStyleBackColor = false;
             this.btnLoc.Click += new System.EventHandler(this.btnLoc_Click);
-            // btnXem
-            this.btnXem.BackColor = System.Drawing.Color.White;
-            this.btnXem.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(229, 231, 235);
-            this.btnXem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnXem.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.btnXem.Location = new System.Drawing.Point(500, 4);
-            this.btnXem.Name = "btnXem";
-            this.btnXem.Size = new System.Drawing.Size(80, 30);
-            this.btnXem.Text = "Xem chi tiết";
-            this.btnXem.Click += new System.EventHandler(this.btnXem_Click);
-            // pnlFilter
-            this.pnlFilter.Controls.Add(this.txtTimKiem);
-            this.pnlFilter.Controls.Add(this.cboTrangThai);
-            this.pnlFilter.Controls.Add(this.btnLoc);
-            this.pnlFilter.Controls.Add(this.btnXem);
-            this.pnlFilter.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlFilter.Location = new System.Drawing.Point(20, 76);
-            this.pnlFilter.Name = "pnlFilter";
-            this.pnlFilter.Size = new System.Drawing.Size(800, 40);
+            // 
             // dgvDonHang
+            // 
             this.dgvDonHang.AllowUserToAddRows = false;
             this.dgvDonHang.AllowUserToDeleteRows = false;
             this.dgvDonHang.BackgroundColor = System.Drawing.Color.White;
@@ -111,26 +107,95 @@ namespace FloriSys._3_BanHang
             this.dgvDonHang.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvDonHang.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDonHang.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvDonHang.GridColor = System.Drawing.Color.FromArgb(243, 244, 246);
+            this.dgvDonHang.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             this.dgvDonHang.Location = new System.Drawing.Point(20, 116);
             this.dgvDonHang.Name = "dgvDonHang";
             this.dgvDonHang.ReadOnly = true;
             this.dgvDonHang.RowHeadersVisible = false;
+            this.dgvDonHang.RowHeadersWidth = 51;
             this.dgvDonHang.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDonHang.Size = new System.Drawing.Size(800, 400);
+            this.dgvDonHang.TabIndex = 0;
             this.dgvDonHang.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDonHang_CellClick);
+            // 
             // lblTongDon
+            // 
             this.lblTongDon.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblTongDon.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblTongDon.ForeColor = System.Drawing.Color.FromArgb(156, 163, 175);
-            this.lblTongDon.Location = new System.Drawing.Point(20, 520);
+            this.lblTongDon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblTongDon.Location = new System.Drawing.Point(20, 516);
             this.lblTongDon.Name = "lblTongDon";
             this.lblTongDon.Size = new System.Drawing.Size(800, 24);
+            this.lblTongDon.TabIndex = 1;
             this.lblTongDon.Text = "Đang tải...";
+            // 
+            // btnXem
+            // 
+            this.btnXem.BackColor = System.Drawing.Color.White;
+            this.btnXem.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
+            this.btnXem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnXem.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.btnXem.Location = new System.Drawing.Point(532, 6);
+            this.btnXem.Name = "btnXem";
+            this.btnXem.Size = new System.Drawing.Size(105, 30);
+            this.btnXem.TabIndex = 5;
+            this.btnXem.Text = "Xem chi tiết";
+            this.btnXem.UseVisualStyleBackColor = false;
+            this.btnXem.Click += new System.EventHandler(this.btnXem_Click);
+            // 
+            // chkLocNgay
+            // 
+            this.chkLocNgay.AutoSize = true;
+            this.chkLocNgay.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.chkLocNgay.Location = new System.Drawing.Point(360, 8);
+            this.chkLocNgay.Name = "chkLocNgay";
+            this.chkLocNgay.Size = new System.Drawing.Size(100, 24);
+            this.chkLocNgay.TabIndex = 2;
+            this.chkLocNgay.Text = "Theo ngày";
+            this.chkLocNgay.UseVisualStyleBackColor = true;
+            this.chkLocNgay.CheckedChanged += new System.EventHandler(this.chkLocNgay_CheckedChanged);
+            // 
+            // dtpNgay
+            // 
+            this.dtpNgay.CustomFormat = "dd/MM/yyyy";
+            this.dtpNgay.Enabled = false;
+            this.dtpNgay.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.dtpNgay.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpNgay.Location = new System.Drawing.Point(660, 8);
+            this.dtpNgay.Name = "dtpNgay";
+            this.dtpNgay.Size = new System.Drawing.Size(120, 30);
+            this.dtpNgay.TabIndex = 3;
+            // 
+            // pnlHeader
+            // 
+            this.pnlHeader.Controls.Add(this.lblTitle);
+            this.pnlHeader.Controls.Add(this.lblSubtitle);
+            this.pnlHeader.Controls.Add(this.btnTaoDon);
+            this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlHeader.Location = new System.Drawing.Point(20, 20);
+            this.pnlHeader.Name = "pnlHeader";
+            this.pnlHeader.Size = new System.Drawing.Size(800, 56);
+            this.pnlHeader.TabIndex = 3;
+            // 
+            // pnlFilter
+            // 
+            this.pnlFilter.Controls.Add(this.txtTimKiem);
+            this.pnlFilter.Controls.Add(this.cboTrangThai);
+            this.pnlFilter.Controls.Add(this.chkLocNgay);
+            this.pnlFilter.Controls.Add(this.dtpNgay);
+            this.pnlFilter.Controls.Add(this.btnLoc);
+            this.pnlFilter.Controls.Add(this.btnXem);
+            this.pnlFilter.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlFilter.Location = new System.Drawing.Point(20, 76);
+            this.pnlFilter.Name = "pnlFilter";
+            this.pnlFilter.Size = new System.Drawing.Size(800, 40);
+            this.pnlFilter.TabIndex = 2;
+            // 
             // ucDanhSachDon
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(250, 245, 246);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(245)))), ((int)(((byte)(246)))));
             this.Controls.Add(this.dgvDonHang);
             this.Controls.Add(this.lblTongDon);
             this.Controls.Add(this.pnlFilter);
@@ -144,6 +209,7 @@ namespace FloriSys._3_BanHang
             this.pnlFilter.ResumeLayout(false);
             this.pnlFilter.PerformLayout();
             this.ResumeLayout(false);
+
         }
         #endregion
 
@@ -156,6 +222,8 @@ namespace FloriSys._3_BanHang
         private System.Windows.Forms.DataGridView dgvDonHang;
         private System.Windows.Forms.Label lblTongDon;
         private System.Windows.Forms.Button btnXem;
+        private System.Windows.Forms.CheckBox chkLocNgay;
+        private System.Windows.Forms.DateTimePicker dtpNgay;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Panel pnlFilter;
     }
