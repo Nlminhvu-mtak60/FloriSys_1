@@ -261,6 +261,7 @@ namespace FloriSys._5_GiaoHang
             // btnHoanHang
             // 
             this.btnHoanHang.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.btnHoanHang.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnHoanHang.FlatAppearance.BorderSize = 0;
             this.btnHoanHang.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnHoanHang.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -276,6 +277,7 @@ namespace FloriSys._5_GiaoHang
             // btnKhachVang
             // 
             this.btnKhachVang.BackColor = System.Drawing.Color.Gray;
+            this.btnKhachVang.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnKhachVang.FlatAppearance.BorderSize = 0;
             this.btnKhachVang.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnKhachVang.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -291,6 +293,7 @@ namespace FloriSys._5_GiaoHang
             // btnThanhCong
             // 
             this.btnThanhCong.BackColor = System.Drawing.Color.Green;
+            this.btnThanhCong.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnThanhCong.FlatAppearance.BorderSize = 0;
             this.btnThanhCong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnThanhCong.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);

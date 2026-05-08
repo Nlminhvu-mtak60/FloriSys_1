@@ -811,3 +811,191 @@ GO
 
 PRINT N'✅ Database FloriSys đã được tạo thành công!';
 GO
+
+
+-- =====================================================
+-- PH?N B? SUNG: L?CH S? ��N H�NG V� D? LI?U M?U
+-- =====================================================
+
+-- =====================================================
+-- BẢNG LỊCH SỬ TRẠNG THÁI ĐƠN HÀNG
+-- Tự động ghi log mỗi khi đơn hàng thay đổi trạng thái
+-- =====================================================
+
+-- 1. Tạo bảng lịch sử
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LICH_SU_DON_HANG')
+BEGIN
+    CREATE TABLE LICH_SU_DON_HANG (
+        Id           INT IDENTITY(1,1) PRIMARY KEY,
+        MaDon        NVARCHAR(20)  NOT NULL REFERENCES DON_HANG(MaDon),
+        TrangThai    NVARCHAR(20)  NOT NULL,
+        ThoiGian     DATETIME      NOT NULL DEFAULT GETDATE(),
+        GhiChu       NVARCHAR(500)
+    );
+END
+GO
+
+-- 2. Trigger: Tự động ghi log khi INSERT đơn mới
+IF EXISTS (SELECT * FROM sys.triggers WHERE name = 'trg_DonHang_Insert_Log')
+    DROP TRIGGER trg_DonHang_Insert_Log;
+GO
+
+CREATE TRIGGER trg_DonHang_Insert_Log
+ON DON_HANG
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
+    SELECT MaDon, TrangThai, GETDATE(), N'Tạo đơn hàng mới'
+    FROM inserted;
+END
+GO
+
+-- 3. Trigger: Tự động ghi log khi UPDATE trạng thái
+IF EXISTS (SELECT * FROM sys.triggers WHERE name = 'trg_DonHang_Update_Log')
+    DROP TRIGGER trg_DonHang_Update_Log;
+GO
+
+CREATE TRIGGER trg_DonHang_Update_Log
+ON DON_HANG
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- Chỉ ghi log khi TrangThai thay đổi
+    IF UPDATE(TrangThai)
+    BEGIN
+        INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
+        SELECT i.MaDon, i.TrangThai, GETDATE(),
+            CASE i.TrangThai
+                WHEN N'Moi'       THEN N'Đơn hàng mới'
+                WHEN N'DangXuLy'  THEN N'Đã xuất kho - đang xử lý'
+                WHEN N'DaGiao'    THEN N'Đã giao cho shipper'
+                WHEN N'HoanThanh' THEN N'Đơn hàng hoàn thành'
+                WHEN N'Huy'       THEN N'Đơn hàng bị hủy'
+                WHEN N'HoanHang'  THEN N'Khách yêu cầu hoàn hàng'
+                ELSE N'Cập nhật trạng thái: ' + i.TrangThai
+            END
+        FROM inserted i
+        INNER JOIN deleted d ON i.MaDon = d.MaDon
+        WHERE i.TrangThai <> d.TrangThai;
+    END
+END
+GO
+
+-- 4. Backfill: Ghi log cho các đơn hàng đã tồn tại (chưa có lịch sử)
+INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
+SELECT dh.MaDon, N'Moi', dh.NgayTao, N'Tạo đơn hàng mới (backfill)'
+FROM DON_HANG dh
+WHERE NOT EXISTS (
+    SELECT 1 FROM LICH_SU_DON_HANG ls WHERE ls.MaDon = dh.MaDon
+);
+GO
+
+-- Nếu đơn đã chuyển trạng thái khác Moi, thêm 1 record nữa cho trạng thái hiện tại
+INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
+SELECT dh.MaDon, dh.TrangThai, DATEADD(MINUTE, 1, dh.NgayTao),
+    CASE dh.TrangThai
+        WHEN N'DangXuLy'  THEN N'Đã xuất kho - đang xử lý (backfill)'
+        WHEN N'DaGiao'    THEN N'Đã giao cho shipper (backfill)'
+        WHEN N'HoanThanh' THEN N'Đơn hàng hoàn thành (backfill)'
+        WHEN N'Huy'       THEN N'Đơn hàng bị hủy (backfill)'
+        WHEN N'HoanHang'  THEN N'Khách yêu cầu hoàn hàng (backfill)'
+        ELSE N'Trạng thái: ' + dh.TrangThai + N' (backfill)'
+    END
+FROM DON_HANG dh
+WHERE dh.TrangThai <> N'Moi'
+AND NOT EXISTS (
+    SELECT 1 FROM LICH_SU_DON_HANG ls 
+    WHERE ls.MaDon = dh.MaDon AND ls.TrangThai = dh.TrangThai
+);
+GO
+
+PRINT N'✅ Tạo bảng LICH_SU_DON_HANG + trigger thành công!';
+GO
+
+
+
+
+[ignoring loop detection]
+USE FloriSys;
+GO
+
+-- 1. THÊM PHIẾU NHẬP KHO (Để có hàng bán)
+DECLARE @MaNV_Kho NVARCHAR(20) = (SELECT TOP 1 MaNV FROM NHAN_VIEN WHERE ChucVu = 'Warehouse');
+IF @MaNV_Kho IS NULL SET @MaNV_Kho = 'NV003';
+
+IF NOT EXISTS (SELECT 1 FROM PHIEU_NHAP_KHO WHERE MaPhieu = 'PN000002')
+BEGIN
+    INSERT INTO PHIEU_NHAP_KHO (MaPhieu, NgayNhap, MaNV, GhiChu) VALUES
+    ('PN000002', '2026-01-05 08:00', @MaNV_Kho, N'Nhập hàng đầu năm'),
+    ('PN000003', '2026-03-15 09:00', @MaNV_Kho, N'Nhập hàng bổ sung tháng 3'),
+    ('PN000004', '2026-04-25 14:00', @MaNV_Kho, N'Nhập hàng chuẩn bị lễ');
+
+    INSERT INTO CT_NHAP_KHO (MaPhieu, MaSP, SoLuong, GiaNhap)
+    SELECT 'PN000002', MaSP, 100, GiaNhap FROM SAN_PHAM;
+    
+    INSERT INTO CT_NHAP_KHO (MaPhieu, MaSP, SoLuong, GiaNhap)
+    SELECT 'PN000003', MaSP, 50, GiaNhap FROM SAN_PHAM WHERE MaSP LIKE '%1%';
+END
+
+-- 2. TẠO ĐƠN HÀNG VÀ CHIA ĐỀU CHO NHÂN VIÊN
+DECLARE @StartDate DATETIME = '2026-01-10';
+DECLARE @EndDate DATETIME = '2026-05-07'; -- Trước ngày 8/5
+DECLARE @CurrentOrderNum INT = (SELECT ISNULL(MAX(CAST(SUBSTRING(MaDon, 3, 6) AS INT)), 0) FROM DON_HANG);
+DECLARE @GHNum INT = (SELECT ISNULL(MAX(CAST(SUBSTRING(MaGiaoHang, 3, 6) AS INT)), 0) FROM GIAO_HANG);
+
+-- Lấy danh sách nhân viên vào bảng tạm để chia đều
+SELECT MaNV, ROW_NUMBER() OVER (ORDER BY MaNV) as ID INTO #Cashiers FROM NHAN_VIEN WHERE ChucVu IN ('Cashier', 'Admin');
+SELECT MaNV, ROW_NUMBER() OVER (ORDER BY MaNV) as ID INTO #Shippers FROM NHAN_VIEN WHERE ChucVu = 'Shipper';
+
+DECLARE @NumCashiers INT = (SELECT COUNT(*) FROM #Cashiers);
+DECLARE @NumShippers INT = (SELECT COUNT(*) FROM #Shippers);
+
+IF @NumCashiers > 0 AND @NumShippers > 0
+BEGIN
+    DECLARE @i INT = 1;
+    DECLARE @TotalOrders INT = 120; 
+
+    WHILE @i <= @TotalOrders
+    BEGIN
+        DECLARE @OrderDate DATETIME = DATEADD(SECOND, ABS(CHECKSUM(NEWID())) % DATEDIFF(SECOND, @StartDate, @EndDate), @StartDate);
+        
+        SET @CurrentOrderNum = @CurrentOrderNum + 1;
+        DECLARE @MaDon NVARCHAR(20) = 'DH' + RIGHT('000000' + CAST(@CurrentOrderNum AS NVARCHAR), 6);
+        
+        DECLARE @CashierID INT = (@i % @NumCashiers) + 1;
+        DECLARE @MaNV_Tao NVARCHAR(20) = (SELECT MaNV FROM #Cashiers WHERE ID = @CashierID);
+        
+        DECLARE @MaKH NVARCHAR(20) = (SELECT TOP 1 MaKH FROM KHACH_HANG ORDER BY NEWID());
+        DECLARE @TrangThaiDon NVARCHAR(20) = CASE WHEN (@i % 10 = 0) THEN N'HoanHang' ELSE N'HoanThanh' END;
+
+        INSERT INTO DON_HANG (MaDon, NgayTao, MaKH, MaNV_TaoDon, HinhThucNhanHang, TrangThai, TongTien)
+        VALUES (@MaDon, @OrderDate, @MaKH, @MaNV_Tao, N'GiaoTanNoi', @TrangThaiDon, 0);
+
+        INSERT INTO CHI_TIET_DON_HANG (MaDon, MaSP, SoLuong, DonGia)
+        SELECT TOP 1 @MaDon, MaSP, (1 + ABS(CHECKSUM(NEWID())) % 2), GiaBan 
+        FROM SAN_PHAM ORDER BY NEWID();
+
+        UPDATE DON_HANG SET TongTien = (SELECT SUM(ThanhTien) FROM CHI_TIET_DON_HANG WHERE MaDon = @MaDon) WHERE MaDon = @MaDon;
+
+        SET @GHNum = @GHNum + 1;
+        DECLARE @MaGH NVARCHAR(20) = 'GH' + RIGHT('000000' + CAST(@GHNum AS NVARCHAR), 6);
+        DECLARE @ShipperID INT = (@i % @NumShippers) + 1;
+        DECLARE @MaNV_Ship NVARCHAR(20) = (SELECT MaNV FROM #Shippers WHERE ID = @ShipperID);
+        
+        INSERT INTO GIAO_HANG (MaGiaoHang, MaDon, MaNV_Shipper, NgayGiao, TrangThai)
+        VALUES (@MaGH, @MaDon, @MaNV_Ship, DATEADD(MINUTE, 30 + (ABS(CHECKSUM(NEWID())) % 120), @OrderDate), 
+                CASE WHEN @TrangThaiDon = N'HoanHang' THEN N'HoanHang' ELSE N'GiaoThanhCong' END);
+
+        SET @i = @i + 1;
+    END
+END
+
+DROP TABLE #Cashiers;
+DROP TABLE #Shippers;
+
+PRINT N'Done';
+GO
+

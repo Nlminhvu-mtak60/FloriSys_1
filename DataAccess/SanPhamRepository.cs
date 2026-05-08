@@ -106,10 +106,16 @@ namespace FloriSys.DataAccess
 
         public void NgungBanSanPham(string maSP)
         {
-            string sql = "UPDATE SAN_PHAM SET TrangThai = N'NgungBan' WHERE MaSP = @MaSP";
+            DoiTrangThai(maSP, "NgungBan");
+        }
+
+        public void DoiTrangThai(string maSP, string trangThaiMoi)
+        {
+            string sql = "UPDATE SAN_PHAM SET TrangThai = @TrangThai WHERE MaSP = @MaSP";
             ExecuteSql(sql, new SqlParameter[]
             {
-                new SqlParameter("@MaSP", maSP)
+                new SqlParameter("@MaSP", maSP),
+                new SqlParameter("@TrangThai", trangThaiMoi)
             });
         }
 

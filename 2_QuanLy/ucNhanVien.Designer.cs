@@ -131,10 +131,10 @@ namespace FloriSys._2_QuanLy
             this.cboFilterChucVu.FormattingEnabled = true;
             this.cboFilterChucVu.Items.AddRange(new object[] {
             "-- Chức vụ --",
-            "Admin",
-            "Cashier",
-            "Warehouse",
-            "Shipper"});
+            "Quản lý",
+            "Thu ngân",
+            "Thủ kho",
+            "Giao hàng"});
             this.cboFilterChucVu.Location = new System.Drawing.Point(200, 15);
             this.cboFilterChucVu.Name = "cboFilterChucVu";
             this.cboFilterChucVu.Size = new System.Drawing.Size(140, 28);
@@ -324,10 +324,10 @@ namespace FloriSys._2_QuanLy
             this.cboChucVu.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.cboChucVu.FormattingEnabled = true;
             this.cboChucVu.Items.AddRange(new object[] {
-            "Admin",
-            "Cashier",
-            "Warehouse",
-            "Shipper"});
+            "Quản lý",
+            "Thu ngân",
+            "Thủ kho",
+            "Giao hàng"});
             this.cboChucVu.Location = new System.Drawing.Point(20, 200);
             this.cboChucVu.Name = "cboChucVu";
             this.cboChucVu.Size = new System.Drawing.Size(140, 28);

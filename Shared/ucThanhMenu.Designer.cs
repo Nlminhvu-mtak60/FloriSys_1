@@ -32,32 +32,32 @@ namespace FloriSys.Shared
             this.lblPhuDe = new System.Windows.Forms.Label();
             this.lblDuongKe = new System.Windows.Forms.Label();
             this.pnlMenu = new System.Windows.Forms.Panel();
-            this.btnTraHang = new System.Windows.Forms.Button();
-            this.btnPhanHoi = new System.Windows.Forms.Button();
-            this.btnDoiMatKhau = new System.Windows.Forms.Button();
             this.btnDangXuat = new System.Windows.Forms.Button();
+            this.btnDoiMatKhau = new System.Windows.Forms.Button();
+            this.lblNhomTaiKhoan = new System.Windows.Forms.Label();
             this.btnBaoCao = new System.Windows.Forms.Button();
             this.lblNhomBaoCao = new System.Windows.Forms.Label();
             this.btnKhachHang = new System.Windows.Forms.Button();
             this.btnSanPham = new System.Windows.Forms.Button();
+            this.btnNhanVien = new System.Windows.Forms.Button();
+            this.lblNhomQuanLy = new System.Windows.Forms.Label();
+            this.btnPhanCong = new System.Windows.Forms.Button();
+            this.btnDanhSachGiao = new System.Windows.Forms.Button();
+            this.lblNhomGiaoHang = new System.Windows.Forms.Label();
             this.btnLichSuNhapKho = new System.Windows.Forms.Button();
+            this.btnHangHu = new System.Windows.Forms.Button();
+            this.btnXuatKho = new System.Windows.Forms.Button();
+            this.btnNhapKho = new System.Windows.Forms.Button();
+            this.btnTonKho = new System.Windows.Forms.Button();
+            this.lblNhomKhoHang = new System.Windows.Forms.Label();
+            this.btnTraHang = new System.Windows.Forms.Button();
+            this.btnPhanHoi = new System.Windows.Forms.Button();
             this.btnTaoDon = new System.Windows.Forms.Button();
             this.btnDanhSachDon = new System.Windows.Forms.Button();
-            this.btnDashboard = new System.Windows.Forms.Button();
-            this.btnNhanVien = new System.Windows.Forms.Button();
-            this.btnPhanQuyen = new System.Windows.Forms.Button();
-            this.lblNhomTaiKhoan = new System.Windows.Forms.Label();
-            this.lblNhomQuanLy = new System.Windows.Forms.Label();
-            this.lblNhomGiaoHang = new System.Windows.Forms.Label();
-            this.btnPhanCong = new System.Windows.Forms.Button();
-            this.lblNhomKhoHang = new System.Windows.Forms.Label();
-            this.btnDanhSachGiao = new System.Windows.Forms.Button();
-            this.btnTonKho = new System.Windows.Forms.Button();
-            this.btnNhapKho = new System.Windows.Forms.Button();
-            this.btnXuatKho = new System.Windows.Forms.Button();
-            this.btnHangHu = new System.Windows.Forms.Button();
             this.lblNhomDonHang = new System.Windows.Forms.Label();
+            this.btnDashboard = new System.Windows.Forms.Button();
             this.lblNhomTongQuan = new System.Windows.Forms.Label();
+            this.btnPhanQuyen = new System.Windows.Forms.Button();
             this.pnlNguoiDung = new System.Windows.Forms.Panel();
             this.lblChucVu = new System.Windows.Forms.Label();
             this.lblTenNguoiDung = new System.Windows.Forms.Label();
@@ -100,6 +100,7 @@ namespace FloriSys.Shared
             // 
             // pnlMenu
             // 
+            this.pnlMenu.AutoScroll = true;
             this.pnlMenu.Controls.Add(this.btnDangXuat);
             this.pnlMenu.Controls.Add(this.btnDoiMatKhau);
             this.pnlMenu.Controls.Add(this.lblNhomTaiKhoan);
@@ -126,48 +127,32 @@ namespace FloriSys.Shared
             this.pnlMenu.Controls.Add(this.btnDashboard);
             this.pnlMenu.Controls.Add(this.lblNhomTongQuan);
             this.pnlMenu.Controls.Add(this.btnPhanQuyen);
+            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMenu.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
             this.pnlMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.pnlMenu.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMenu.AutoScroll = true;
+            this.pnlMenu.Location = new System.Drawing.Point(0, 0);
             this.pnlMenu.Name = "pnlMenu";
+            this.pnlMenu.Size = new System.Drawing.Size(220, 1026);
             this.pnlMenu.TabIndex = 3;
             // 
-            // btnTraHang
+            // btnDangXuat
             // 
-            this.btnTraHang.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnTraHang.FlatAppearance.BorderSize = 0;
-            this.btnTraHang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnTraHang.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTraHang.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnTraHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnTraHang.Location = new System.Drawing.Point(0, 212);
-            this.btnTraHang.Name = "btnTraHang";
-            this.btnTraHang.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnTraHang.Size = new System.Drawing.Size(220, 38);
-            this.btnTraHang.TabIndex = 34;
-            this.btnTraHang.TabStop = false;
-            this.btnTraHang.Text = "↩️  Trả hàng hoàn tiền";
-            this.btnTraHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnTraHang.UseVisualStyleBackColor = true;
-            // 
-            // btnPhanHoi
-            // 
-            this.btnPhanHoi.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPhanHoi.FlatAppearance.BorderSize = 0;
-            this.btnPhanHoi.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnPhanHoi.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPhanHoi.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnPhanHoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnPhanHoi.Location = new System.Drawing.Point(0, 174);
-            this.btnPhanHoi.Name = "btnPhanHoi";
-            this.btnPhanHoi.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnPhanHoi.Size = new System.Drawing.Size(220, 38);
-            this.btnPhanHoi.TabIndex = 33;
-            this.btnPhanHoi.TabStop = false;
-            this.btnPhanHoi.Text = "💬  Phản hồi khiếu nại";
-            this.btnPhanHoi.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPhanHoi.UseVisualStyleBackColor = true;
+            this.btnDangXuat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(232)))), ((int)(((byte)(235)))));
+            this.btnDangXuat.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDangXuat.FlatAppearance.BorderSize = 0;
+            this.btnDangXuat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnDangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnDangXuat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            this.btnDangXuat.Location = new System.Drawing.Point(0, 891);
+            this.btnDangXuat.Name = "btnDangXuat";
+            this.btnDangXuat.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnDangXuat.Size = new System.Drawing.Size(220, 38);
+            this.btnDangXuat.TabIndex = 21;
+            this.btnDangXuat.TabStop = false;
+            this.btnDangXuat.Text = "🚪  Đăng xuất";
+            this.btnDangXuat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDangXuat.UseVisualStyleBackColor = false;
             // 
             // btnDoiMatKhau
             // 
@@ -187,24 +172,18 @@ namespace FloriSys.Shared
             this.btnDoiMatKhau.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDoiMatKhau.UseVisualStyleBackColor = true;
             // 
-            this.btnDangXuat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(232)))), ((int)(((byte)(235)))));
-            this.btnDangXuat.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDangXuat.FlatAppearance.BorderSize = 0;
-            this.btnDangXuat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnDangXuat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnDangXuat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
-            this.btnDangXuat.Location = new System.Drawing.Point(0, 891);
-            this.btnDangXuat.Name = "btnDangXuat";
-            this.btnDangXuat.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnDangXuat.Size = new System.Drawing.Size(220, 38);
-            this.btnDangXuat.TabIndex = 21;
-            this.btnDangXuat.TabStop = false;
-            this.btnDangXuat.Text = "🚪  Đăng xuất";
-            this.btnDangXuat.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDangXuat.UseVisualStyleBackColor = false;
+            // lblNhomTaiKhoan
             // 
-            // btnBCNgay
+            this.lblNhomTaiKhoan.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblNhomTaiKhoan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblNhomTaiKhoan.Location = new System.Drawing.Point(5, 828);
+            this.lblNhomTaiKhoan.Name = "lblNhomTaiKhoan";
+            this.lblNhomTaiKhoan.Size = new System.Drawing.Size(200, 22);
+            this.lblNhomTaiKhoan.TabIndex = 5;
+            this.lblNhomTaiKhoan.Text = "TÀI KHOẢN";
+            this.lblNhomTaiKhoan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // btnBaoCao
             // 
             this.btnBaoCao.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnBaoCao.FlatAppearance.BorderSize = 0;
@@ -269,6 +248,82 @@ namespace FloriSys.Shared
             this.btnSanPham.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnSanPham.UseVisualStyleBackColor = true;
             // 
+            // btnNhanVien
+            // 
+            this.btnNhanVien.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNhanVien.FlatAppearance.BorderSize = 0;
+            this.btnNhanVien.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnNhanVien.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNhanVien.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnNhanVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnNhanVien.Location = new System.Drawing.Point(0, 644);
+            this.btnNhanVien.Name = "btnNhanVien";
+            this.btnNhanVien.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnNhanVien.Size = new System.Drawing.Size(220, 38);
+            this.btnNhanVien.TabIndex = 16;
+            this.btnNhanVien.TabStop = false;
+            this.btnNhanVien.Text = "👥  Nhân viên";
+            this.btnNhanVien.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNhanVien.UseVisualStyleBackColor = true;
+            // 
+            // lblNhomQuanLy
+            // 
+            this.lblNhomQuanLy.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblNhomQuanLy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblNhomQuanLy.Location = new System.Drawing.Point(5, 584);
+            this.lblNhomQuanLy.Name = "lblNhomQuanLy";
+            this.lblNhomQuanLy.Size = new System.Drawing.Size(200, 22);
+            this.lblNhomQuanLy.TabIndex = 4;
+            this.lblNhomQuanLy.Text = "QUẢN LÝ";
+            this.lblNhomQuanLy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // btnPhanCong
+            // 
+            this.btnPhanCong.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnPhanCong.FlatAppearance.BorderSize = 0;
+            this.btnPhanCong.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnPhanCong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPhanCong.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnPhanCong.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnPhanCong.Location = new System.Drawing.Point(0, 538);
+            this.btnPhanCong.Name = "btnPhanCong";
+            this.btnPhanCong.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnPhanCong.Size = new System.Drawing.Size(220, 38);
+            this.btnPhanCong.TabIndex = 14;
+            this.btnPhanCong.TabStop = false;
+            this.btnPhanCong.Text = "👤  Phân công";
+            this.btnPhanCong.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPhanCong.UseVisualStyleBackColor = true;
+            // 
+            // btnDanhSachGiao
+            // 
+            this.btnDanhSachGiao.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDanhSachGiao.FlatAppearance.BorderSize = 0;
+            this.btnDanhSachGiao.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnDanhSachGiao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDanhSachGiao.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnDanhSachGiao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnDanhSachGiao.Location = new System.Drawing.Point(0, 500);
+            this.btnDanhSachGiao.Name = "btnDanhSachGiao";
+            this.btnDanhSachGiao.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnDanhSachGiao.Size = new System.Drawing.Size(220, 38);
+            this.btnDanhSachGiao.TabIndex = 13;
+            this.btnDanhSachGiao.TabStop = false;
+            this.btnDanhSachGiao.Text = "🚚  Danh sách giao";
+            this.btnDanhSachGiao.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnDanhSachGiao.UseVisualStyleBackColor = true;
+            // 
+            // lblNhomGiaoHang
+            // 
+            this.lblNhomGiaoHang.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblNhomGiaoHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblNhomGiaoHang.Location = new System.Drawing.Point(5, 478);
+            this.lblNhomGiaoHang.Name = "lblNhomGiaoHang";
+            this.lblNhomGiaoHang.Size = new System.Drawing.Size(200, 22);
+            this.lblNhomGiaoHang.TabIndex = 3;
+            this.lblNhomGiaoHang.Text = "GIAO HÀNG";
+            this.lblNhomGiaoHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // btnLichSuNhapKho
             // 
             this.btnLichSuNhapKho.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -286,6 +341,125 @@ namespace FloriSys.Shared
             this.btnLichSuNhapKho.Text = "📋  Lịch sử nhập kho";
             this.btnLichSuNhapKho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnLichSuNhapKho.UseVisualStyleBackColor = true;
+            // 
+            // btnHangHu
+            // 
+            this.btnHangHu.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnHangHu.FlatAppearance.BorderSize = 0;
+            this.btnHangHu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnHangHu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnHangHu.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnHangHu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnHangHu.Location = new System.Drawing.Point(0, 394);
+            this.btnHangHu.Name = "btnHangHu";
+            this.btnHangHu.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnHangHu.Size = new System.Drawing.Size(220, 38);
+            this.btnHangHu.TabIndex = 12;
+            this.btnHangHu.TabStop = false;
+            this.btnHangHu.Text = "🗑️  Hàng hư";
+            this.btnHangHu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnHangHu.UseVisualStyleBackColor = true;
+            // 
+            // btnXuatKho
+            // 
+            this.btnXuatKho.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnXuatKho.FlatAppearance.BorderSize = 0;
+            this.btnXuatKho.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnXuatKho.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnXuatKho.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnXuatKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnXuatKho.Location = new System.Drawing.Point(0, 356);
+            this.btnXuatKho.Name = "btnXuatKho";
+            this.btnXuatKho.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnXuatKho.Size = new System.Drawing.Size(220, 38);
+            this.btnXuatKho.TabIndex = 11;
+            this.btnXuatKho.TabStop = false;
+            this.btnXuatKho.Text = "📤  Xuất kho";
+            this.btnXuatKho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnXuatKho.UseVisualStyleBackColor = true;
+            // 
+            // btnNhapKho
+            // 
+            this.btnNhapKho.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNhapKho.FlatAppearance.BorderSize = 0;
+            this.btnNhapKho.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnNhapKho.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNhapKho.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnNhapKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnNhapKho.Location = new System.Drawing.Point(0, 318);
+            this.btnNhapKho.Name = "btnNhapKho";
+            this.btnNhapKho.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnNhapKho.Size = new System.Drawing.Size(220, 38);
+            this.btnNhapKho.TabIndex = 10;
+            this.btnNhapKho.TabStop = false;
+            this.btnNhapKho.Text = "📥  Nhập kho";
+            this.btnNhapKho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnNhapKho.UseVisualStyleBackColor = true;
+            // 
+            // btnTonKho
+            // 
+            this.btnTonKho.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTonKho.FlatAppearance.BorderSize = 0;
+            this.btnTonKho.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnTonKho.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTonKho.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnTonKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnTonKho.Location = new System.Drawing.Point(0, 280);
+            this.btnTonKho.Name = "btnTonKho";
+            this.btnTonKho.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnTonKho.Size = new System.Drawing.Size(220, 38);
+            this.btnTonKho.TabIndex = 9;
+            this.btnTonKho.TabStop = false;
+            this.btnTonKho.Text = "📦  Tồn kho";
+            this.btnTonKho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnTonKho.UseVisualStyleBackColor = true;
+            // 
+            // lblNhomKhoHang
+            // 
+            this.lblNhomKhoHang.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblNhomKhoHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblNhomKhoHang.Location = new System.Drawing.Point(5, 258);
+            this.lblNhomKhoHang.Name = "lblNhomKhoHang";
+            this.lblNhomKhoHang.Size = new System.Drawing.Size(200, 22);
+            this.lblNhomKhoHang.TabIndex = 2;
+            this.lblNhomKhoHang.Text = "KHO HÀNG";
+            this.lblNhomKhoHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // btnTraHang
+            // 
+            this.btnTraHang.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTraHang.FlatAppearance.BorderSize = 0;
+            this.btnTraHang.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnTraHang.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTraHang.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnTraHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnTraHang.Location = new System.Drawing.Point(0, 212);
+            this.btnTraHang.Name = "btnTraHang";
+            this.btnTraHang.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnTraHang.Size = new System.Drawing.Size(220, 38);
+            this.btnTraHang.TabIndex = 34;
+            this.btnTraHang.TabStop = false;
+            this.btnTraHang.Text = "↩️  Trả hàng hoàn tiền";
+            this.btnTraHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnTraHang.UseVisualStyleBackColor = true;
+            // 
+            // btnPhanHoi
+            // 
+            this.btnPhanHoi.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnPhanHoi.FlatAppearance.BorderSize = 0;
+            this.btnPhanHoi.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnPhanHoi.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPhanHoi.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnPhanHoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnPhanHoi.Location = new System.Drawing.Point(0, 174);
+            this.btnPhanHoi.Name = "btnPhanHoi";
+            this.btnPhanHoi.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnPhanHoi.Size = new System.Drawing.Size(220, 38);
+            this.btnPhanHoi.TabIndex = 33;
+            this.btnPhanHoi.TabStop = false;
+            this.btnPhanHoi.Text = "💬  Phản hồi khiếu nại";
+            this.btnPhanHoi.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPhanHoi.UseVisualStyleBackColor = true;
             // 
             // btnTaoDon
             // 
@@ -323,6 +497,17 @@ namespace FloriSys.Shared
             this.btnDanhSachDon.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDanhSachDon.UseVisualStyleBackColor = true;
             // 
+            // lblNhomDonHang
+            // 
+            this.lblNhomDonHang.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.lblNhomDonHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblNhomDonHang.Location = new System.Drawing.Point(5, 76);
+            this.lblNhomDonHang.Name = "lblNhomDonHang";
+            this.lblNhomDonHang.Size = new System.Drawing.Size(200, 22);
+            this.lblNhomDonHang.TabIndex = 1;
+            this.lblNhomDonHang.Text = "ĐƠN HÀNG";
+            this.lblNhomDonHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // btnDashboard
             // 
             this.btnDashboard.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -337,195 +522,9 @@ namespace FloriSys.Shared
             this.btnDashboard.Size = new System.Drawing.Size(220, 38);
             this.btnDashboard.TabIndex = 6;
             this.btnDashboard.TabStop = false;
-            this.btnDashboard.Text = "📊  Dashboard";
+            this.btnDashboard.Text = "📊  Tổng Quan";
             this.btnDashboard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnDashboard.UseVisualStyleBackColor = true;
-            // 
-            // btnNhanVien
-            // 
-            this.btnNhanVien.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnNhanVien.FlatAppearance.BorderSize = 0;
-            this.btnNhanVien.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnNhanVien.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNhanVien.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnNhanVien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnNhanVien.Location = new System.Drawing.Point(0, 644);
-            this.btnNhanVien.Name = "btnNhanVien";
-            this.btnNhanVien.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnNhanVien.Size = new System.Drawing.Size(220, 38);
-            this.btnNhanVien.TabIndex = 16;
-            this.btnNhanVien.TabStop = false;
-            this.btnNhanVien.Text = "👥  Nhân viên";
-            this.btnNhanVien.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnNhanVien.UseVisualStyleBackColor = true;
-            // 
-            // lblNhomTaiKhoan
-            // 
-            this.lblNhomTaiKhoan.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblNhomTaiKhoan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblNhomTaiKhoan.Location = new System.Drawing.Point(5, 828);
-            this.lblNhomTaiKhoan.Name = "lblNhomTaiKhoan";
-            this.lblNhomTaiKhoan.Size = new System.Drawing.Size(200, 22);
-            this.lblNhomTaiKhoan.TabIndex = 5;
-            this.lblNhomTaiKhoan.Text = "TÀI KHOẢN";
-            this.lblNhomTaiKhoan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-
-            // 
-            // lblNhomQuanLy
-            // 
-            this.lblNhomQuanLy.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblNhomQuanLy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblNhomQuanLy.Location = new System.Drawing.Point(5, 584);
-            this.lblNhomQuanLy.Name = "lblNhomQuanLy";
-            this.lblNhomQuanLy.Size = new System.Drawing.Size(200, 22);
-            this.lblNhomQuanLy.TabIndex = 4;
-            this.lblNhomQuanLy.Text = "QUẢN LÝ";
-            this.lblNhomQuanLy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-
-            // 
-            // lblNhomGiaoHang
-            // 
-            this.lblNhomGiaoHang.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblNhomGiaoHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblNhomGiaoHang.Location = new System.Drawing.Point(5, 478);
-            this.lblNhomGiaoHang.Name = "lblNhomGiaoHang";
-            this.lblNhomGiaoHang.Size = new System.Drawing.Size(200, 22);
-            this.lblNhomGiaoHang.TabIndex = 3;
-            this.lblNhomGiaoHang.Text = "GIAO HÀNG";
-            this.lblNhomGiaoHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-
-            // 
-            // btnPhanCong
-            // 
-            this.btnPhanCong.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPhanCong.FlatAppearance.BorderSize = 0;
-            this.btnPhanCong.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnPhanCong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPhanCong.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnPhanCong.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnPhanCong.Location = new System.Drawing.Point(0, 538);
-            this.btnPhanCong.Name = "btnPhanCong";
-            this.btnPhanCong.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnPhanCong.Size = new System.Drawing.Size(220, 38);
-            this.btnPhanCong.TabIndex = 14;
-            this.btnPhanCong.TabStop = false;
-            this.btnPhanCong.Text = "👤  Phân công";
-            this.btnPhanCong.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPhanCong.UseVisualStyleBackColor = true;
-            // 
-            // lblNhomKhoHang
-            // 
-            this.lblNhomKhoHang.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblNhomKhoHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblNhomKhoHang.Location = new System.Drawing.Point(5, 258);
-            this.lblNhomKhoHang.Name = "lblNhomKhoHang";
-            this.lblNhomKhoHang.Size = new System.Drawing.Size(200, 22);
-            this.lblNhomKhoHang.TabIndex = 2;
-            this.lblNhomKhoHang.Text = "KHO HÀNG";
-            this.lblNhomKhoHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-
-            // 
-            // btnDanhSachGiao
-            // 
-            this.btnDanhSachGiao.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDanhSachGiao.FlatAppearance.BorderSize = 0;
-            this.btnDanhSachGiao.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnDanhSachGiao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDanhSachGiao.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnDanhSachGiao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnDanhSachGiao.Location = new System.Drawing.Point(0, 500);
-            this.btnDanhSachGiao.Name = "btnDanhSachGiao";
-            this.btnDanhSachGiao.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnDanhSachGiao.Size = new System.Drawing.Size(220, 38);
-            this.btnDanhSachGiao.TabIndex = 13;
-            this.btnDanhSachGiao.TabStop = false;
-            this.btnDanhSachGiao.Text = "🚚  Danh sách giao";
-            this.btnDanhSachGiao.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDanhSachGiao.UseVisualStyleBackColor = true;
-            // 
-            // btnTonKho
-            // 
-            this.btnTonKho.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnTonKho.FlatAppearance.BorderSize = 0;
-            this.btnTonKho.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnTonKho.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTonKho.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnTonKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnTonKho.Location = new System.Drawing.Point(0, 280);
-            this.btnTonKho.Name = "btnTonKho";
-            this.btnTonKho.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnTonKho.Size = new System.Drawing.Size(220, 38);
-            this.btnTonKho.TabIndex = 9;
-            this.btnTonKho.TabStop = false;
-            this.btnTonKho.Text = "📦  Tồn kho";
-            this.btnTonKho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnTonKho.UseVisualStyleBackColor = true;
-            // 
-            // btnNhapKho
-            // 
-            this.btnNhapKho.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnNhapKho.FlatAppearance.BorderSize = 0;
-            this.btnNhapKho.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnNhapKho.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNhapKho.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnNhapKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnNhapKho.Location = new System.Drawing.Point(0, 318);
-            this.btnNhapKho.Name = "btnNhapKho";
-            this.btnNhapKho.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnNhapKho.Size = new System.Drawing.Size(220, 38);
-            this.btnNhapKho.TabIndex = 10;
-            this.btnNhapKho.TabStop = false;
-            this.btnNhapKho.Text = "📥  Nhập kho";
-            this.btnNhapKho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnNhapKho.UseVisualStyleBackColor = true;
-            // 
-            // btnXuatKho
-            // 
-            this.btnXuatKho.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnXuatKho.FlatAppearance.BorderSize = 0;
-            this.btnXuatKho.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnXuatKho.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnXuatKho.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnXuatKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnXuatKho.Location = new System.Drawing.Point(0, 356);
-            this.btnXuatKho.Name = "btnXuatKho";
-            this.btnXuatKho.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnXuatKho.Size = new System.Drawing.Size(220, 38);
-            this.btnXuatKho.TabIndex = 11;
-            this.btnXuatKho.TabStop = false;
-            this.btnXuatKho.Text = "📤  Xuất kho";
-            this.btnXuatKho.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnXuatKho.UseVisualStyleBackColor = true;
-            // 
-            // btnHangHu
-            // 
-            this.btnHangHu.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnHangHu.FlatAppearance.BorderSize = 0;
-            this.btnHangHu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnHangHu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnHangHu.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnHangHu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnHangHu.Location = new System.Drawing.Point(0, 394);
-            this.btnHangHu.Name = "btnHangHu";
-            this.btnHangHu.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnHangHu.Size = new System.Drawing.Size(220, 38);
-            this.btnHangHu.TabIndex = 12;
-            this.btnHangHu.TabStop = false;
-            this.btnHangHu.Text = "🗑️  Hàng hư";
-            this.btnHangHu.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnHangHu.UseVisualStyleBackColor = true;
-            // 
-            // lblNhomDonHang
-            // 
-            this.lblNhomDonHang.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblNhomDonHang.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
-            this.lblNhomDonHang.Location = new System.Drawing.Point(5, 76);
-            this.lblNhomDonHang.Name = "lblNhomDonHang";
-            this.lblNhomDonHang.Size = new System.Drawing.Size(200, 22);
-            this.lblNhomDonHang.TabIndex = 1;
-            this.lblNhomDonHang.Text = "ĐƠN HÀNG";
-            this.lblNhomDonHang.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-
             // 
             // lblNhomTongQuan
             // 
@@ -537,7 +536,24 @@ namespace FloriSys.Shared
             this.lblNhomTongQuan.TabIndex = 0;
             this.lblNhomTongQuan.Text = "TỔNG QUAN";
             this.lblNhomTongQuan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-
+            // 
+            // btnPhanQuyen
+            // 
+            this.btnPhanQuyen.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnPhanQuyen.FlatAppearance.BorderSize = 0;
+            this.btnPhanQuyen.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            this.btnPhanQuyen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPhanQuyen.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.btnPhanQuyen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.btnPhanQuyen.Location = new System.Drawing.Point(0, 606);
+            this.btnPhanQuyen.Name = "btnPhanQuyen";
+            this.btnPhanQuyen.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
+            this.btnPhanQuyen.Size = new System.Drawing.Size(220, 38);
+            this.btnPhanQuyen.TabIndex = 15;
+            this.btnPhanQuyen.TabStop = false;
+            this.btnPhanQuyen.Text = "🔐  Phân quyền";
+            this.btnPhanQuyen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnPhanQuyen.UseVisualStyleBackColor = true;
             // 
             // pnlNguoiDung
             // 
@@ -592,29 +608,9 @@ namespace FloriSys.Shared
             this.lblDuongKeUser.Name = "lblDuongKeUser";
             this.lblDuongKeUser.Size = new System.Drawing.Size(220, 1);
             this.lblDuongKeUser.TabIndex = 0;
-            this.lblDuongKeUser.Text = "";
-            // 
-            // btnPhanQuyen
-            // 
-            this.btnPhanQuyen.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnPhanQuyen.FlatAppearance.BorderSize = 0;
-            this.btnPhanQuyen.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.btnPhanQuyen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPhanQuyen.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.btnPhanQuyen.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
-            this.btnPhanQuyen.Location = new System.Drawing.Point(0, 606);
-            this.btnPhanQuyen.Name = "btnPhanQuyen";
-            this.btnPhanQuyen.Padding = new System.Windows.Forms.Padding(15, 0, 0, 0);
-            this.btnPhanQuyen.Size = new System.Drawing.Size(220, 38);
-            this.btnPhanQuyen.TabIndex = 15;
-            this.btnPhanQuyen.TabStop = false;
-            this.btnPhanQuyen.Text = "🔐  Phân quyền";
-            this.btnPhanQuyen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPhanQuyen.UseVisualStyleBackColor = true;
             // 
             // ucThanhMenu
             // 
- 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;

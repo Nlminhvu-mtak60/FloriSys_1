@@ -125,5 +125,11 @@ namespace FloriSys.DataAccess
             string sql = $"SELECT * FROM {TableName} WHERE {IdColumn} = @Id";
             return GetSingle(sql, new SqlParameter[] { new SqlParameter("@Id", ma) });
         }
+
+        public virtual void Xoa(string ma)
+        {
+            string sql = $"DELETE FROM {TableName} WHERE {IdColumn} = @Id";
+            ExecuteSql(sql, new SqlParameter[] { new SqlParameter("@Id", ma) });
+        }
     }
 }

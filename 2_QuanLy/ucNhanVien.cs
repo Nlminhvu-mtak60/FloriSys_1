@@ -33,7 +33,13 @@ namespace FloriSys._2_QuanLy
         public override void LoadData()
         {
             string keyword = txtSearch.Text == placeholderSearch ? "" : txtSearch.Text.Trim();
-            string chucVu = cboFilterChucVu.SelectedIndex > 0 ? cboFilterChucVu.SelectedItem.ToString() : "";
+            string selectedCV = cboFilterChucVu.SelectedIndex > 0 ? cboFilterChucVu.SelectedItem.ToString() : "";
+            string chucVu = "";
+            if (selectedCV == "Quản lý") chucVu = "Admin";
+            else if (selectedCV == "Thu ngân") chucVu = "Cashier";
+            else if (selectedCV == "Thủ kho") chucVu = "Warehouse";
+            else if (selectedCV == "Giao hàng") chucVu = "Shipper";
+
             string trangThai = "";
             if (cboFilterTrangThai.SelectedIndex == 1) trangThai = "DangLam";
             else if (cboFilterTrangThai.SelectedIndex == 2) trangThai = "DaNghi";
@@ -59,10 +65,10 @@ namespace FloriSys._2_QuanLy
                     dgvNhanVien.Columns["HoTen"].Visible = true;
                     dgvNhanVien.Columns["HoTen"].HeaderText = "Họ tên";
                 }
-                if (dgvNhanVien.Columns.Contains("ChucVu"))
+                if (dgvNhanVien.Columns.Contains("ChucVuDisplay"))
                 {
-                    dgvNhanVien.Columns["ChucVu"].Visible = true;
-                    dgvNhanVien.Columns["ChucVu"].HeaderText = "Chức vụ";
+                    dgvNhanVien.Columns["ChucVuDisplay"].Visible = true;
+                    dgvNhanVien.Columns["ChucVuDisplay"].HeaderText = "Chức vụ";
                 }
                 if (dgvNhanVien.Columns.Contains("SoDienThoai"))
                 {
@@ -74,10 +80,10 @@ namespace FloriSys._2_QuanLy
                     dgvNhanVien.Columns["TaiKhoan"].Visible = true;
                     dgvNhanVien.Columns["TaiKhoan"].HeaderText = "Tài khoản";
                 }
-                if (dgvNhanVien.Columns.Contains("TrangThai"))
+                if (dgvNhanVien.Columns.Contains("TrangThaiDisplay"))
                 {
-                    dgvNhanVien.Columns["TrangThai"].Visible = true;
-                    dgvNhanVien.Columns["TrangThai"].HeaderText = "Trạng thái";
+                    dgvNhanVien.Columns["TrangThaiDisplay"].Visible = true;
+                    dgvNhanVien.Columns["TrangThaiDisplay"].HeaderText = "Trạng thái";
                 }
             }
         }
@@ -137,7 +143,13 @@ namespace FloriSys._2_QuanLy
 
                 txtMaNV.Text = nv.MaNV;
                 txtHoTen.Text = nv.HoTen;
-                cboChucVu.SelectedItem = nv.ChucVu;
+                
+                string cvVN = "";
+                if (nv.ChucVu == "Admin") cvVN = "Quản lý";
+                else if (nv.ChucVu == "Cashier") cvVN = "Thu ngân";
+                else if (nv.ChucVu == "Warehouse") cvVN = "Thủ kho";
+                else if (nv.ChucVu == "Shipper") cvVN = "Giao hàng";
+                cboChucVu.SelectedItem = cvVN;
                 txtSDT.Text = nv.SoDienThoai;
                 txtTaiKhoan.Text = nv.TaiKhoan;
                 txtTaiKhoan.ReadOnly = true;
@@ -163,11 +175,18 @@ namespace FloriSys._2_QuanLy
 
             try
             {
+                string selectedCV = cboChucVu.SelectedItem.ToString();
+                string chucVu = "Cashier";
+                if (selectedCV == "Quản lý") chucVu = "Admin";
+                else if (selectedCV == "Thu ngân") chucVu = "Cashier";
+                else if (selectedCV == "Thủ kho") chucVu = "Warehouse";
+                else if (selectedCV == "Giao hàng") chucVu = "Shipper";
+
                 NhanVien nv = new NhanVien
                 {
                     MaNV = txtMaNV.Text,
                     HoTen = hoTen,
-                    ChucVu = cboChucVu.SelectedItem.ToString(),
+                    ChucVu = chucVu,
                     SoDienThoai = txtSDT.Text.Trim(),
                     TaiKhoan = taiKhoan
                 };

@@ -65,13 +65,22 @@ namespace FloriSys._7_DanhMuc
             dgvSanPham.Columns["GiaBan"].DefaultCellStyle.Format = "#,##0";
             dgvSanPham.Columns["GiaNhap"].DefaultCellStyle.Format = "#,##0";
             
-            // Highlight low stock
+            dgvSanPham.ReadOnly = true;
+            dgvSanPham.AllowUserToAddRows = false;
+            dgvSanPham.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dgvSanPham.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+
+            // Highlight low stock and inactive products
             foreach (DataGridViewRow row in dgvSanPham.Rows)
             {
                 SanPham sp = row.DataBoundItem as SanPham;
-                if (sp != null && sp.SoLuongTon <= sp.MucTonToiThieu)
+                if (sp != null)
                 {
-                    row.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
+                    if (sp.SoLuongTon <= sp.MucTonToiThieu)
+                        row.DefaultCellStyle.BackColor = System.Drawing.Color.MistyRose;
+                    
+                    if (sp.TrangThai == "NgungBan")
+                        row.DefaultCellStyle.ForeColor = System.Drawing.Color.Gray;
                 }
             }
         }
@@ -117,18 +126,41 @@ namespace FloriSys._7_DanhMuc
             SanPham sp = dgvSanPham.CurrentRow.DataBoundItem as SanPham;
             if (sp == null) return;
 
-            if (sp.TrangThai == "NgungBan")
-            {
-                ShowWarning("Sản phẩm này đã ngừng bán rồi.");
-                return;
-            }
-
-            if (Confirm($"Bạn có chắc muốn ngừng bán sản phẩm \"{sp.TenSP}\" ({sp.MaSP})?\n\nSản phẩm sẽ chuyển sang trạng thái 'Ngừng bán' và không hiển thị khi tạo đơn."))
+            if (Confirm($"Bạn có chắc muốn XÓA VĨNH VIỄN sản phẩm \"{sp.TenSP}\" ({sp.MaSP})?\n\nHành động này không thể hoàn tác và có thể thất bại nếu sản phẩm đã có trong lịch sử đơn hàng."))
             {
                 try
                 {
-                    _spRepo.NgungBanSanPham(sp.MaSP);
-                    ShowSuccess("Đã ngừng bán sản phẩm " + sp.TenSP);
+                    _spRepo.Xoa(sp.MaSP);
+                    ShowSuccess("Đã xóa sản phẩm khỏi hệ thống.");
+                    LoadData();
+                }
+                catch (Exception ex)
+                {
+                    ShowError("Không thể xóa sản phẩm này vì đã có dữ liệu liên quan (đơn hàng, nhập kho). Vui lòng sử dụng chức năng 'Đổi trạng thái' để ngừng kinh doanh thay vì xóa.");
+                }
+            }
+        }
+
+        private void btnStatus_Click(object sender, EventArgs e)
+        {
+            if (dgvSanPham.CurrentRow == null)
+            {
+                ShowWarning("Vui lòng chọn sản phẩm.");
+                return;
+            }
+
+            SanPham sp = dgvSanPham.CurrentRow.DataBoundItem as SanPham;
+            if (sp == null) return;
+
+            string trangThaiMoi = sp.TrangThai == "DangBan" ? "NgungBan" : "DangBan";
+            string title = trangThaiMoi == "NgungBan" ? "Ngừng bán" : "Kinh doanh lại";
+
+            if (Confirm($"Bạn có chắc muốn {title.ToLower()} sản phẩm \"{sp.TenSP}\" ({sp.MaSP})?"))
+            {
+                try
+                {
+                    _spRepo.DoiTrangThai(sp.MaSP, trangThaiMoi);
+                    ShowSuccess($"Đã chuyển trạng thái sản phẩm sang {title}");
                     LoadData();
                 }
                 catch (Exception ex)

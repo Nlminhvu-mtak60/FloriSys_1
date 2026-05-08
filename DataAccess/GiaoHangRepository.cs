@@ -59,8 +59,14 @@ namespace FloriSys.DataAccess
                           FROM GIAO_HANG gh
                           INNER JOIN DON_HANG dh ON gh.MaDon = dh.MaDon
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
-                          WHERE gh.MaNV_Shipper = @MaNV
-                          ORDER BY gh.TrangThai, dh.NgayTao";
+                          WHERE gh.MaNV_Shipper = @MaNV 
+                          AND (CAST(gh.NgayGiao AS DATE) = CAST(GETDATE() AS DATE) 
+                               OR gh.TrangThai IN (N'DangGiao', N'ChoPhanCong', N'GiaoLai'))
+                          ORDER BY CASE 
+                            WHEN gh.TrangThai = N'DangGiao' THEN 1 
+                            WHEN gh.TrangThai = N'ChoPhanCong' THEN 2 
+                            WHEN gh.TrangThai = N'GiaoLai' THEN 3 
+                            ELSE 4 END, dh.NgayTao DESC";
             return GetList(sql, new List<SqlParameter> { new SqlParameter("@MaNV", maNV) });
         }
 

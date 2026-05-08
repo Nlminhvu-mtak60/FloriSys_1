@@ -51,7 +51,7 @@ BEGIN
         SELECT i.MaDon, i.TrangThai, GETDATE(),
             CASE i.TrangThai
                 WHEN N'Moi'       THEN N'Đơn hàng mới'
-                WHEN N'DangXuLy'  THEN N'Đã xuất kho – đang xử lý'
+                WHEN N'DangXuLy'  THEN N'Đã xuất kho - đang xử lý'
                 WHEN N'DaGiao'    THEN N'Đã giao cho shipper'
                 WHEN N'HoanThanh' THEN N'Đơn hàng hoàn thành'
                 WHEN N'Huy'       THEN N'Đơn hàng bị hủy'
@@ -78,7 +78,7 @@ GO
 INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
 SELECT dh.MaDon, dh.TrangThai, DATEADD(MINUTE, 1, dh.NgayTao),
     CASE dh.TrangThai
-        WHEN N'DangXuLy'  THEN N'Đã xuất kho – đang xử lý (backfill)'
+        WHEN N'DangXuLy'  THEN N'Đã xuất kho - đang xử lý (backfill)'
         WHEN N'DaGiao'    THEN N'Đã giao cho shipper (backfill)'
         WHEN N'HoanThanh' THEN N'Đơn hàng hoàn thành (backfill)'
         WHEN N'Huy'       THEN N'Đơn hàng bị hủy (backfill)'
