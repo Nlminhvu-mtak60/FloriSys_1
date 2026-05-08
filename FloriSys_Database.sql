@@ -1,6 +1,6 @@
-﻿-- =====================================================
--- FloriSys â€“ CÆ¡ sá»Ÿ dá»¯ liá»‡u Quáº£n lĂ½ Cá»­a hĂ ng Hoa
--- SQL Server 2022 â€“ Developer Edition
+-- =====================================================
+-- FloriSys - Co so du lieu Quan ly Cua hang Hoa
+-- SQL Server 2022 - Developer Edition
 -- =====================================================
 
 USE master;
@@ -16,8 +16,7 @@ GO
 USE FloriSys;
 GO
 
--- =====================================================
--- 1. Báº¢NG NHĂ‚N VIĂN
+-- 1. BANG NHAN VIEN
 -- =====================================================
 CREATE TABLE NHAN_VIEN (
     MaNV        NVARCHAR(20)  PRIMARY KEY,
@@ -30,8 +29,7 @@ CREATE TABLE NHAN_VIEN (
 );
 GO
 
--- =====================================================
--- 2. Báº¢NG KHĂCH HĂ€NG
+-- 2. BANG KHACH HANG
 -- =====================================================
 CREATE TABLE KHACH_HANG (
     MaKH        NVARCHAR(20)  PRIMARY KEY,
@@ -43,8 +41,7 @@ CREATE TABLE KHACH_HANG (
 );
 GO
 
--- =====================================================
--- 3. Báº¢NG Sáº¢N PHáº¨M
+-- 3. BANG SAN PHAM
 -- =====================================================
 CREATE TABLE SAN_PHAM (
     MaSP          NVARCHAR(20)   PRIMARY KEY,
@@ -58,8 +55,7 @@ CREATE TABLE SAN_PHAM (
 );
 GO
 
--- =====================================================
--- 4. Báº¢NG ÄÆ N HĂ€NG
+-- 4. BANG DON HANG
 -- =====================================================
 CREATE TABLE DON_HANG (
     MaDon            NVARCHAR(20)   PRIMARY KEY,
@@ -74,8 +70,7 @@ CREATE TABLE DON_HANG (
 );
 GO
 
--- =====================================================
--- 5. Báº¢NG CHI TIáº¾T ÄÆ N HĂ€NG
+-- 5. BANG CHI TIET DON HANG
 -- =====================================================
 CREATE TABLE CHI_TIET_DON_HANG (
     MaDon     NVARCHAR(20)   NOT NULL REFERENCES DON_HANG(MaDon),
@@ -87,8 +82,7 @@ CREATE TABLE CHI_TIET_DON_HANG (
 );
 GO
 
--- =====================================================
--- 6. Báº¢NG GIAO HĂ€NG
+-- 6. BANG GIAO HANG
 -- =====================================================
 CREATE TABLE GIAO_HANG (
     MaGiaoHang     NVARCHAR(20)  PRIMARY KEY,
