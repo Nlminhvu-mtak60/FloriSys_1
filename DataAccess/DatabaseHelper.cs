@@ -186,6 +186,21 @@ namespace FloriSys.DataAccess
             }
         }
 
+        public static object ExecuteRawScalar(string sql, SqlParameter[] parameters = null)
+        {
+            using (SqlConnection conn = GetConnection())
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    if (parameters != null)
+                        cmd.Parameters.AddRange(parameters);
+                    conn.Open();
+                    return cmd.ExecuteScalar();
+                }
+            }
+        }
+
         public static string GenerateCode(string prefix, string table, string column)
         {
             using (SqlConnection conn = GetConnection())

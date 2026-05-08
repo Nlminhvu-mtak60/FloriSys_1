@@ -71,9 +71,10 @@ namespace FloriSys._3_BanHang
             this.txtTimKiem.Name = "txtTimKiem";
             this.txtTimKiem.Size = new System.Drawing.Size(200, 30);
             this.txtTimKiem.TabIndex = 0;
-            this.txtTimKiem.Text = "🔍 Tìm mã đơn, tên khách...";
+            this.txtTimKiem.Text = "🔍 Tìm mã đơn, tên khách, SĐT...";
             this.txtTimKiem.Enter += new System.EventHandler(this.txtTimKiem_Enter);
             this.txtTimKiem.Leave += new System.EventHandler(this.txtTimKiem_Leave);
+            this.txtTimKiem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTimKiem_KeyDown);
             // 
             // cboTrangThai
             // 
@@ -211,6 +212,48 @@ namespace FloriSys._3_BanHang
             this.ResumeLayout(false);
 
         }
+
+        private void InitializePaging()
+        {
+            this.pnlPaging = new System.Windows.Forms.Panel();
+            this.btnPrev = new System.Windows.Forms.Button();
+            this.btnNext = new System.Windows.Forms.Button();
+            this.lblPageInfo = new System.Windows.Forms.Label();
+
+            // pnlPaging
+            this.pnlPaging.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlPaging.Height = 40;
+            this.pnlPaging.BackColor = System.Drawing.Color.White;
+            this.pnlPaging.Controls.Add(this.btnPrev);
+            this.pnlPaging.Controls.Add(this.lblPageInfo);
+            this.pnlPaging.Controls.Add(this.btnNext);
+
+            // btnPrev
+            this.btnPrev.Text = "◀ Trước";
+            this.btnPrev.Location = new System.Drawing.Point(250, 5);
+            this.btnPrev.Size = new System.Drawing.Size(80, 30);
+            this.btnPrev.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPrev.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+            this.btnPrev.Click += (s, e) => { if (CurrentPage > 1) { CurrentPage--; LoadData(); } };
+
+            // lblPageInfo
+            this.lblPageInfo.Text = "Trang 1 / 1";
+            this.lblPageInfo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblPageInfo.Location = new System.Drawing.Point(340, 5);
+            this.lblPageInfo.Size = new System.Drawing.Size(120, 30);
+            this.lblPageInfo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+
+            // btnNext
+            this.btnNext.Text = "Sau ▶";
+            this.btnNext.Location = new System.Drawing.Point(470, 5);
+            this.btnNext.Size = new System.Drawing.Size(80, 30);
+            this.btnNext.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNext.FlatAppearance.BorderColor = System.Drawing.Color.LightGray;
+            this.btnNext.Click += (s, e) => { if (CurrentPage < TotalPages) { CurrentPage++; LoadData(); } };
+
+            this.Controls.Add(this.pnlPaging);
+            this.pnlPaging.BringToFront();
+        }
         #endregion
 
         private System.Windows.Forms.Label lblTitle;
@@ -224,6 +267,10 @@ namespace FloriSys._3_BanHang
         private System.Windows.Forms.Button btnXem;
         private System.Windows.Forms.CheckBox chkLocNgay;
         private System.Windows.Forms.DateTimePicker dtpNgay;
+        private System.Windows.Forms.Panel pnlPaging;
+        private System.Windows.Forms.Button btnPrev;
+        private System.Windows.Forms.Button btnNext;
+        private System.Windows.Forms.Label lblPageInfo;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Panel pnlFilter;
     }

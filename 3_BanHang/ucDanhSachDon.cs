@@ -13,26 +13,35 @@ namespace FloriSys._3_BanHang
         public event Action<string> XemChiTiet;
         public event Action TaoDonMoi;
 
+        private int CurrentPage = 1;
+        private int PageSize = 15;
+        private int TotalPages = 1;
+
         public ucDanhSachDon()
         {
             InitializeComponent();
+            InitializePaging(); // Khởi tạo thanh điều hướng
+            LoadStatusList();
         }
 
         private void ucDanhSachDon_Load(object sender, EventArgs e)
+        {
+            LoadData();
+        }
+
+        private void LoadStatusList()
         {
             cboTrangThai.Items.Clear();
             cboTrangThai.Items.Add("Tất cả trạng thái");
             cboTrangThai.Items.AddRange(new object[] { "Moi", "DangXuLy", "DaGiao", "HoanThanh", "Huy", "HoanHang" });
             cboTrangThai.SelectedIndex = 0;
-            LoadData();
         }
 
         public override void LoadData()
         {
             try
             {
-                string key = txtTimKiem.Text.Trim();
-                if (key == "🔍 Tìm mã đơn, tên khách...") key = "";
+                string keyword = txtTimKiem.Text == "🔍 Tìm mã đơn, tên khách, SĐT..." ? "" : txtTimKiem.Text.Trim();
                 string tt = cboTrangThai.SelectedIndex > 0 ? cboTrangThai.SelectedItem.ToString() : "";
                 
                 DateTime? ngayLoc = null;
@@ -41,14 +50,22 @@ namespace FloriSys._3_BanHang
                     ngayLoc = dtpNgay.Value;
                 }
 
-                List<DonHang> dsDH = _dhRepo.LayDanhSach(key, tt, "", ngayLoc);
-                dgvDonHang.DataSource = dsDH;
+                // Gọi hàm phân trang từ Repository
+                var result = _dhRepo.LayDanhSachPhanTrang(CurrentPage, PageSize, keyword, tt, "", ngayLoc);
+                dgvDonHang.DataSource = result.Data;
+            
+                TotalPages = (int)Math.Ceiling((double)result.TotalCount / PageSize);
+                lblPageInfo.Text = $"Trang {CurrentPage} / {Math.Max(1, TotalPages)}";
+                lblTongDon.Text = $"Hiển thị {result.Data.Count} / {result.TotalCount} đơn hàng";
+            
+                btnPrev.Enabled = CurrentPage > 1;
+                btnNext.Enabled = CurrentPage < TotalPages;
+
                 FormatGrid();
-                lblTongDon.Text = string.Format("Hiển thị {0} đơn hàng", dsDH.Count);
             }
             catch (Exception ex)
             {
-                ShowError("Lỗi tải dữ liệu: " + ex.Message);
+                ShowError("Lỗi tải danh sách: " + ex.Message);
             }
         }
 
@@ -124,7 +141,7 @@ namespace FloriSys._3_BanHang
         }
         private void txtTimKiem_Enter(object sender, EventArgs e)
         {
-            if (txtTimKiem.Text == "🔍 Tìm mã đơn, tên khách...")
+            if (txtTimKiem.Text == "🔍 Tìm mã đơn, tên khách, SĐT...")
             {
                 txtTimKiem.Text = "";
                 txtTimKiem.ForeColor = System.Drawing.Color.Black;
@@ -135,8 +152,18 @@ namespace FloriSys._3_BanHang
         {
             if (string.IsNullOrWhiteSpace(txtTimKiem.Text))
             {
-                txtTimKiem.Text = "🔍 Tìm mã đơn, tên khách...";
+                txtTimKiem.Text = "🔍 Tìm mã đơn, tên khách, SĐT...";
                 txtTimKiem.ForeColor = System.Drawing.Color.Gray;
+            }
+        }
+
+        private void txtTimKiem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Ngăn tiếng bip
+                CurrentPage = 1; // Reset về trang 1 khi tìm kiếm mới
+                LoadData();
             }
         }
     }

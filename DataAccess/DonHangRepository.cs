@@ -20,35 +20,53 @@ namespace FloriSys.DataAccess
         // POLYMORPHISM: Override with complex 4-filter JOIN query
         public List<DonHang> LayDanhSach(string keyword = "", string trangThai = "", string maNV = "", DateTime? ngay = null)
         {
-            string sql = @"SELECT dh.MaDon, dh.NgayTao, kh.HoTen AS TenKH, kh.SoDienThoai, 
-                          dh.HinhThucNhanHang, dh.TongTien, dh.TrangThai, nv.HoTen AS TenNV, dh.GhiChu
-                          FROM DON_HANG dh
-                          INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
-                          INNER JOIN NHAN_VIEN nv ON dh.MaNV_TaoDon = nv.MaNV
-                          WHERE 1=1";
+            return LayDanhSachPhanTrang(1, 1000000, keyword, trangThai, maNV, ngay).Data;
+        }
+
+        public (List<DonHang> Data, int TotalCount) LayDanhSachPhanTrang(int page, int pageSize, string keyword = "", string trangThai = "", string maNV = "", DateTime? ngay = null)
+        {
+            string baseSql = @" FROM DON_HANG dh
+                               INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
+                               INNER JOIN NHAN_VIEN nv ON dh.MaNV_TaoDon = nv.MaNV
+                               WHERE 1=1";
             var parms = new List<SqlParameter>();
             if (!string.IsNullOrEmpty(keyword))
             {
-                sql += " AND (dh.MaDon LIKE @Key OR kh.HoTen LIKE @Key)";
+                baseSql += " AND (dh.MaDon LIKE @Key OR kh.HoTen LIKE @Key OR kh.SoDienThoai LIKE @Key)";
                 parms.Add(new SqlParameter("@Key", "%" + keyword + "%"));
             }
             if (!string.IsNullOrEmpty(trangThai))
             {
-                sql += " AND dh.TrangThai = @TrangThai";
+                baseSql += " AND dh.TrangThai = @TrangThai";
                 parms.Add(new SqlParameter("@TrangThai", trangThai));
             }
             if (!string.IsNullOrEmpty(maNV))
             {
-                sql += " AND dh.MaNV_TaoDon = @MaNV";
+                baseSql += " AND dh.MaNV_TaoDon = @MaNV";
                 parms.Add(new SqlParameter("@MaNV", maNV));
             }
             if (ngay.HasValue)
             {
-                sql += " AND CAST(dh.NgayTao AS DATE) = @Ngay";
+                baseSql += " AND CAST(dh.NgayTao AS DATE) = @Ngay";
                 parms.Add(new SqlParameter("@Ngay", ngay.Value.Date));
             }
-            sql += " ORDER BY dh.NgayTao DESC";
-            return GetList(sql, parms);
+
+            // 1. Đếm tổng số dòng (để tính tổng số trang)
+            string countSql = "SELECT COUNT(*) " + baseSql;
+            int totalCount = (int)DatabaseHelper.ExecuteRawScalar(countSql, parms.ToArray());
+
+            // 2. Lấy dữ liệu theo trang
+            string dataSql = @"SELECT dh.MaDon, dh.NgayTao, kh.HoTen AS TenKH, kh.SoDienThoai, 
+                             dh.HinhThucNhanHang, dh.TongTien, dh.TrangThai, nv.HoTen AS TenNV, dh.GhiChu " + 
+                             baseSql + 
+                             " ORDER BY dh.NgayTao DESC " + 
+                             " OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY";
+            
+            var dataParms = new List<SqlParameter>(parms.ConvertAll(p => new SqlParameter(p.ParameterName, p.Value)));
+            dataParms.Add(new SqlParameter("@Offset", (page - 1) * pageSize));
+            dataParms.Add(new SqlParameter("@Limit", pageSize));
+
+            return (GetList(dataSql, dataParms), totalCount);
         }
 
         public List<ChiTietDonHang> LayChiTiet(string maDon)
