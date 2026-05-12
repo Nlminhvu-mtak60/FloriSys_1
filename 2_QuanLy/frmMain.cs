@@ -31,7 +31,12 @@ namespace FloriSys._2_QuanLy
             LoadUC(new ucDashboard());
         }
 
-        private void OnMenuClicked(string menuName)
+        public void OnMenuClicked(string menuName)
+        {
+            OnMenuClicked(menuName, null);
+        }
+
+        public void OnMenuClicked(string menuName, object data)
         {
             UserControl uc = null;
             switch (menuName)
@@ -58,7 +63,12 @@ namespace FloriSys._2_QuanLy
                     uc = ucTD;
                     break;
                 case "PhanHoi":
-                    uc = new _3_BanHang.ucPhanHoi();
+                    var ucPH = new _3_BanHang.ucPhanHoi();
+                    if (data != null && data is string maDonParam)
+                    {
+                        ucPH.SetMaDon(maDonParam);
+                    }
+                    uc = ucPH;
                     break;
                 case "TraHang":
                     uc = new _3_BanHang.ucTraHang();
@@ -87,9 +97,6 @@ namespace FloriSys._2_QuanLy
                 case "PhanCong":
                     uc = new _5_GiaoHang.ucPhanCong();
                     break;
-                case "CapNhatGH":
-                    uc = new _5_GiaoHang.ucCapNhatGH();
-                    break;
                 case "NhanVien":
                     uc = new ucNhanVien();
                     break;
@@ -108,6 +115,9 @@ namespace FloriSys._2_QuanLy
                 case "DoiMatKhau":
                     uc = new ucDoiMatKhau();
                     break;
+                case "Thoat":
+                    this.Close();
+                    return;
                 case "DangXuat":
                     if (MessageBox.Show("Bạn có muốn đăng xuất?", "Xác nhận",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -118,7 +128,12 @@ namespace FloriSys._2_QuanLy
                     return;
             }
 
-            if (uc != null) LoadUC(uc);
+            if (uc != null)
+            {
+                LoadUC(uc);
+                // Highlight menu item
+                ucThanhMenu1.SetActiveMenu(menuName);
+            }
         }
 
         private void LoadChiTietDon(string maDon)

@@ -29,6 +29,7 @@ namespace FloriSys._2_QuanLy
         private void InitializeComponent()
         {
             this.pnlContent = new System.Windows.Forms.Panel();
+            this.pnlKPI = new System.Windows.Forms.TableLayoutPanel();
             this.pnlBieuDo = new System.Windows.Forms.Panel();
             this.lblTitleBieuDo = new System.Windows.Forms.Label();
             this.pnlDonHang = new System.Windows.Forms.Panel();
@@ -71,10 +72,7 @@ namespace FloriSys._2_QuanLy
             this.pnlContent.AutoScroll = true;
             this.pnlContent.Controls.Add(this.pnlBieuDo);
             this.pnlContent.Controls.Add(this.pnlDonHang);
-            this.pnlContent.Controls.Add(this.pnlStat4);
-            this.pnlContent.Controls.Add(this.pnlStat3);
-            this.pnlContent.Controls.Add(this.pnlStat2);
-            this.pnlContent.Controls.Add(this.pnlStat1);
+            this.pnlContent.Controls.Add(this.pnlKPI);
             this.pnlContent.Controls.Add(this.pnlCanhBao);
             this.pnlContent.Controls.Add(this.btnCanhBao);
             this.pnlContent.Controls.Add(this.lblDate);
@@ -85,6 +83,26 @@ namespace FloriSys._2_QuanLy
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(1024, 720);
             this.pnlContent.TabIndex = 3;
+            // 
+            // pnlKPI
+            // 
+            this.pnlKPI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlKPI.ColumnCount = 4;
+            this.pnlKPI.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.pnlKPI.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.pnlKPI.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.pnlKPI.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.pnlKPI.Controls.Add(this.pnlStat1, 0, 0);
+            this.pnlKPI.Controls.Add(this.pnlStat2, 1, 0);
+            this.pnlKPI.Controls.Add(this.pnlStat3, 2, 0);
+            this.pnlKPI.Controls.Add(this.pnlStat4, 3, 0);
+            this.pnlKPI.Location = new System.Drawing.Point(32, 148);
+            this.pnlKPI.Name = "pnlKPI";
+            this.pnlKPI.RowCount = 1;
+            this.pnlKPI.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.pnlKPI.Size = new System.Drawing.Size(960, 110);
+            this.pnlKPI.TabIndex = 17;
             // 
             // pnlBieuDo
             // 
@@ -163,9 +181,11 @@ namespace FloriSys._2_QuanLy
             this.pnlStat4.Controls.Add(this.lblStat4Sub);
             this.pnlStat4.Controls.Add(this.lblStat4Title);
             this.pnlStat4.Controls.Add(this.lblStat4Value);
-            this.pnlStat4.Location = new System.Drawing.Point(632, 148);
+            this.pnlStat4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlStat4.Location = new System.Drawing.Point(723, 3);
+            this.pnlStat4.Margin = new System.Windows.Forms.Padding(3);
             this.pnlStat4.Name = "pnlStat4";
-            this.pnlStat4.Size = new System.Drawing.Size(190, 100);
+            this.pnlStat4.Size = new System.Drawing.Size(234, 104);
             this.pnlStat4.TabIndex = 14;
             // 
             // lblStat4Sub
@@ -205,9 +225,11 @@ namespace FloriSys._2_QuanLy
             this.pnlStat3.Controls.Add(this.lblStat3Sub);
             this.pnlStat3.Controls.Add(this.lblStat3Title);
             this.pnlStat3.Controls.Add(this.lblStat3Value);
-            this.pnlStat3.Location = new System.Drawing.Point(436, 148);
+            this.pnlStat3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlStat3.Location = new System.Drawing.Point(483, 3);
+            this.pnlStat3.Margin = new System.Windows.Forms.Padding(3);
             this.pnlStat3.Name = "pnlStat3";
-            this.pnlStat3.Size = new System.Drawing.Size(190, 100);
+            this.pnlStat3.Size = new System.Drawing.Size(234, 104);
             this.pnlStat3.TabIndex = 13;
             // 
             // lblStat3Sub
@@ -247,9 +269,11 @@ namespace FloriSys._2_QuanLy
             this.pnlStat2.Controls.Add(this.lblStat2Sub);
             this.pnlStat2.Controls.Add(this.lblStat2Value);
             this.pnlStat2.Controls.Add(this.lblStat2Title);
-            this.pnlStat2.Location = new System.Drawing.Point(234, 148);
+            this.pnlStat2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlStat2.Location = new System.Drawing.Point(243, 3);
+            this.pnlStat2.Margin = new System.Windows.Forms.Padding(3);
             this.pnlStat2.Name = "pnlStat2";
-            this.pnlStat2.Size = new System.Drawing.Size(190, 100);
+            this.pnlStat2.Size = new System.Drawing.Size(234, 104);
             this.pnlStat2.TabIndex = 12;
             // 
             // lblStat2Sub
@@ -288,9 +312,11 @@ namespace FloriSys._2_QuanLy
             this.pnlStat1.Controls.Add(this.lblStat1Value);
             this.pnlStat1.Controls.Add(this.lblStat1Title);
             this.pnlStat1.Controls.Add(this.lblStat1Sub);
-            this.pnlStat1.Location = new System.Drawing.Point(32, 148);
+            this.pnlStat1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlStat1.Location = new System.Drawing.Point(3, 3);
+            this.pnlStat1.Margin = new System.Windows.Forms.Padding(3);
             this.pnlStat1.Name = "pnlStat1";
-            this.pnlStat1.Size = new System.Drawing.Size(190, 100);
+            this.pnlStat1.Size = new System.Drawing.Size(234, 104);
             this.pnlStat1.TabIndex = 8;
             // 
             // lblStat1Value
@@ -358,7 +384,7 @@ namespace FloriSys._2_QuanLy
             this.btnCanhBao.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
             this.btnCanhBao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCanhBao.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
-            this.btnCanhBao.Location = new System.Drawing.Point(620, 38);
+            this.btnCanhBao.Location = new System.Drawing.Point(844, 46);
             this.btnCanhBao.Name = "btnCanhBao";
             this.btnCanhBao.Size = new System.Drawing.Size(140, 36);
             this.btnCanhBao.TabIndex = 5;
@@ -441,5 +467,6 @@ namespace FloriSys._2_QuanLy
         private System.Windows.Forms.Button btnCanhBao;
         private System.Windows.Forms.Label lblDate;
         private System.Windows.Forms.Label lblTitle;
+        private System.Windows.Forms.TableLayoutPanel pnlKPI;
     }
 }

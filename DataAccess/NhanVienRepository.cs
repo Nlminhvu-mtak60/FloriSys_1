@@ -17,6 +17,12 @@ namespace FloriSys.DataAccess
         public override string IdColumn => "MaNV";
         public override string IdPrefix => "NV";
 
+        public NhanVien LayTheoTaiKhoan(string taiKhoan)
+        {
+            string sql = "SELECT MaNV, TaiKhoan, MatKhau, TrangThai FROM NHAN_VIEN WHERE TaiKhoan = @TaiKhoan";
+            return GetSingle(sql, new SqlParameter[] { new SqlParameter("@TaiKhoan", taiKhoan) });
+        }
+
         // POLYMORPHISM: Override with custom 3-filter search
         public List<NhanVien> LayDanhSach(string keyword = "", string chucVu = "", string trangThai = "")
         {

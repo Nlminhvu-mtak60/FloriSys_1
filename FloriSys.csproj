@@ -169,12 +169,6 @@
     <Compile Include="5_GiaoHang\ucDashboardShipper.Designer.cs">
       <DependentUpon>ucDashboardShipper.cs</DependentUpon>
     </Compile>
-    <Compile Include="5_GiaoHang\ucCapNhatGH.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="5_GiaoHang\ucCapNhatGH.Designer.cs">
-      <DependentUpon>ucCapNhatGH.cs</DependentUpon>
-    </Compile>
     <Compile Include="5_GiaoHang\ucGiaoHang.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -358,9 +352,6 @@
     <EmbeddedResource Include="4_KhoHang\ucNhapKho.resx">
       <DependentUpon>ucNhapKho.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="5_GiaoHang\ucCapNhatGH.resx">
-      <DependentUpon>ucCapNhatGH.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="5_GiaoHang\ucDashboardShipper.resx">
       <DependentUpon>ucDashboardShipper.cs</DependentUpon>
     </EmbeddedResource>
@@ -402,6 +393,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="backround.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="hinhnen2.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

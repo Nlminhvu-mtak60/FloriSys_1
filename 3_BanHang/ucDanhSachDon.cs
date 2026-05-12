@@ -14,7 +14,7 @@ namespace FloriSys._3_BanHang
         public event Action TaoDonMoi;
 
         private int CurrentPage = 1;
-        private int PageSize = 15;
+        private int PageSize = 50; // Tăng từ 15 lên 50 dòng/trang cho WinForms
         private int TotalPages = 1;
 
         public ucDanhSachDon()
@@ -27,6 +27,73 @@ namespace FloriSys._3_BanHang
         private void ucDanhSachDon_Load(object sender, EventArgs e)
         {
             LoadData();
+        }
+
+        private void BtnExport_Click(object sender, EventArgs e)
+        {
+            if (dgvDonHang.Rows.Count == 0)
+            {
+                ShowWarning("Không có dữ liệu để xuất!");
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel File|*.xls", FileName = "DanhSachDonHang.xls" })
+            {
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        var sb = new System.Text.StringBuilder();
+                        
+                        // Sử dụng HTML Table format để Excel tự động chia cột và có định dạng đẹp (Màu sắc, in đậm)
+                        sb.AppendLine("<html xmlns:x=\"urn:schemas-microsoft-com:office:excel\">");
+                        sb.AppendLine("<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
+                        sb.AppendLine("<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>");
+                        sb.AppendLine("<x:Name>Danh Sach Don Hang</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>");
+                        sb.AppendLine("</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->");
+                        sb.AppendLine("<style> table, td, th { border: 1px solid gray; border-collapse: collapse; font-family: Arial; } th { background-color: #4CAF50; color: white; padding: 5px; } td { padding: 5px; } </style>");
+                        sb.AppendLine("</head><body><table>");
+
+                        // Headers
+                        sb.AppendLine("<tr>");
+                        foreach (DataGridViewColumn col in dgvDonHang.Columns)
+                        {
+                            if (col.Visible) sb.AppendLine($"<th>{col.HeaderText}</th>");
+                        }
+                        sb.AppendLine("</tr>");
+
+                        // Data Rows
+                        foreach (DataGridViewRow row in dgvDonHang.Rows)
+                        {
+                            sb.AppendLine("<tr>");
+                            foreach (DataGridViewColumn col in dgvDonHang.Columns)
+                            {
+                                if (col.Visible)
+                                {
+                                    object val = row.Cells[col.Index].Value;
+                                    string cellText = val != null ? val.ToString() : "";
+                                    // Thêm style mso-number-format cho các cột có thể là số điện thoại để Excel không bị mất số 0 ở đầu
+                                    if (col.Name == "SoDienThoai" || col.Name == "MaDon")
+                                        sb.AppendLine($"<td style=\"mso-number-format:'\\@';\">{cellText}</td>");
+                                    else
+                                        sb.AppendLine($"<td>{cellText}</td>");
+                                }
+                            }
+                            sb.AppendLine("</tr>");
+                        }
+
+                        sb.AppendLine("</table></body></html>");
+
+                        // Lưu file
+                        System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), new System.Text.UTF8Encoding(false));
+                        ShowSuccess("Xuất Excel thành công!\nFile đã được lưu tại:\n" + sfd.FileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError("Lỗi khi lưu file: " + ex.Message);
+                    }
+                }
+            }
         }
 
         private void LoadStatusList()
@@ -94,6 +161,7 @@ namespace FloriSys._3_BanHang
             {
                 dgvDonHang.Columns["NgayTao"].HeaderText = "Ngày tạo";
                 dgvDonHang.Columns["NgayTao"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+                dgvDonHang.Columns["NgayTao"].SortMode = DataGridViewColumnSortMode.Programmatic;
             }
             if (dgvDonHang.Columns.Contains("TenKH")) dgvDonHang.Columns["TenKH"].HeaderText = "Khách hàng";
             if (dgvDonHang.Columns.Contains("SoDienThoai")) dgvDonHang.Columns["SoDienThoai"].HeaderText = "SĐT";
@@ -106,7 +174,7 @@ namespace FloriSys._3_BanHang
             if (dgvDonHang.Columns.Contains("HinhThucDisplay")) dgvDonHang.Columns["HinhThucDisplay"].HeaderText = "Hình thức";
             if (dgvDonHang.Columns.Contains("TrangThaiDisplay")) dgvDonHang.Columns["TrangThaiDisplay"].HeaderText = "Trạng thái";
             if (dgvDonHang.Columns.Contains("TenNV")) dgvDonHang.Columns["TenNV"].HeaderText = "NV tạo";
-
+            
             dgvDonHang.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvDonHang.ReadOnly = true;
             dgvDonHang.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -164,6 +232,22 @@ namespace FloriSys._3_BanHang
                 e.SuppressKeyPress = true; // Ngăn tiếng bip
                 CurrentPage = 1; // Reset về trang 1 khi tìm kiếm mới
                 LoadData();
+            }
+        }
+
+        private void phảnHồiKhiếuNạiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dgvDonHang.CurrentRow != null)
+            {
+                DonHang dh = dgvDonHang.CurrentRow.DataBoundItem as DonHang;
+                if (dh != null)
+                {
+                    var frmMain = this.FindForm() as FloriSys._2_QuanLy.frmMain;
+                    if (frmMain != null)
+                    {
+                        frmMain.OnMenuClicked("PhanHoi", dh.MaDon);
+                    }
+                }
             }
         }
     }

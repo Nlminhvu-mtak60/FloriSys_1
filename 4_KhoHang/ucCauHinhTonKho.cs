@@ -24,7 +24,8 @@ namespace FloriSys._4_KhoHang
 
         public override void LoadData()
         {
-            List<SanPham> dsSP = _spRepo.LayDanhSach(txtTimKiem.Text);
+            string keyword = txtTimKiem.Text == "🔍 Tìm mã hoặc tên sản phẩm..." ? "" : txtTimKiem.Text.Trim();
+            List<SanPham> dsSP = _spRepo.LayDanhSach(keyword);
             dgvSanPham.DataSource = dsSP;
 
             foreach (DataGridViewColumn col in dgvSanPham.Columns)
@@ -52,7 +53,26 @@ namespace FloriSys._4_KhoHang
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-            LoadData();
+            if (txtTimKiem.Text != "🔍 Tìm mã hoặc tên sản phẩm...")
+                LoadData();
+        }
+
+        private void txtTimKiem_Enter(object sender, EventArgs e)
+        {
+            if (txtTimKiem.Text == "🔍 Tìm mã hoặc tên sản phẩm...")
+            {
+                txtTimKiem.Text = "";
+                txtTimKiem.ForeColor = Color.Black;
+            }
+        }
+
+        private void txtTimKiem_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtTimKiem.Text))
+            {
+                txtTimKiem.Text = "🔍 Tìm mã hoặc tên sản phẩm...";
+                txtTimKiem.ForeColor = Color.Gray;
+            }
         }
 
         private void btnLuu_Click(object sender, EventArgs e)

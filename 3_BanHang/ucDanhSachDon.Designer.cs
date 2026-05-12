@@ -8,9 +8,12 @@ namespace FloriSys._3_BanHang
         #region Component Designer generated code
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblSubtitle = new System.Windows.Forms.Label();
             this.btnTaoDon = new System.Windows.Forms.Button();
+            this.btnXuatExcel = new System.Windows.Forms.Button();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
             this.cboTrangThai = new System.Windows.Forms.ComboBox();
             this.btnLoc = new System.Windows.Forms.Button();
@@ -21,10 +24,38 @@ namespace FloriSys._3_BanHang
             this.dtpNgay = new System.Windows.Forms.DateTimePicker();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.pnlFilter = new System.Windows.Forms.Panel();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.xemChiTiếtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.phảnHồiKhiếuNạiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDonHang)).BeginInit();
             this.pnlHeader.SuspendLayout();
             this.pnlFilter.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.xemChiTiếtToolStripMenuItem,
+            this.phảnHồiKhiếuNạiToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 80);
+            // 
+            // xemChiTiếtToolStripMenuItem
+            // 
+            this.xemChiTiếtToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.xemChiTiếtToolStripMenuItem.Name = "xemChiTiếtToolStripMenuItem";
+            this.xemChiTiếtToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.xemChiTiếtToolStripMenuItem.Text = "👁️ Xem chi tiết";
+            this.xemChiTiếtToolStripMenuItem.Click += new System.EventHandler(this.btnXem_Click);
+            // 
+            // phảnHồiKhiếuNạiToolStripMenuItem
+            // 
+            this.phảnHồiKhiếuNạiToolStripMenuItem.Name = "phảnHồiKhiếuNạiToolStripMenuItem";
+            this.phảnHồiKhiếuNạiToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.phảnHồiKhiếuNạiToolStripMenuItem.Text = "💬 Phản hồi/Khiếu nại";
+            this.phảnHồiKhiếuNạiToolStripMenuItem.Click += new System.EventHandler(this.phảnHồiKhiếuNạiToolStripMenuItem_Click);
             // 
             // lblTitle
             // 
@@ -62,6 +93,23 @@ namespace FloriSys._3_BanHang
             this.btnTaoDon.Text = "➕ Tạo đơn mới";
             this.btnTaoDon.UseVisualStyleBackColor = false;
             this.btnTaoDon.Click += new System.EventHandler(this.btnTaoDon_Click);
+            // 
+            // btnXuatExcel
+            // 
+            this.btnXuatExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnXuatExcel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(197)))), ((int)(((byte)(94)))));
+            this.btnXuatExcel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnXuatExcel.FlatAppearance.BorderSize = 0;
+            this.btnXuatExcel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnXuatExcel.ForeColor = System.Drawing.Color.White;
+            this.btnXuatExcel.Location = new System.Drawing.Point(510, 5);
+            this.btnXuatExcel.Name = "btnXuatExcel";
+            this.btnXuatExcel.Size = new System.Drawing.Size(140, 36);
+            this.btnXuatExcel.TabIndex = 3;
+            this.btnXuatExcel.Text = "📥 Xuất Excel";
+            this.btnXuatExcel.UseVisualStyleBackColor = false;
+            this.btnXuatExcel.Click += new System.EventHandler(this.BtnExport_Click);
             // 
             // txtTimKiem
             // 
@@ -171,6 +219,7 @@ namespace FloriSys._3_BanHang
             // 
             this.pnlHeader.Controls.Add(this.lblTitle);
             this.pnlHeader.Controls.Add(this.lblSubtitle);
+            this.pnlHeader.Controls.Add(this.btnXuatExcel);
             this.pnlHeader.Controls.Add(this.btnTaoDon);
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader.Location = new System.Drawing.Point(20, 20);
@@ -252,13 +301,16 @@ namespace FloriSys._3_BanHang
             this.btnNext.Click += (s, e) => { if (CurrentPage < TotalPages) { CurrentPage++; LoadData(); } };
 
             this.Controls.Add(this.pnlPaging);
-            this.pnlPaging.BringToFront();
+            this.pnlPaging.SendToBack();
+            this.lblTongDon.SendToBack();
+            this.dgvDonHang.BringToFront();
         }
         #endregion
 
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblSubtitle;
         private System.Windows.Forms.Button btnTaoDon;
+        private System.Windows.Forms.Button btnXuatExcel;
         private System.Windows.Forms.TextBox txtTimKiem;
         private System.Windows.Forms.ComboBox cboTrangThai;
         private System.Windows.Forms.Button btnLoc;
@@ -273,5 +325,8 @@ namespace FloriSys._3_BanHang
         private System.Windows.Forms.Label lblPageInfo;
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Panel pnlFilter;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem xemChiTiếtToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem phảnHồiKhiếuNạiToolStripMenuItem;
     }
 }

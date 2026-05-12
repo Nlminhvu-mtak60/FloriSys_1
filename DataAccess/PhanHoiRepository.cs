@@ -18,14 +18,15 @@ namespace FloriSys.DataAccess
             string sql = @"SELECT ph.MaPH, ph.MaDon, ph.NoiDung, ph.NgayGhi, ph.TrangThaiXuLy, ph.KetQuaXuLy,
                           kh.HoTen AS TenKH
                           FROM PHAN_HOI ph
-                          INNER JOIN DON_HANG dh ON ph.MaDon = dh.MaDon
-                          INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
+                          LEFT JOIN DON_HANG dh ON ph.MaDon = dh.MaDon
+                          LEFT JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           WHERE 1=1";
             var parms = new List<SqlParameter>();
             if (!string.IsNullOrEmpty(maDon))
             {
+                string trimmedMaDon = maDon.Trim();
                 sql += " AND ph.MaDon = @MaDon";
-                parms.Add(new SqlParameter("@MaDon", maDon));
+                parms.Add(new SqlParameter("@MaDon", trimmedMaDon));
             }
             sql += " ORDER BY ph.NgayGhi DESC";
             return GetList(sql, parms);

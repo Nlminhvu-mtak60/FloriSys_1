@@ -13,7 +13,8 @@ namespace FloriSys._1_DangNhap
         public frmDangNhap()
         {
             InitializeComponent();
-            _authService = new AuthService();  // OOP: Use Service, not DAO directly
+            _authService = new AuthService();
+            picBackground.SendToBack();
         }
 
         private void frmDangNhap_Load(object sender, EventArgs e)

@@ -214,16 +214,21 @@ namespace FloriSys._3_BanHang
             }
         }
 
+        private void btnPhanHoi_Click(object sender, EventArgs e)
+        {
+            var frmMain = this.FindForm() as FloriSys._2_QuanLy.frmMain;
+            if (frmMain != null)
+            {
+                frmMain.OnMenuClicked("PhanHoi", _maDon);
+            }
+        }
+
         private void lblBack_Click(object sender, EventArgs e)
         {
-            Control parent = this.Parent;
-            while (parent != null && !(parent is Form))
+            var frmMain = this.FindForm() as FloriSys._2_QuanLy.frmMain;
+            if (frmMain != null)
             {
-                parent = parent.Parent;
-            }
-            if (parent != null)
-            {
-                var frm = parent as Form;
+                frmMain.OnMenuClicked("DanhSachDon");
             }
         }
     }

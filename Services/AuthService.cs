@@ -34,15 +34,31 @@ namespace FloriSys.Services
 
             try
             {
-                string hash = SessionManager.HashSHA256(matKhau);
-                nv = _nvRepo.DangNhap(taiKhoan, hash);
+                // 1. Kiểm tra tài khoản tồn tại
+                var userFound = _nvRepo.LayTheoTaiKhoan(taiKhoan);
 
-                if (nv == null)
+                if (userFound == null)
                 {
-                    error = "Tên đăng nhập hoặc mật khẩu không đúng.\nHoặc tài khoản đã bị khóa.";
+                    error = "Tên đăng nhập không tồn tại trong hệ thống.";
                     return false;
                 }
 
+                if (userFound.TrangThai == "DaNghi")
+                {
+                    error = "Tài khoản này đã bị khóa hoặc ngừng hoạt động.";
+                    return false;
+                }
+
+                // 2. Kiểm tra mật khẩu
+                string hash = SessionManager.HashSHA256(matKhau);
+                if (userFound.MatKhau != hash)
+                {
+                    error = "Mật khẩu không chính xác. Vui lòng thử lại.";
+                    return false;
+                }
+
+                // 3. Đăng nhập thành công
+                nv = _nvRepo.DangNhap(taiKhoan, hash);
                 SessionManager.Instance.Login(nv);
                 return true;
             }

@@ -59,7 +59,7 @@ namespace FloriSys.DataAccess
             string dataSql = @"SELECT dh.MaDon, dh.NgayTao, kh.HoTen AS TenKH, kh.SoDienThoai, 
                              dh.HinhThucNhanHang, dh.TongTien, dh.TrangThai, nv.HoTen AS TenNV, dh.GhiChu " + 
                              baseSql + 
-                             " ORDER BY dh.NgayTao DESC " + 
+                             " ORDER BY dh.MaDon DESC " + 
                              " OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY";
             
             var dataParms = new List<SqlParameter>(parms.ConvertAll(p => new SqlParameter(p.ParameterName, p.Value)));

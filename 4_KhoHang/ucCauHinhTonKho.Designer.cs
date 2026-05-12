@@ -43,6 +43,7 @@ namespace FloriSys._4_KhoHang
             // 
             // btnLuu
             // 
+            this.btnLuu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLuu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
             this.btnLuu.FlatAppearance.BorderSize = 0;
             this.btnLuu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -89,11 +90,16 @@ namespace FloriSys._4_KhoHang
             // 
             // txtTimKiem
             // 
-            this.txtTimKiem.Location = new System.Drawing.Point(20, 13);
+            this.txtTimKiem.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.txtTimKiem.ForeColor = System.Drawing.Color.Gray;
+            this.txtTimKiem.Location = new System.Drawing.Point(20, 10);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(350, 22);
+            this.txtTimKiem.Size = new System.Drawing.Size(400, 30);
             this.txtTimKiem.TabIndex = 0;
+            this.txtTimKiem.Text = "🔍 Tìm mã hoặc tên sản phẩm...";
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
+            this.txtTimKiem.Enter += new System.EventHandler(this.txtTimKiem_Enter);
+            this.txtTimKiem.Leave += new System.EventHandler(this.txtTimKiem_Leave);
             // 
             // dgvSanPham
             // 

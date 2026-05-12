@@ -32,6 +32,7 @@ namespace FloriSys._3_BanHang
 
         private void LoadStats()
         {
+            // 1. Thống kê chung hôm nay
             ThongKeBanHang stats = _bcRepo.ThongKeBanHang(currentUserMaNV);
             if (stats != null)
             {
@@ -45,6 +46,41 @@ namespace FloriSys._3_BanHang
 
                 lblValDangXuLy.Text = stats.DonDangXuLy.ToString();
                 lblValHoanThanh.Text = stats.DonHoanThanh.ToString();
+            }
+
+            // 2. Hiệu suất tháng hiện tại
+            int currentMonth = DateTime.Now.Month;
+            int currentYear = DateTime.Now.Year;
+            lblHieuSuatTitle.Text = $"📈 Hiệu suất tháng {currentMonth}/{currentYear}";
+
+            List<HieuSuatNhanVien> dsHieuSuat = _bcRepo.HieuSuatNhanVien(currentMonth, currentYear);
+            if (dsHieuSuat != null)
+            {
+                // Tìm nhân viên hiện tại trong danh sách để biết Xếp hạng
+                var myStats = dsHieuSuat.Find(h => h.MaNV == currentUserMaNV);
+                int myRank = dsHieuSuat.FindIndex(h => h.MaNV == currentUserMaNV) + 1;
+
+                if (myStats != null)
+                {
+                    // Cập nhật Số đơn hàng (Target: 200 đơn)
+                    int targetDon = 200;
+                    lblTargetDon.Text = $"Số đơn hàng ({myStats.SoDonTao} / {targetDon})";
+                    pbDonHang.Maximum = targetDon;
+                    pbDonHang.Value = Math.Min(myStats.SoDonTao, targetDon);
+
+                    // Cập nhật Doanh thu (Target: 50M)
+                    decimal targetDT = 50000000;
+                    string myDTStr = (myStats.TongDoanhThu / 1000000).ToString("N1") + "M";
+                    string targetDTStr = (targetDT / 1000000).ToString("N0") + "M";
+                    lblTargetDoanhThu.Text = $"Doanh thu ({myDTStr} / {targetDTStr})";
+                    
+                    pbDoanhThu.Maximum = 100; // Dùng phần trăm cho an toàn
+                    int pct = (int)((myStats.TongDoanhThu / targetDT) * 100);
+                    pbDoanhThu.Value = Math.Min(pct, 100);
+
+                    // Cập nhật Xếp hạng
+                    lblRank.Text = $"🥇 Xếp hạng: #{myRank} / {dsHieuSuat.Count} nv";
+                }
             }
         }
 

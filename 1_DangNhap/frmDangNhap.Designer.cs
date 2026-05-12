@@ -1,4 +1,4 @@
-﻿namespace FloriSys._1_DangNhap
+namespace FloriSys._1_DangNhap
 {
     partial class frmDangNhap
     {
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.Button btnLogin;
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDangNhap));
             this.lblLogo = new System.Windows.Forms.Label();
             this.pnlCard = new System.Windows.Forms.Panel();
             this.txtPassword = new System.Windows.Forms.TextBox();
@@ -36,13 +37,15 @@
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblSub = new System.Windows.Forms.Label();
+            this.picBackground = new System.Windows.Forms.PictureBox();
             btnLogin = new System.Windows.Forms.Button();
             this.pnlCard.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picBackground)).BeginInit();
             this.SuspendLayout();
             // 
             // btnLogin
             // 
-            btnLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            btnLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(29)))), ((int)(((byte)(72)))));
             btnLogin.Cursor = System.Windows.Forms.Cursors.Hand;
             btnLogin.FlatAppearance.BorderSize = 0;
             btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -58,11 +61,11 @@
             // 
             // lblLogo
             // 
-            this.lblLogo.Font = new System.Drawing.Font("Georgia", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLogo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            this.lblLogo.Font = new System.Drawing.Font("Georgia", 22F, System.Drawing.FontStyle.Bold);
+            this.lblLogo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(39)))), ((int)(((byte)(119)))));
             this.lblLogo.Location = new System.Drawing.Point(12, 20);
             this.lblLogo.Name = "lblLogo";
-            this.lblLogo.Size = new System.Drawing.Size(340, 45);
+            this.lblLogo.Size = new System.Drawing.Size(340, 50);
             this.lblLogo.TabIndex = 0;
             this.lblLogo.Text = "🌸 FloriSys";
             this.lblLogo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -70,7 +73,7 @@
             // pnlCard
             // 
             this.pnlCard.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pnlCard.BackColor = System.Drawing.Color.White;
+            this.pnlCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(242)))), ((int)(((byte)(242)))));
             this.pnlCard.Controls.Add(btnLogin);
             this.pnlCard.Controls.Add(this.txtPassword);
             this.pnlCard.Controls.Add(this.lblPassword);
@@ -78,27 +81,28 @@
             this.pnlCard.Controls.Add(this.lblUsername);
             this.pnlCard.Controls.Add(this.lblSub);
             this.pnlCard.Controls.Add(this.lblLogo);
-            this.pnlCard.Location = new System.Drawing.Point(51, 66);
+            this.pnlCard.Location = new System.Drawing.Point(88, 66);
             this.pnlCard.Name = "pnlCard";
+            this.pnlCard.Padding = new System.Windows.Forms.Padding(10);
             this.pnlCard.Size = new System.Drawing.Size(380, 420);
             this.pnlCard.TabIndex = 1;
             // 
             // txtPassword
             // 
             this.txtPassword.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.txtPassword.ImeMode = System.Windows.Forms.ImeMode.Disable;
             this.txtPassword.Location = new System.Drawing.Point(30, 215);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '.';
-            this.txtPassword.Size = new System.Drawing.Size(320, 30);
+            this.txtPassword.Size = new System.Drawing.Size(320, 32);
             this.txtPassword.TabIndex = 5;
             // 
             // lblPassword
             // 
             this.lblPassword.AutoSize = true;
             this.lblPassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.lblPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.lblPassword.Location = new System.Drawing.Point(30, 195);
             this.lblPassword.Name = "lblPassword";
             this.lblPassword.Size = new System.Drawing.Size(75, 20);
@@ -108,17 +112,17 @@
             // txtUsername
             // 
             this.txtUsername.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
+            this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.txtUsername.Location = new System.Drawing.Point(30, 145);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(320, 30);
+            this.txtUsername.Size = new System.Drawing.Size(320, 32);
             this.txtUsername.TabIndex = 3;
             // 
             // lblUsername
             // 
             this.lblUsername.AutoSize = true;
             this.lblUsername.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(65)))), ((int)(((byte)(81)))));
+            this.lblUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.lblUsername.Location = new System.Drawing.Point(30, 125);
             this.lblUsername.Name = "lblUsername";
             this.lblUsername.Size = new System.Drawing.Size(112, 20);
@@ -128,7 +132,7 @@
             // lblSub
             // 
             this.lblSub.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(163)));
-            this.lblSub.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(156)))), ((int)(((byte)(163)))), ((int)(((byte)(175)))));
+            this.lblSub.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.lblSub.Location = new System.Drawing.Point(20, 80);
             this.lblSub.Name = "lblSub";
             this.lblSub.Size = new System.Drawing.Size(340, 20);
@@ -136,21 +140,33 @@
             this.lblSub.Text = "Hệ thống Quản lý Cửa hàng Hoa";
             this.lblSub.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // picBackground
+            // 
+            this.picBackground.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picBackground.Image = ((System.Drawing.Image)(resources.GetObject("picBackground.Image")));
+            this.picBackground.Location = new System.Drawing.Point(0, 0);
+            this.picBackground.Name = "picBackground";
+            this.picBackground.Size = new System.Drawing.Size(557, 553);
+            this.picBackground.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picBackground.TabIndex = 2;
+            this.picBackground.TabStop = false;
+            // 
             // frmDangNhap
             // 
             this.AcceptButton = btnLogin;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(61)))), ((int)(((byte)(15)))), ((int)(((byte)(25)))));
-            this.ClientSize = new System.Drawing.Size(482, 553);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(251)))), ((int)(((byte)(245)))));
+            this.ClientSize = new System.Drawing.Size(557, 553);
             this.Controls.Add(this.pnlCard);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Controls.Add(this.picBackground);
             this.Name = "frmDangNhap";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FloriSys – Đăng nhập";
             this.Load += new System.EventHandler(this.frmDangNhap_Load);
             this.pnlCard.ResumeLayout(false);
             this.pnlCard.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picBackground)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -164,5 +180,6 @@
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.Label lblSub;
+        private System.Windows.Forms.PictureBox picBackground;
     }
 }

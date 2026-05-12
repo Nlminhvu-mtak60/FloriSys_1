@@ -19,6 +19,7 @@ namespace FloriSys._3_BanHang
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
+            this.btnPhanHoi = new System.Windows.Forms.Button();
             this.lblStatusBadge = new System.Windows.Forms.Label();
             this.lblMaDon = new System.Windows.Forms.Label();
             this.lblBack = new System.Windows.Forms.Label();
@@ -59,6 +60,7 @@ namespace FloriSys._3_BanHang
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.White;
+            this.pnlHeader.Controls.Add(this.btnPhanHoi);
             this.pnlHeader.Controls.Add(this.lblStatusBadge);
             this.pnlHeader.Controls.Add(this.lblMaDon);
             this.pnlHeader.Controls.Add(this.lblBack);
@@ -68,6 +70,22 @@ namespace FloriSys._3_BanHang
             this.pnlHeader.Size = new System.Drawing.Size(1100, 100);
             this.pnlHeader.TabIndex = 0;
             // 
+            // btnPhanHoi
+            // 
+            this.btnPhanHoi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPhanHoi.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(59)))), ((int)(((byte)(130)))), ((int)(((byte)(246)))));
+            this.btnPhanHoi.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnPhanHoi.FlatAppearance.BorderSize = 0;
+            this.btnPhanHoi.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnPhanHoi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnPhanHoi.ForeColor = System.Drawing.Color.White;
+            this.btnPhanHoi.Location = new System.Drawing.Point(920, 30);
+            this.btnPhanHoi.Name = "btnPhanHoi";
+            this.btnPhanHoi.Size = new System.Drawing.Size(150, 40);
+            this.btnPhanHoi.TabIndex = 3;
+            this.btnPhanHoi.Text = "💬 Phản hồi";
+            this.btnPhanHoi.UseVisualStyleBackColor = false;
+            this.btnPhanHoi.Click += new System.EventHandler(this.btnPhanHoi_Click);
             // 
             // lblStatusBadge
             // 
@@ -402,6 +420,7 @@ namespace FloriSys._3_BanHang
         private System.Windows.Forms.Label lblMaDon;
         private System.Windows.Forms.Label lblBack;
         private System.Windows.Forms.Label lblStatusBadge;
+        private System.Windows.Forms.Button btnPhanHoi;
         private System.Windows.Forms.TableLayoutPanel pnlMain;
         private System.Windows.Forms.Panel pnlLeft;
         private System.Windows.Forms.GroupBox grpKhachHang;

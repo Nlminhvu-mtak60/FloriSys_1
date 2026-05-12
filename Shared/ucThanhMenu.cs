@@ -151,6 +151,35 @@ namespace FloriSys.Shared
             lblNhomBaoCao.Visible = btnBaoCao.Visible;
         }
 
+        public void SetActiveMenu(string menuName)
+        {
+            // Reset colors of all buttons
+            foreach (Control ctrl in this.Controls)
+            {
+                if (ctrl is Panel pnl)
+                {
+                    foreach (Control c in pnl.Controls)
+                    {
+                        if (c is Button b)
+                        {
+                            b.BackColor = Color.White;
+                            b.ForeColor = Color.FromArgb(75, 85, 99);
+                        }
+                    }
+                }
+            }
+
+            // Find and highlight active button
+            string btnName = "btn" + menuName;
+            Control[] found = this.Controls.Find(btnName, true);
+            if (found.Length > 0 && found[0] is Button activeBtn)
+            {
+                activeBtn.BackColor = Color.FromArgb(254, 242, 244);
+                activeBtn.ForeColor = Color.FromArgb(232, 57, 77);
+                _activeButton = activeBtn;
+            }
+        }
+
         // Empty event handlers kept for Designer compatibility
 
         private void btnDoiMatKhau_Click(object sender, EventArgs e) { Navigate("DoiMatKhau", btnDoiMatKhau); }

@@ -95,7 +95,7 @@ namespace FloriSys.DataAccess
 
         public List<DonHangGanDay> DonHangGanDay(int top = 5)
         {
-            string sql = @"SELECT TOP (@Top) dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.TrangThai
+            string sql = @"SELECT TOP (@Top) dh.MaDon, kh.HoTen AS TenKH, dh.TongTien, dh.NgayTao, dh.TrangThai
                           FROM DON_HANG dh
                           INNER JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
                           ORDER BY dh.NgayTao DESC";
@@ -107,7 +107,7 @@ namespace FloriSys.DataAccess
             string sql = @"SELECT 
                 (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'Moi') AS DonChoXuat,
                 (SELECT COUNT(*) FROM SAN_PHAM WHERE SoLuongTon <= MucTonToiThieu) AS SPSapHet,
-                (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'DangXuLy') AS DaXuatHomNay,
+                (SELECT COUNT(*) FROM DON_HANG WHERE TrangThai=N'DangXuLy' AND CAST(NgayTao AS DATE)=CAST(GETDATE() AS DATE)) AS DaXuatHomNay,
                 (SELECT COUNT(*) FROM PHIEU_NHAP_KHO WHERE MONTH(NgayNhap)=MONTH(GETDATE()) AND YEAR(NgayNhap)=YEAR(GETDATE())) AS PhieuNhapThang";
             return DatabaseHelper.ExecuteRawSingle<ThongKeKho>(sql);
         }

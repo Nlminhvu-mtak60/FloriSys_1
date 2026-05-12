@@ -24,7 +24,7 @@ namespace FloriSys.DataAccess
             var parms = new List<SqlParameter>();
             if (!string.IsNullOrEmpty(keyword))
             {
-                sql += " AND TenSP LIKE @Key";
+                sql += " AND (TenSP LIKE @Key OR MaSP LIKE @Key)";
                 parms.Add(new SqlParameter("@Key", "%" + keyword + "%"));
             }
             if (!string.IsNullOrEmpty(loai))
@@ -48,7 +48,7 @@ namespace FloriSys.DataAccess
             var parms = new List<SqlParameter>();
             if (!string.IsNullOrEmpty(keyword))
             {
-                sql += " AND TenSP LIKE @Key";
+                sql += " AND (TenSP LIKE @Key OR MaSP LIKE @Key)";
                 parms.Add(new SqlParameter("@Key", "%" + keyword + "%"));
             }
             sql += " ORDER BY TenSP";
