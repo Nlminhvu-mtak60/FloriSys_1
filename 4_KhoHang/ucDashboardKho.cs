@@ -15,10 +15,31 @@ namespace FloriSys._4_KhoHang
         private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
         private readonly SanPhamRepository _spRepo = new SanPhamRepository();
         private Button btnXuLyNgay;
+        
+        private Panel pnlAlert;
+        private Label lblAlert;
 
         public ucDashboardKho()
         {
             InitializeComponent();
+            
+            pnlAlert = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 40,
+                BackColor = Color.FromArgb(255, 243, 205),
+                Visible = false
+            };
+            lblAlert = new Label
+            {
+                AutoSize = false,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 10f, FontStyle.Bold),
+                ForeColor = Color.FromArgb(133, 100, 4)
+            };
+            pnlAlert.Controls.Add(lblAlert);
+            this.Controls.Add(pnlAlert);
         }
 
         private void ucDashboardKho_Load(object sender, EventArgs e)
@@ -65,8 +86,8 @@ namespace FloriSys._4_KhoHang
                         };
                         btnXuLyNgay.FlatAppearance.BorderSize = 0;
                         
-                        // Đặt vị trí bên dưới
-                        btnXuLyNgay.Location = new Point(10, pnlDonChoXuat.Height - 40);
+                        // Đặt vị trí sang bên phải để không đè lên số lượng
+                        btnXuLyNgay.Location = new Point(pnlDonChoXuat.Width - 140, pnlDonChoXuat.Height - 40);
                         
                         btnXuLyNgay.Click += (s, ev) => 
                         {
@@ -119,7 +140,13 @@ namespace FloriSys._4_KhoHang
 
             if (donTre > 0)
             {
-                MessageBox.Show($"🚨 CẢNH BÁO TỒN ĐỌNG!\nHiện đang có {donTre} đơn hàng mới chờ xuất kho quá 30 phút chưa được xử lý!\nVui lòng xử lý gấp để tránh tồn đọng đơn.", "Cảnh báo tồn đọng", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblAlert.Text = $"🚨 CẢNH BÁO TỒN ĐỌNG! Hiện đang có {donTre} đơn hàng mới chờ xuất kho quá 30 phút! Vui lòng ưu tiên xử lý.";
+                pnlAlert.Visible = true;
+                dgvDonChoXuat.BringToFront();
+            }
+            else
+            {
+                pnlAlert.Visible = false;
             }
         }
 

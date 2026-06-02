@@ -523,6 +523,191 @@ namespace FloriSys.Services
             }
         }
 
+        public static void ExportBaoCaoHieuSuatNhanVien(int? thang, int? nam, List<HieuSuatNhanVien> dsHieuSuat, string nguoiLap, MemoryStream chartStream = null)
+        {
+            string timeStr = (thang.HasValue && nam.HasValue) ? $"Tháng {thang}/{nam}" : (nam.HasValue ? $"Năm {nam}" : "Toàn thời gian");
+            string defaultName = $"BaoCao_HieuSuatNhanVien_{DateTime.Now:yyyyMMdd_HHmm}.pdf";
+            string filePath = ShowSaveDialog(defaultName);
+            if (string.IsNullOrEmpty(filePath)) return;
+
+            try
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                {
+                    Document doc = new Document(PageSize.A4, 40, 40, 40, 40);
+                    PdfWriter writer = PdfWriter.GetInstance(doc, fs);
+                    doc.Open();
+
+                    // Header
+                    AddReportHeader(doc, "BÁO CÁO HIỆU SUẤT NHÂN VIÊN", timeStr);
+
+                    // 1. Thông tin báo cáo
+                    doc.Add(new Paragraph("1. THÔNG TIN BÁO CÁO", _fontBold) { SpacingBefore = 10, SpacingAfter = 5 });
+                    
+                    PdfPTable infoTable = new PdfPTable(2);
+                    infoTable.WidthPercentage = 100;
+                    infoTable.SetWidths(new float[] { 30, 70 });
+                    
+                    PdfPCell cell1 = new PdfPCell(new Phrase("Thời gian báo cáo:", _fontBold)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 };
+                    PdfPCell cell2 = new PdfPCell(new Phrase(timeStr, _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 };
+                    PdfPCell cell3 = new PdfPCell(new Phrase("Ngày lập báo cáo:", _fontBold)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 };
+                    PdfPCell cell4 = new PdfPCell(new Phrase(DateTime.Now.ToString("dd/MM/yyyy HH:mm"), _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 };
+                    PdfPCell cell5 = new PdfPCell(new Phrase("Người lập báo cáo:", _fontBold)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 };
+                    PdfPCell cell6 = new PdfPCell(new Phrase(nguoiLap, _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 };
+                    
+                    infoTable.AddCell(cell1); infoTable.AddCell(cell2);
+                    infoTable.AddCell(cell3); infoTable.AddCell(cell4);
+                    infoTable.AddCell(cell5); infoTable.AddCell(cell6);
+                    doc.Add(infoTable);
+
+                    // 2. Bảng xếp hạng nhân viên
+                    AddSectionTitle(doc, "2. BẢNG XẾP HẠNG NHÂN VIÊN");
+                    if (dsHieuSuat != null && dsHieuSuat.Count > 0)
+                    {
+                        PdfPTable table = new PdfPTable(6);
+                        table.WidthPercentage = 100;
+                        table.SetWidths(new float[] { 10, 15, 30, 15, 20, 10 });
+                        table.SpacingBefore = 10;
+                        
+                        AddTableHeader(table, "STT");
+                        AddTableHeader(table, "Mã NV");
+                        AddTableHeader(table, "Họ tên nhân viên");
+                        AddTableHeader(table, "Số đơn");
+                        AddTableHeader(table, "Tổng doanh thu");
+                        AddTableHeader(table, "Hạng");
+
+                        int stt = 1;
+                        foreach (var nv in dsHieuSuat)
+                        {
+                            AddTableCell(table, stt.ToString(), Element.ALIGN_CENTER);
+                            AddTableCell(table, nv.MaNV, Element.ALIGN_CENTER);
+                            AddTableCell(table, nv.HoTen);
+                            AddTableCell(table, nv.SoDonTao.ToString("N0"), Element.ALIGN_CENTER);
+                            AddTableCell(table, nv.TongDoanhThu.ToString("N0") + "đ", Element.ALIGN_RIGHT);
+                            AddTableCell(table, stt.ToString(), Element.ALIGN_CENTER);
+                            stt++;
+                        }
+                        doc.Add(table);
+                    }
+                    else
+                    {
+                        doc.Add(new Paragraph("Không có dữ liệu trong kỳ.", _fontNormal) { SpacingBefore = 5 });
+                    }
+
+                    // 3. Biểu đồ so sánh
+                    if (chartStream != null && chartStream.Length > 0)
+                    {
+                        AddSectionTitle(doc, "3. BIỂU ĐỒ SO SÁNH HIỆU SUẤT");
+                        try
+                        {
+                            chartStream.Position = 0;
+                            iTextSharp.text.Image chartImage = iTextSharp.text.Image.GetInstance(chartStream);
+                            chartImage.Alignment = Element.ALIGN_CENTER;
+                            chartImage.ScaleToFit(doc.PageSize.Width - 80, 250);
+                            chartImage.SpacingBefore = 10;
+                            doc.Add(chartImage);
+                        }
+                        catch { }
+                    }
+
+                    // 4. Thống kê tổng hợp
+                    AddSectionTitle(doc, "4. THỐNG KÊ TỔNG HỢP");
+                    if (dsHieuSuat != null && dsHieuSuat.Count > 0)
+                    {
+                        int tongNV = dsHieuSuat.Count;
+                        int tongDon = 0;
+                        decimal tongDT = 0;
+                        foreach (var nv in dsHieuSuat)
+                        {
+                            tongDon += nv.SoDonTao;
+                            tongDT += nv.TongDoanhThu;
+                        }
+                        decimal tbDT = tongNV > 0 ? (tongDT / tongNV) : 0;
+
+                        PdfPTable statTable = new PdfPTable(2);
+                        statTable.WidthPercentage = 100;
+                        statTable.SpacingBefore = 10;
+                        
+                        statTable.AddCell(new PdfPCell(new Phrase($"Tổng số nhân viên tham gia bán hàng: {tongNV}", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 });
+                        statTable.AddCell(new PdfPCell(new Phrase($"Tổng số đơn hàng: {tongDon:N0}", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 });
+                        statTable.AddCell(new PdfPCell(new Phrase($"Tổng doanh thu: {tongDT:N0}đ", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 });
+                        statTable.AddCell(new PdfPCell(new Phrase($"Doanh thu trung bình/nhân viên: {tbDT:N0}đ", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 });
+                        doc.Add(statTable);
+
+                        // 5. Thành tích nổi bật
+                        AddSectionTitle(doc, "5. THÀNH TÍCH NỔI BẬT");
+                        var topDT = dsHieuSuat[0];
+                        var topDon = dsHieuSuat[0];
+                        foreach (var nv in dsHieuSuat)
+                        {
+                            if (nv.SoDonTao > topDon.SoDonTao) topDon = nv;
+                        }
+                        PdfPTable achTable = new PdfPTable(1);
+                        achTable.WidthPercentage = 100;
+                        achTable.SpacingBefore = 10;
+                        achTable.AddCell(new PdfPCell(new Phrase($"- Nhân viên có doanh thu cao nhất: {topDT.HoTen} ({topDT.TongDoanhThu:N0}đ)", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 });
+                        achTable.AddCell(new PdfPCell(new Phrase($"- Nhân viên có số đơn hàng nhiều nhất: {topDon.HoTen} ({topDon.SoDonTao:N0} đơn)", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 });
+                        
+                        if (topDon.SoDonTao > 0)
+                        {
+                            decimal maxAvg = 0;
+                            string topAvgName = "";
+                            foreach(var nv in dsHieuSuat)
+                            {
+                                if (nv.SoDonTao > 0)
+                                {
+                                    decimal avg = nv.TongDoanhThu / nv.SoDonTao;
+                                    if (avg > maxAvg) { maxAvg = avg; topAvgName = nv.HoTen; }
+                                }
+                            }
+                            if (maxAvg > 0)
+                            {
+                                achTable.AddCell(new PdfPCell(new Phrase($"- Giá trị đơn hàng TB cao nhất: {topAvgName} ({maxAvg:N0}đ/đơn)", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 });
+                            }
+                        }
+                        doc.Add(achTable);
+                    }
+
+                    // 6. Nhận xét
+                    AddSectionTitle(doc, "6. NHẬN XÉT");
+                    PdfPTable nxTable = new PdfPTable(1);
+                    nxTable.WidthPercentage = 100;
+                    nxTable.SpacingBefore = 10;
+                    nxTable.AddCell(new PdfPCell(new Phrase("- Đánh giá hiệu suất chung: .................................................................................................................................", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 15 });
+                    nxTable.AddCell(new PdfPCell(new Phrase("- So sánh với kỳ trước: .......................................................................................................................................", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingBottom = 5 });
+                    doc.Add(nxTable);
+
+                    // 7. Xác nhận
+                    doc.Add(new Paragraph("7. XÁC NHẬN", _fontBold) { SpacingBefore = 15, SpacingAfter = 5 });
+                    PdfPTable signTable = new PdfPTable(2);
+                    signTable.WidthPercentage = 100;
+                    signTable.SpacingBefore = 10;
+                    
+                    PdfPCell cellLeft = new PdfPCell(new Phrase("Người lập báo cáo", _fontBold)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_CENTER };
+                    PdfPCell cellRight = new PdfPCell(new Phrase("Quản lý", _fontBold)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_CENTER };
+                    signTable.AddCell(cellLeft); signTable.AddCell(cellRight);
+
+                    PdfPCell cellL2 = new PdfPCell(new Phrase("(Ký, ghi rõ họ tên)", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_CENTER };
+                    PdfPCell cellR2 = new PdfPCell(new Phrase("(Ký, ghi rõ họ tên)", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_CENTER };
+                    signTable.AddCell(cellL2); signTable.AddCell(cellR2);
+
+                    PdfPCell empty = new PdfPCell(new Phrase("\n\n\n\n\n" + nguoiLap, _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_CENTER };
+                    PdfPCell emptyR = new PdfPCell(new Phrase("\n\n\n\n\n", _fontNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_CENTER };
+                    signTable.AddCell(empty); signTable.AddCell(emptyR);
+                    doc.Add(signTable);
+
+                    doc.Close();
+                    writer.Close();
+                }
+
+                ShowSuccessMessage(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi xuất PDF: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private static void ShowSuccessMessage(string filePath)
         {
             DialogResult result = MessageBox.Show(
