@@ -33,7 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +46,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
     <Reference Include="EPPlus">
       <HintPath>packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
@@ -56,12 +59,32 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <!-- ===== Models ===== -->
+    <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\Enums.cs" />
+    <Compile Include="Models\NhanVien.cs" />
+    <Compile Include="Models\SanPham.cs" />
+    <Compile Include="Models\KhachHang.cs" />
+    <Compile Include="Models\DonHang.cs" />
+    <Compile Include="Models\GiaoHang.cs" />
+    <Compile Include="Models\PhieuNhapKho.cs" />
+    <Compile Include="Models\HangHu.cs" />
+    <Compile Include="Models\PhanHoi.cs" />
+    <Compile Include="Models\PhanQuyen.cs" />
+    <Compile Include="Models\TraHang.cs" />
+    <Compile Include="Models\BaoCaoModels.cs" />
     <!-- ===== 1_DangNhap ===== -->
     <Compile Include="1_DangNhap\frmDangNhap.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="1_DangNhap\frmDangNhap.Designer.cs">
       <DependentUpon>frmDangNhap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="1_DangNhap\ucDoiMatKhau.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="1_DangNhap\ucDoiMatKhau.Designer.cs">
+      <DependentUpon>ucDoiMatKhau.cs</DependentUpon>
     </Compile>
     <!-- ===== 2_QuanLy ===== -->
     <Compile Include="2_QuanLy\frmMain.cs">
@@ -76,6 +99,12 @@
     <Compile Include="2_QuanLy\ucDashboard.Designer.cs">
       <DependentUpon>ucDashboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="2_QuanLy\ucNhanVien.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="2_QuanLy\ucNhanVien.Designer.cs">
+      <DependentUpon>ucNhanVien.cs</DependentUpon>
+    </Compile>
     <!-- ===== 3_BanHang ===== -->
     <Compile Include="3_BanHang\ucDanhSachDon.cs">
       <SubType>UserControl</SubType>
@@ -89,6 +118,30 @@
     <Compile Include="3_BanHang\ucTaoDon.Designer.cs">
       <DependentUpon>ucTaoDon.cs</DependentUpon>
     </Compile>
+    <Compile Include="3_BanHang\ucChiTietDonHang.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="3_BanHang\ucChiTietDonHang.Designer.cs">
+      <DependentUpon>ucChiTietDonHang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="3_BanHang\ucDashboardBanHang.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="3_BanHang\ucDashboardBanHang.Designer.cs">
+      <DependentUpon>ucDashboardBanHang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="3_BanHang\ucPhanHoi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="3_BanHang\ucPhanHoi.Designer.cs">
+      <DependentUpon>ucPhanHoi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="3_BanHang\ucTraHang.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="3_BanHang\ucTraHang.Designer.cs">
+      <DependentUpon>ucTraHang.cs</DependentUpon>
+    </Compile>
     <!-- ===== 4_KhoHang ===== -->
     <Compile Include="4_KhoHang\ucTonKho.cs">
       <SubType>UserControl</SubType>
@@ -101,6 +154,36 @@
     </Compile>
     <Compile Include="4_KhoHang\ucNhapKho.Designer.cs">
       <DependentUpon>ucNhapKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="4_KhoHang\ucCauHinhTonKho.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="4_KhoHang\ucCauHinhTonKho.Designer.cs">
+      <DependentUpon>ucCauHinhTonKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="4_KhoHang\ucDashboardKho.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="4_KhoHang\ucDashboardKho.Designer.cs">
+      <DependentUpon>ucDashboardKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="4_KhoHang\ucHangHu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="4_KhoHang\ucHangHu.Designer.cs">
+      <DependentUpon>ucHangHu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="4_KhoHang\ucLichSuNhapKho.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="4_KhoHang\ucLichSuNhapKho.Designer.cs">
+      <DependentUpon>ucLichSuNhapKho.cs</DependentUpon>
+    </Compile>
+    <Compile Include="4_KhoHang\ucXuatKho.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="4_KhoHang\ucXuatKho.Designer.cs">
+      <DependentUpon>ucXuatKho.cs</DependentUpon>
     </Compile>
     <!-- ===== 5_GiaoHang ===== -->
     <Compile Include="5_GiaoHang\ucCapNhatGH.cs">
@@ -120,6 +203,12 @@
     </Compile>
     <Compile Include="5_GiaoHang\ucPhanCong.Designer.cs">
       <DependentUpon>ucPhanCong.cs</DependentUpon>
+    </Compile>
+    <Compile Include="5_GiaoHang\ucDashboardShipper.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="5_GiaoHang\ucDashboardShipper.Designer.cs">
+      <DependentUpon>ucDashboardShipper.cs</DependentUpon>
     </Compile>
     <!-- ===== 6_BaoCao ===== -->
     <Compile Include="6_BaoCao\ucBaoCao.cs">
@@ -166,24 +255,67 @@
     </Compile>
     <!-- ===== DataAccess ===== -->
     <Compile Include="DataAccess\DatabaseHelper.cs" />
+    <Compile Include="DataAccess\BaseRepository.cs" />
     <Compile Include="DataAccess\NhanVienDAO.cs" />
+    <Compile Include="DataAccess\NhanVienRepository.cs" />
     <Compile Include="DataAccess\SanPhamDAO.cs" />
+    <Compile Include="DataAccess\SanPhamRepository.cs" />
     <Compile Include="DataAccess\KhachHangDAO.cs" />
+    <Compile Include="DataAccess\KhachHangRepository.cs" />
     <Compile Include="DataAccess\DonHangDAO.cs" />
+    <Compile Include="DataAccess\DonHangRepository.cs" />
     <Compile Include="DataAccess\GiaoHangDAO.cs" />
+    <Compile Include="DataAccess\GiaoHangRepository.cs" />
     <Compile Include="DataAccess\PhieuNhapKhoDAO.cs" />
+    <Compile Include="DataAccess\PhieuNhapKhoRepository.cs" />
     <Compile Include="DataAccess\PhanHoiDAO.cs" />
+    <Compile Include="DataAccess\PhanHoiRepository.cs" />
+    <Compile Include="DataAccess\PhanQuyenRepository.cs" />
     <Compile Include="DataAccess\BaoCaoDAO.cs" />
+    <Compile Include="DataAccess\BaoCaoRepository.cs" />
+    <Compile Include="DataAccess\HangHuRepository.cs" />
+    <Compile Include="DataAccess\TraHangRepository.cs" />
     <!-- ===== Services ===== -->
     <Compile Include="Services\ReportExcelHelper.cs" />
     <Compile Include="Services\ReportPdfHelper.cs" />
     <Compile Include="Services\SessionManager.cs" />
+    <Compile Include="Services\AuthService.cs" />
+    <Compile Include="Services\DonHangService.cs" />
+    <Compile Include="Services\GiaoHangService.cs" />
+    <Compile Include="Services\KhoHangService.cs" />
+    <Compile Include="Services\TraHangService.cs" />
     <!-- ===== Shared ===== -->
+    <Compile Include="Shared\BaseUserControl.cs" />
     <Compile Include="Shared\ucThanhMenu.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Shared\ucThanhMenu.Designer.cs">
       <DependentUpon>ucThanhMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shared\ucPhanQuyen.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Shared\ucPhanQuyen.Designer.cs">
+      <DependentUpon>ucPhanQuyen.cs</DependentUpon>
+    </Compile>
+    <!-- ===== 7_DanhMuc ===== -->
+    <Compile Include="7_DanhMuc\frmThemSanPham.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="7_DanhMuc\frmThemSanPham.Designer.cs">
+      <DependentUpon>frmThemSanPham.cs</DependentUpon>
+    </Compile>
+    <Compile Include="7_DanhMuc\ucSanPham.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="7_DanhMuc\ucSanPham.Designer.cs">
+      <DependentUpon>ucSanPham.cs</DependentUpon>
+    </Compile>
+    <Compile Include="7_DanhMuc\ucKhachHang.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="7_DanhMuc\ucKhachHang.Designer.cs">
+      <DependentUpon>ucKhachHang.cs</DependentUpon>
     </Compile>
     <!-- ===== Program & Properties ===== -->
     <Compile Include="Program.cs" />
@@ -208,8 +340,17 @@
     <EmbeddedResource Include="2_QuanLy\ucDashboard.resx">
       <DependentUpon>ucDashboard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="3_BanHang\ucDanhSachDon.resx">
+      <DependentUpon>ucDanhSachDon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4_KhoHang\ucNhapKho.resx">
+      <DependentUpon>ucNhapKho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="5_GiaoHang\ucCapNhatGH.resx">
       <DependentUpon>ucCapNhatGH.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="5_GiaoHang\ucDashboardShipper.resx">
+      <DependentUpon>ucDashboardShipper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="5_GiaoHang\ucGiaoHang.resx">
       <DependentUpon>ucGiaoHang.cs</DependentUpon>

@@ -301,6 +301,11 @@ BEGIN
     END
     INSERT INTO CHI_TIET_DON_HANG (MaDon, MaSP, SoLuong, DonGia, ThanhTien)
     VALUES (@MaDon, @MaSP, @SoLuong, @DonGia, @SoLuong * @DonGia);
+
+    -- TRỪ TỒN KHO NGAY LẬP TỨC (Phương án A)
+    UPDATE SAN_PHAM 
+    SET SoLuongTon = SoLuongTon - @SoLuong 
+    WHERE MaSP = @MaSP;
 END;
 GO
 
@@ -310,39 +315,25 @@ CREATE OR ALTER PROCEDURE sp_CapNhatTrangThaiDon
     @TrangThai NVARCHAR(20)
 AS
 BEGIN
-    -- Khi chuyển sang DangXuLy → trừ tồn kho
-    IF @TrangThai = N'DangXuLy'
-    BEGIN
-        -- Kiểm tra tồn kho đủ không
-        IF EXISTS (
-            SELECT 1 FROM CHI_TIET_DON_HANG ct
-            INNER JOIN SAN_PHAM sp ON ct.MaSP = sp.MaSP
-            WHERE ct.MaDon = @MaDon AND sp.SoLuongTon < ct.SoLuong
-        )
-        BEGIN
-            RAISERROR(N'Không thể xử lý đơn – tồn kho không đủ cho một số sản phẩm.', 16, 1);
-            RETURN;
-        END
-        -- Trừ tồn kho
-        UPDATE sp SET sp.SoLuongTon = sp.SoLuongTon - ct.SoLuong
-        FROM SAN_PHAM sp
-        INNER JOIN CHI_TIET_DON_HANG ct ON sp.MaSP = ct.MaSP
-        WHERE ct.MaDon = @MaDon;
-    END
-    -- Khi Hủy từ Moi → không cần hoàn kho (chưa trừ)
-    -- Khi Hủy từ DangXuLy → hoàn lại tồn kho (đã trừ khi xuất kho)
+    SET NOCOUNT ON;
+
+    -- Khi Hủy đơn hàng (từ trạng thái Moi hoặc DangXuLy) -> Tiến hành hoàn trả lại tồn kho (Phương án A)
     IF @TrangThai = N'Huy'
     BEGIN
         DECLARE @TrangThaiHienTai NVARCHAR(20);
         SELECT @TrangThaiHienTai = TrangThai FROM DON_HANG WHERE MaDon = @MaDon;
-        IF @TrangThaiHienTai = N'DangXuLy'
+
+        -- Cả hai trạng thái Moi và DangXuLy đều đã bị trừ tồn kho trước đó, nên đều phải hoàn kho
+        IF @TrangThaiHienTai IN (N'Moi', N'DangXuLy')
         BEGIN
-            UPDATE sp SET sp.SoLuongTon = sp.SoLuongTon + ct.SoLuong
+            UPDATE sp 
+            SET sp.SoLuongTon = sp.SoLuongTon + ct.SoLuong
             FROM SAN_PHAM sp
             INNER JOIN CHI_TIET_DON_HANG ct ON sp.MaSP = ct.MaSP
             WHERE ct.MaDon = @MaDon;
         END
     END
+
     -- HoanHang: KHÔNG hoàn kho tại đây. Tồn kho được quản lý bởi phiếu TRA_HANG (CT_TRA_HANG.CoNhapKho)
     UPDATE DON_HANG SET TrangThai = @TrangThai WHERE MaDon = @MaDon;
 END;
