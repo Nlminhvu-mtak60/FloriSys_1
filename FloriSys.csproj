@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -256,22 +256,14 @@
     <!-- ===== DataAccess ===== -->
     <Compile Include="DataAccess\DatabaseHelper.cs" />
     <Compile Include="DataAccess\BaseRepository.cs" />
-    <Compile Include="DataAccess\NhanVienDAO.cs" />
     <Compile Include="DataAccess\NhanVienRepository.cs" />
-    <Compile Include="DataAccess\SanPhamDAO.cs" />
     <Compile Include="DataAccess\SanPhamRepository.cs" />
-    <Compile Include="DataAccess\KhachHangDAO.cs" />
     <Compile Include="DataAccess\KhachHangRepository.cs" />
-    <Compile Include="DataAccess\DonHangDAO.cs" />
     <Compile Include="DataAccess\DonHangRepository.cs" />
-    <Compile Include="DataAccess\GiaoHangDAO.cs" />
     <Compile Include="DataAccess\GiaoHangRepository.cs" />
-    <Compile Include="DataAccess\PhieuNhapKhoDAO.cs" />
     <Compile Include="DataAccess\PhieuNhapKhoRepository.cs" />
-    <Compile Include="DataAccess\PhanHoiDAO.cs" />
     <Compile Include="DataAccess\PhanHoiRepository.cs" />
     <Compile Include="DataAccess\PhanQuyenRepository.cs" />
-    <Compile Include="DataAccess\BaoCaoDAO.cs" />
     <Compile Include="DataAccess\BaoCaoRepository.cs" />
     <Compile Include="DataAccess\HangHuRepository.cs" />
     <Compile Include="DataAccess\TraHangRepository.cs" />
@@ -323,6 +315,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -342,6 +335,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="3_BanHang\ucDanhSachDon.resx">
       <DependentUpon>ucDanhSachDon.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="3_BanHang\ucDashboardBanHang.resx">
+      <DependentUpon>ucDashboardBanHang.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="4_KhoHang\ucDashboardKho.resx">
+      <DependentUpon>ucDashboardKho.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="4_KhoHang\ucNhapKho.resx">
       <DependentUpon>ucNhapKho.cs</DependentUpon>
@@ -394,6 +393,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

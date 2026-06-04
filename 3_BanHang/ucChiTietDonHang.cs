@@ -16,14 +16,8 @@ namespace FloriSys._3_BanHang
         public ucChiTietDonHang()
         {
             InitializeComponent();
-            LoadStatusList();
         }
 
-        private void LoadStatusList()
-        {
-            cboStatus.Items.Clear();
-            cboStatus.Items.AddRange(new object[] { "Moi", "DangXuLy", "DaGiao", "HoanThanh", "Huy" });
-        }
 
         public void SetMaDon(string maDon)
         {
@@ -107,9 +101,40 @@ namespace FloriSys._3_BanHang
                     lblTongTien.Text = string.Format("{0:#,##0}đ", dh.TongTien);
                     
                     lblStatusBadge.Text = dh.TrangThai;
-                    cboStatus.SelectedItem = dh.TrangThai;
-                    cboStatus.Enabled = false;
-                    btnUpdateStatus.Visible = false;
+                    
+                    cboStatus.Items.Clear();
+                    if (dh.TrangThai == "HoanThanh" || dh.TrangThai == "Huy" || dh.TrangThai == "HoanHang")
+                    {
+                        cboStatus.Enabled = false;
+                        btnUpdateStatus.Visible = false;
+                        cboStatus.Items.Add(dh.TrangThai);
+                        cboStatus.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        cboStatus.Enabled = true;
+                        btnUpdateStatus.Visible = true;
+                        
+                        cboStatus.Items.Add(dh.TrangThai);
+                        if (dh.TrangThai == "Moi")
+                        {
+                            cboStatus.Items.Add("DangXuLy");
+                            cboStatus.Items.Add("Huy");
+                        }
+                        else if (dh.TrangThai == "DangXuLy")
+                        {
+                            if (!dh.IsGiaoTanNoi) {
+                                cboStatus.Items.Add("HoanThanh");
+                            }
+                            cboStatus.Items.Add("Huy");
+                        }
+                        else if (dh.TrangThai == "DaGiao")
+                        {
+                            cboStatus.Items.Add("HoanThanh");
+                        }
+                        
+                        cboStatus.SelectedItem = dh.TrangThai;
+                    }
                 }
             }
             catch (Exception ex)

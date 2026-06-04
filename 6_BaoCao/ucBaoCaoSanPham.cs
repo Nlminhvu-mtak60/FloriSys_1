@@ -17,18 +17,9 @@ namespace FloriSys._6_BaoCao
             InitializeComponent();
         }
 
-        private System.Windows.Forms.CheckBox chkSanPhamE;
 
         private void ucBaoCaoSanPham_Load(object sender, EventArgs e)
         {
-            chkSanPhamE = new CheckBox();
-            chkSanPhamE.Text = "Sản phẩm ế (<15 SP)";
-            chkSanPhamE.AutoSize = true;
-            chkSanPhamE.Location = new Point(btnLoc.Right + 20, btnLoc.Top + 5);
-            chkSanPhamE.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
-            chkSanPhamE.ForeColor = Color.FromArgb(17, 24, 39);
-            chkSanPhamE.CheckedChanged += (s, ev) => LoadData();
-            pnlFilter.Controls.Add(chkSanPhamE);
 
             int currentMonth = DateTime.Now.Month;
             int currentYear = DateTime.Now.Year;
@@ -49,19 +40,9 @@ namespace FloriSys._6_BaoCao
                 int? thang = cboThang.SelectedItem as int?;
                 int? nam = cboNam.SelectedItem as int?;
 
-                List<SanPhamBanChay> dsSP;
-                if (chkSanPhamE != null && chkSanPhamE.Checked)
-                {
-                    dsSP = _bcRepo.SanPhamE(thang, nam);
-                    lblGridTitle.Text = "Sản phẩm ế (Dưới 15 SP)";
-                    lblTitle.Text = "Báo cáo sản phẩm ế";
-                }
-                else
-                {
-                    dsSP = _bcRepo.SanPhamBanChay(thang, nam);
-                    lblGridTitle.Text = "Danh sách sản phẩm";
-                    lblTitle.Text = "Sản phẩm bán chạy nhất";
-                }
+                List<SanPhamBanChay> dsSP = _bcRepo.SanPhamBanChay(thang, nam);
+                lblGridTitle.Text = "Danh sách sản phẩm";
+                lblTitle.Text = "Sản phẩm bán chạy nhất";
                 
                 dgvSanPham.DataSource = dsSP;
 
@@ -113,6 +94,10 @@ namespace FloriSys._6_BaoCao
 
             if (dsSP.Count == 0) return;
 
+            // Sắp xếp theo doanh thu giảm dần để top 5 luôn là sản phẩm doanh thu cao nhất
+            dsSP = new List<SanPhamBanChay>(dsSP);
+            dsSP.Sort((a, b) => b.TongDoanhThu.CompareTo(a.TongDoanhThu));
+
             Chart chart = new Chart();
             chart.Name = "chartSP";
             chart.Dock = DockStyle.Fill;
@@ -135,15 +120,28 @@ namespace FloriSys._6_BaoCao
             chart.Series.Add(series);
 
             int count = 0;
+            decimal doanhThuKhac = 0;
+
             foreach (SanPhamBanChay sp in dsSP)
             {
-                if (count >= 5) break;
                 if (sp.TongDoanhThu > 0)
                 {
-                    int idx = series.Points.AddXY(sp.TenSP, sp.TongDoanhThu);
-                    if (count == 0) series.Points[idx].CustomProperties = "Exploded=true";
+                    if (count < 5)
+                    {
+                        int idx = series.Points.AddXY(sp.TenSP, sp.TongDoanhThu);
+                        if (count == 0) series.Points[idx].CustomProperties = "Exploded=true";
+                    }
+                    else
+                    {
+                        doanhThuKhac += sp.TongDoanhThu;
+                    }
+                    count++;
                 }
-                count++;
+            }
+
+            if (doanhThuKhac > 0)
+            {
+                series.Points.AddXY("Khác", doanhThuKhac);
             }
 
             Title title = new Title("TỶ TRỌNG DOANH THU", Docking.Top, new Font("Segoe UI", 10f, FontStyle.Bold), Color.FromArgb(64, 64, 64));
@@ -169,7 +167,6 @@ namespace FloriSys._6_BaoCao
             int? nam = cboNam.SelectedItem as int?;
 
             List<SanPhamBanChay> dsBanChay = _bcRepo.SanPhamBanChay(thang, nam);
-            List<SanPhamBanChay> dsE = _bcRepo.SanPhamE(thang, nam);
 
             System.IO.MemoryStream chartStream = null;
             if (pnlChartArea.Controls.Count > 0 && pnlChartArea.Controls[0] is Chart chart)
@@ -178,7 +175,7 @@ namespace FloriSys._6_BaoCao
                 chart.SaveImage(chartStream, ChartImageFormat.Png);
             }
 
-            FloriSys.Services.ReportPdfHelper.ExportBaoCaoSanPham(thang, nam, dsBanChay, dsE, chartStream);
+            FloriSys.Services.ReportPdfHelper.ExportBaoCaoSanPham(thang, nam, dsBanChay, null, chartStream);
         }
 
         private void btnXuatExcel_Click(object sender, EventArgs e)
@@ -187,9 +184,8 @@ namespace FloriSys._6_BaoCao
             int? nam = cboNam.SelectedItem as int?;
 
             List<SanPhamBanChay> dsBanChay = _bcRepo.SanPhamBanChay(thang, nam);
-            List<SanPhamBanChay> dsE = _bcRepo.SanPhamE(thang, nam);
 
-            FloriSys.Services.ReportExcelHelper.ExportBaoCaoSanPhamExcel(thang, nam, dsBanChay, dsE);
+            FloriSys.Services.ReportExcelHelper.ExportBaoCaoSanPhamExcel(thang, nam, dsBanChay, null);
         }
     }
 }

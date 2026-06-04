@@ -10,7 +10,7 @@ DECLARE @CurrentDate DATE = @StartDate;
 
 -- Danh sách ID cần thiết
 DECLARE @Cashiers TABLE (ID NVARCHAR(20));
-INSERT INTO @Cashiers VALUES ('NV002'), ('NV005'), ('NV006');
+INSERT INTO @Cashiers VALUES ('NV000002'), ('NV000005'), ('NV000006');
 
 DECLARE @Customers TABLE (ID NVARCHAR(20));
 INSERT INTO @Customers SELECT MaKH FROM KHACH_HANG;

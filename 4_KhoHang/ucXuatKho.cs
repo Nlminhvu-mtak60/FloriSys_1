@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -64,7 +64,7 @@ namespace FloriSys._4_KhoHang
 
                 if (donTre > 0)
                 {
-                    lblAlert.Text = $"🚨 CẢNH BÁO TỒN ĐỌNG! Hiện đang có {donTre} đơn hàng chờ xuất kho quá 30 phút! Vui lòng kiểm tra và ưu tiên xử lý ngay.";
+                    lblAlert.Text = $"⚠️ CẢNH BÁO TỒN ĐỌNG! Hiện đang có {donTre} đơn hàng chờ xuất kho quá 30 phút! Vui lòng kiểm tra và ưu tiên xử lý ngay.";
                     pnlAlert.Visible = true;
                     dgvXuatKho.BringToFront();
                 }
@@ -85,14 +85,13 @@ namespace FloriSys._4_KhoHang
 
             var visibleCols = new List<string> { "MaDon", "TenKH", "TenSP", "SoLuong", "TinhTrangKho", "HinhThucNhanHang", "ThoiGianCho", "btnXuat", "btnHuy" };
 
-            // Đảm bảo cột ThoiGianCho tồn tại trên DataGridView
             if (!dgvXuatKho.Columns.Contains("ThoiGianCho"))
             {
                 DataGridViewTextBoxColumn colWait = new DataGridViewTextBoxColumn();
                 colWait.Name = "ThoiGianCho";
                 colWait.HeaderText = "Thời gian chờ";
                 colWait.ReadOnly = true;
-                colWait.DisplayIndex = 6; // Đặt vị trí trước nút thao tác
+                colWait.DisplayIndex = 6; 
                 dgvXuatKho.Columns.Add(colWait);
             }
 
@@ -144,7 +143,6 @@ namespace FloriSys._4_KhoHang
             DonChoXuatKho item = dgvXuatKho.Rows[e.RowIndex].DataBoundItem as DonChoXuatKho;
             if (item == null) return;
 
-            // Tính và gán giá trị thời gian chờ
             if (colName == "ThoiGianCho")
             {
                 TimeSpan diff = DateTime.Now - item.NgayTao;
@@ -164,7 +162,6 @@ namespace FloriSys._4_KhoHang
                 }
             }
 
-            // Định dạng các cột trạng thái
             if (colName == "HinhThucNhanHang" && e.Value != null)
             {
                 string val = e.Value.ToString();
@@ -180,12 +177,11 @@ namespace FloriSys._4_KhoHang
                 e.CellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             }
 
-            // Tô màu đỏ nhạt cảnh báo nếu tồn đọng quá 30 phút
             TimeSpan totalWait = DateTime.Now - item.NgayTao;
             if (totalWait.TotalMinutes >= 30)
             {
-                e.CellStyle.BackColor = Color.FromArgb(254, 226, 226); // Đỏ nhạt
-                e.CellStyle.ForeColor = (colName == "TinhTrangKho" || colName == "HinhThucNhanHang") ? e.CellStyle.ForeColor : Color.FromArgb(153, 27, 27); // Giữ màu trạng thái, còn lại đổi màu chữ đỏ sậm
+                e.CellStyle.BackColor = Color.FromArgb(254, 226, 226); 
+                e.CellStyle.ForeColor = (colName == "TinhTrangKho" || colName == "HinhThucNhanHang") ? e.CellStyle.ForeColor : Color.FromArgb(153, 27, 27); 
             }
         }
 
@@ -206,7 +202,7 @@ namespace FloriSys._4_KhoHang
 
                 if (Confirm($"Xác nhận xuất kho cho đơn {item.MaDon}?"))
                 {
-                    XacNhanXuat(item.MaDon);
+                    XacNhanXuat(item);
                 }
             }
             else if (dgvXuatKho.Columns[e.ColumnIndex].Name == "btnHuy")
@@ -218,30 +214,24 @@ namespace FloriSys._4_KhoHang
             }
         }
 
-        private void XacNhanXuat(string maDon)
+        // FIX: Nhận luôn đối tượng DonChoXuatKho và thực hiện cập nhật atomic trong 1 lần DB call
+        private void XacNhanXuat(DonChoXuatKho item)
         {
             try
             {
-                // Bước 1: Chuyển sang DangXuLy → SP sẽ trừ tồn kho
-                _dhRepo.CapNhatTrangThai(maDon, "DangXuLy");
-
-                // Bước 2: Nếu là đơn nhận tại quầy → hoàn thành luôn (khách nhận trực tiếp)
-                DonChoXuatKho item = null;
-                foreach (DataGridViewRow row in dgvXuatKho.Rows)
+                if (item.HinhThucNhanHang == "TaiQuay")
                 {
-                    DonChoXuatKho r = row.DataBoundItem as DonChoXuatKho;
-                    if (r != null && r.MaDon == maDon) { item = r; break; }
-                }
-
-                if (item != null && item.HinhThucNhanHang == "TaiQuay")
-                {
-                    _dhRepo.CapNhatTrangThai(maDon, "HoanThanh");
-                    ShowSuccess($"Xuất kho thành công! Đơn {maDon} (nhận tại quầy) đã hoàn thành.");
+                    // Nếu là nhận tại quầy -> hoàn thành luôn
+                    _dhRepo.CapNhatTrangThai(item.MaDon, "HoanThanh");
+                    ShowSuccess($"Xuất kho thành công! Đơn {item.MaDon} (nhận tại quầy) đã hoàn thành.");
                 }
                 else
                 {
-                    ShowSuccess($"Xuất kho thành công! Đơn {maDon} chờ giao hàng.");
+                    // Nếu cần giao hàng -> chuyển sang chờ phân công / đang xử lý
+                    _dhRepo.CapNhatTrangThai(item.MaDon, "DangXuLy");
+                    ShowSuccess($"Xuất kho thành công! Đơn {item.MaDon} chờ giao hàng.");
                 }
+                
                 LoadData();
                 var mainForm = this.FindForm() as frmMain;
                 if (mainForm != null)

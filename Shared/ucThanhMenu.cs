@@ -169,7 +169,35 @@ namespace FloriSys.Shared
             lblNhomGiaoHang.Visible = btnDanhSachGiao.Visible || btnPhanCong.Visible;
             lblNhomQuanLy.Visible = btnNhanVien.Visible || btnPhanQuyen.Visible || btnSanPham.Visible || btnKhachHang.Visible;
             lblNhomBaoCao.Visible = btnBaoCao.Visible;
+            //ReArrangeMenu(); chuan hoa menu phan quyen 
         }
+
+    //     private void ReArrangeMenu()
+    //     {
+    // // Lấy tất cả controls trong pnlMenu, sắp xếp theo vị trí Y hiện tại (thứ tự ban đầu)
+    //         var allControls = new System.Collections.Generic.List<Control>();
+    //         foreach (Control c in pnlMenu.Controls)
+    //             allControls.Add(c);
+
+    //         allControls.Sort((a, b) => a.Location.Y.CompareTo(b.Location.Y));
+
+    //         int currentY = 5;        // Y bắt đầu (khoảng cách từ trên xuống)
+    //         int btnSpacing = 2;      // Khoảng cách giữa các button
+    //         int groupSpacing = 8;    // Khoảng cách trước label nhóm
+
+    //         foreach (Control c in allControls)
+    //         {
+    //             if (!c.Visible) continue;
+
+    //             // Nếu là Label nhóm (lblNhom...) thêm khoảng cách trên
+    //             if (c is Label)
+    //                 currentY += groupSpacing;
+
+    //             c.Location = new Point(c.Location.X, currentY);
+    //             currentY += c.Height + btnSpacing;
+    //         }
+    //     }
+
 
         public void SetActiveMenu(string menuName)
         {
