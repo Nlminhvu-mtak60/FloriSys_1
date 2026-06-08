@@ -39,6 +39,31 @@ namespace FloriSys.DataAccess
             });
         }
 
+        public List<SanPhamBanChay> SanPhamBanChayQuy(int quy, int nam)
+        {
+            int thangDau = (quy - 1) * 3 + 1;
+            int thangCuoi = quy * 3;
+            string sql = @"
+                SELECT 
+                    sp.MaSP, sp.TenSP, sp.LoaiHoa,
+                    ISNULL(SUM(ct.SoLuong), 0) AS TongSoLuong,
+                    ISNULL(SUM(ct.ThanhTien), 0) AS TongDoanhThu
+                FROM CHI_TIET_DON_HANG ct
+                INNER JOIN SAN_PHAM sp ON ct.MaSP = sp.MaSP
+                INNER JOIN DON_HANG dh ON ct.MaDon = dh.MaDon
+                WHERE dh.TrangThai NOT IN (N'Huy', N'HoanHang')
+                  AND MONTH(dh.NgayTao) BETWEEN @ThangDau AND @ThangCuoi
+                  AND YEAR(dh.NgayTao) = @Nam
+                GROUP BY sp.MaSP, sp.TenSP, sp.LoaiHoa
+                ORDER BY TongDoanhThu DESC";
+            
+            return DatabaseHelper.ExecuteRawList<SanPhamBanChay>(sql, new SqlParameter[] {
+                new SqlParameter("@ThangDau", thangDau),
+                new SqlParameter("@ThangCuoi", thangCuoi),
+                new SqlParameter("@Nam", nam)
+            });
+        }
+
         public List<SanPhamBanChay> SanPhamE(int? thang = null, int? nam = null)
         {
             return DatabaseHelper.ExecuteList<SanPhamBanChay>("sp_SanPhamE", new SqlParameter[]

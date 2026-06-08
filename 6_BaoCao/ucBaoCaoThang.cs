@@ -16,6 +16,7 @@ namespace FloriSys._6_BaoCao
         // Data cache for PDF
         private BaoCaoDoanhThu _currentDT;
         private BaoCaoDoanhThu _prevDT;
+        private List<DoanhThuNgay> _dsNgay;
         private List<SanPhamBanChay> _topSP;
 
         public ucBaoCaoThang()
@@ -45,11 +46,24 @@ namespace FloriSys._6_BaoCao
                 int nam = (int)nudNam.Value > 0 ? (int)nudNam.Value : DateTime.Now.Year;
                 //lblMonth.Text = "Tháng " + thang + "/" + nam;
 
-                // KPI - Doanh thu tháng
+                // === Biểu đồ cột doanh thu theo ngày ===
+                // Call this first to populate _dsNgay
+                DrawChart(thang, nam);
+
                 // KPI - Doanh thu tháng
                 _currentDT = _bcRepo.DoanhThuThang(thang, nam);
                 if (_currentDT != null)
                 {
+                    // Fix mismatch by explicitly summing _dsNgay to exclude HoanHang reliably
+                    if (_dsNgay != null && _dsNgay.Count > 0)
+                    {
+                        _currentDT.TongDoanhThu = 0;
+                        foreach (var dt in _dsNgay) _currentDT.TongDoanhThu += dt.DoanhThu;
+                        
+                        _currentDT.TongDon = 0;
+                        foreach (var dt in _dsNgay) _currentDT.TongDon += dt.SoDon;
+                    }
+
                     lblDoanhThuValue.Text = _currentDT.TongDoanhThu.ToString("N0") + "đ";
                 }
 
@@ -57,12 +71,24 @@ namespace FloriSys._6_BaoCao
                 int thangTruoc = thang == 1 ? 12 : thang - 1;
                 int namTruoc = thang == 1 ? nam - 1 : nam;
                 _prevDT = _bcRepo.DoanhThuThang(thangTruoc, namTruoc);
+                
+                // Fetch prev _dsNgay to fix mismatch for previous month
+                var prevDsNgay = _bcRepo.DoanhThuTheoNgayTrongThang(thangTruoc, namTruoc);
+                if (_prevDT != null && prevDsNgay != null && prevDsNgay.Count > 0)
+                {
+                    _prevDT.TongDoanhThu = 0;
+                    foreach (var dt in prevDsNgay) _prevDT.TongDoanhThu += dt.DoanhThu;
+                    
+                    _prevDT.TongDon = 0;
+                    foreach (var dt in prevDsNgay) _prevDT.TongDon += dt.SoDon;
+                }
+
                 if (_currentDT != null && _prevDT != null)
                 {
                     if (_prevDT.TongDoanhThu > 0)
                     {
                         decimal phanTram = ((_currentDT.TongDoanhThu - _prevDT.TongDoanhThu) / _prevDT.TongDoanhThu) * 100;
-                        lblCompareValue.Text = (phanTram >= 0 ? "+" : "") + phanTram.ToString("N1") + "% so với tháng trước";
+                        lblCompareValue.Text = (phanTram >= 0 ? "+" : "") + phanTram.ToString("N1") + "% So với tháng trước";
                         lblCompareValue.ForeColor = phanTram >= 0 ? Color.FromArgb(45, 106, 79) : Color.FromArgb(220, 38, 38);
                     }
                     else
@@ -86,8 +112,6 @@ namespace FloriSys._6_BaoCao
                     dgvTopSP.Columns["TongDoanhThu"].DefaultCellStyle.Format = "N0";
                 }
 
-                // Biểu đồ cột doanh thu theo ngày
-                DrawChart(thang, nam);
             }
             catch (Exception ex)
             {
@@ -125,8 +149,8 @@ namespace FloriSys._6_BaoCao
 
             try
             {
-                List<DoanhThuNgay> dsNgay = _bcRepo.DoanhThuTheoNgayTrongThang(thang, nam);
-                foreach (DoanhThuNgay item in dsNgay)
+                _dsNgay = _bcRepo.DoanhThuTheoNgayTrongThang(thang, nam);
+                foreach (DoanhThuNgay item in _dsNgay)
                 {
                     int idx = series.Points.AddXY(item.Ngay.Day, item.DoanhThu);
                     if (item.DoanhThu == 0) series.Points[idx].Color = Color.FromArgb(229, 231, 235);
@@ -195,7 +219,7 @@ namespace FloriSys._6_BaoCao
 
             int thang = cboThang.SelectedIndex + 1;
             int nam = (int)nudNam.Value;
-            FloriSys.Services.ReportExcelHelper.ExportBaoCaoThangExcel(thang, nam, _currentDT, _prevDT, _topSP);
+            FloriSys.Services.ReportExcelHelper.ExportBaoCaoThangExcel(thang, nam, _currentDT, _prevDT, _topSP, _dsNgay);
         }
     }
 }

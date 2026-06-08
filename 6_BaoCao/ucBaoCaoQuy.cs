@@ -48,10 +48,24 @@ namespace FloriSys._6_BaoCao
                 int quy = cboQuy.SelectedIndex + 1; // 1..4
                 int nam = (int)nudNam.Value;
 
+                // === Biểu đồ doanh thu theo tháng trong quý ===
+                // We call DrawChart first to populate _dsThang
+                DrawChart(quy, nam);
+
                 // === KPI: Doanh thu quý hiện tại ===
                 _currentDT = _bcRepo.DoanhThuQuy(quy, nam);
                 if (_currentDT != null)
                 {
+                    // Fix mismatch by explicitly summing _dsThang to exclude HoanHang reliably
+                    if (_dsThang != null && _dsThang.Count > 0)
+                    {
+                        _currentDT.TongDoanhThu = 0;
+                        foreach (var dt in _dsThang) _currentDT.TongDoanhThu += dt.DoanhThu;
+                        
+                        _currentDT.TongDon = 0;
+                        foreach (var dt in _dsThang) _currentDT.TongDon += dt.SoDon;
+                    }
+
                     lblDoanhThuValue.Text = _currentDT.TongDoanhThu.ToString("N0") + "đ";
                     lblSoDonValue.Text = _currentDT.TongDon.ToString();
                     decimal tbThang = _currentDT.TongDoanhThu / 3;
@@ -68,6 +82,17 @@ namespace FloriSys._6_BaoCao
                 int quyTruoc = quy == 1 ? 4 : quy - 1;
                 int namTruoc = quy == 1 ? nam - 1 : nam;
                 _prevDT = _bcRepo.DoanhThuQuy(quyTruoc, namTruoc);
+                
+                // Fetch prev _dsThang to fix mismatch for previous quarter
+                var prevDsThang = _bcRepo.DoanhThuTheoThangTrongQuy(quyTruoc, namTruoc);
+                if (_prevDT != null && prevDsThang != null && prevDsThang.Count > 0)
+                {
+                    _prevDT.TongDoanhThu = 0;
+                    foreach (var dt in prevDsThang) _prevDT.TongDoanhThu += dt.DoanhThu;
+                    
+                    _prevDT.TongDon = 0;
+                    foreach (var dt in prevDsThang) _prevDT.TongDon += dt.SoDon;
+                }
 
                 if (_currentDT != null && _prevDT != null && _prevDT.TongDoanhThu > 0)
                 {
@@ -82,18 +107,13 @@ namespace FloriSys._6_BaoCao
                 }
 
                 // === Top sản phẩm quý ===
-                int thangDau = (quy - 1) * 3 + 1;
-                // SanPhamBanChay SP only takes thang/nam. We call for each month and merge.
-                // Alternative: use raw query. For simplicity, call for null (all time) filtered by quarter
-                _topSP = _bcRepo.SanPhamBanChay(null, null); // Top all time as fallback
-                // Better: query by each month in quarter
                 try
                 {
-                    // Try calling for the first month of the quarter as a reasonable proxy
-                    _topSP = _bcRepo.SanPhamBanChay(thangDau, nam);
-                    // Merge months 2 & 3 - simplified: just show month 1 data
+                    _topSP = _bcRepo.SanPhamBanChayQuy(quy, nam);
                 }
-                catch { }
+                catch { 
+                    _topSP = new List<SanPhamBanChay>();
+                }
 
                 dgvTopSP.DataSource = _topSP;
                 if (dgvTopSP.Columns.Count > 0)
@@ -112,8 +132,6 @@ namespace FloriSys._6_BaoCao
                     }
                 }
 
-                // === Biểu đồ doanh thu theo tháng trong quý ===
-                DrawChart(quy, nam);
             }
             catch (Exception ex)
             {
@@ -229,7 +247,7 @@ namespace FloriSys._6_BaoCao
             int quy = cboQuy.SelectedIndex + 1;
             int nam = (int)nudNam.Value;
 
-            FloriSys.Services.ReportExcelHelper.ExportBaoCaoQuyExcel(quy, nam, _currentDT, _prevDT, _dsThang);
+            FloriSys.Services.ReportExcelHelper.ExportBaoCaoQuyExcel(quy, nam, _currentDT, _prevDT, _dsThang, _topSP);
         }
 
         private void cboQuy_SelectedIndexChanged(object sender, EventArgs e)

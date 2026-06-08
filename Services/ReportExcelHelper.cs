@@ -87,7 +87,7 @@ namespace FloriSys.Services
             }
         }
 
-        public static void ExportBaoCaoThangExcel(int thang, int nam, BaoCaoDoanhThu dtCurrent, BaoCaoDoanhThu dtPrev, List<SanPhamBanChay> topSP)
+        public static void ExportBaoCaoThangExcel(int thang, int nam, BaoCaoDoanhThu dtCurrent, BaoCaoDoanhThu dtPrev, List<SanPhamBanChay> topSP, List<DoanhThuNgay> dsNgay)
         {
             using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx", FileName = $"BaoCaoThang_{thang}_{nam}.xlsx" })
             {
@@ -97,55 +97,113 @@ namespace FloriSys.Services
                     {
                         using (ExcelPackage excel = new ExcelPackage())
                         {
-                            var sheet = excel.Workbook.Worksheets.Add("Báo Cáo Tháng");
+                            var sheet = excel.Workbook.Worksheets.Add("Dữ liệu Báo Cáo");
+                            sheet.View.ShowGridLines = true;
 
-                            sheet.Cells["A1:D1"].Merge = true;
+                            // Title
                             sheet.Cells["A1"].Value = $"BÁO CÁO DOANH THU THÁNG {thang}/{nam}";
                             sheet.Cells["A1"].Style.Font.Bold = true;
-                            sheet.Cells["A1"].Style.Font.Size = 16;
-                            sheet.Cells["A1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells["A1"].Style.Font.Color.SetColor(Color.FromArgb(232, 57, 77));
+                            sheet.Cells["A1"].Style.Font.Size = 14;
 
-                            sheet.Cells["A3"].Value = "Doanh thu tháng:";
-                            sheet.Cells["B3"].Value = dtCurrent != null ? dtCurrent.TongDoanhThu : 0;
-                            sheet.Cells["B3"].Style.Numberformat.Format = "#,##0 ₫";
+                            sheet.Cells["A2"].Value = $"Ngày lập báo cáo: {DateTime.Now:dd/MM/yyyy HH:mm}";
+                            sheet.Cells["A2"].Style.Font.Italic = true;
+
+                            // Calculate Extra Metrics
+                            int tongDon = 0;
+                            if (dsNgay != null)
+                            {
+                                foreach (var dt in dsNgay) tongDon += dt.SoDon;
+                            }
+                            decimal tongDT = dtCurrent != null ? dtCurrent.TongDoanhThu : 0;
+                            decimal tbDon = tongDon > 0 ? tongDT / tongDon : 0;
                             
-                            string compare = "Chưa có dữ liệu tháng trước";
+                            string compare = "Chưa có dữ liệu";
                             if (dtCurrent != null && dtPrev != null && dtPrev.TongDoanhThu > 0)
                             {
-                                decimal phanTram = ((dtCurrent.TongDoanhThu - dtPrev.TongDoanhThu) / dtPrev.TongDoanhThu) * 100;
-                                compare = $"{(phanTram >= 0 ? "+" : "")}{phanTram:N1}% so với tháng trước";
+                                decimal phanTram = ((tongDT - dtPrev.TongDoanhThu) / dtPrev.TongDoanhThu) * 100;
+                                compare = $"{(phanTram >= 0 ? "Tăng" : "Giảm")} {Math.Abs(phanTram):N1}%";
                             }
-                            sheet.Cells["A4"].Value = "So với tháng trước:";
-                            sheet.Cells["B4"].Value = compare;
 
-                            sheet.Cells["A3:A4"].Style.Font.Bold = true;
-
-                            sheet.Cells["A6:D6"].Merge = true;
-                            sheet.Cells["A6"].Value = "Top Sản Phẩm Trong Tháng";
-                            sheet.Cells["A6"].Style.Font.Bold = true;
-
-                            sheet.Cells["A7"].Value = "STT";
-                            sheet.Cells["B7"].Value = "Tên Sản Phẩm";
-                            sheet.Cells["C7"].Value = "Tổng SL Bán";
-                            sheet.Cells["D7"].Value = "Tổng Doanh Thu";
+                            // Summary Data
+                            sheet.Cells["A4"].Value = "TỔNG QUAN";
+                            sheet.Cells["A4"].Style.Font.Bold = true;
                             
-                            var headerRange = sheet.Cells["A7:D7"];
-                            headerRange.Style.Font.Bold = true;
-                            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            headerRange.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(45, 106, 79));
-                            headerRange.Style.Font.Color.SetColor(Color.White);
+                            sheet.Cells["A5"].Value = "Tổng doanh thu:";
+                            sheet.Cells["B5"].Value = tongDT;
+                            sheet.Cells["B5"].Style.Numberformat.Format = "#,##0 ₫";
+                            
+                            sheet.Cells["A6"].Value = "So với tháng trước:";
+                            sheet.Cells["B6"].Value = compare;
+                            
+                            sheet.Cells["A7"].Value = "Tổng số đơn hàng:";
+                            sheet.Cells["B7"].Value = tongDon;
+                            
+                            sheet.Cells["A8"].Value = "Giá trị TB / đơn:";
+                            sheet.Cells["B8"].Value = tbDon;
+                            sheet.Cells["B8"].Style.Numberformat.Format = "#,##0 ₫";
 
-                            int row = 8;
-                            int stt = 1;
-                            foreach (var sp in topSP)
+                            // Main Data Table (Daily)
+                            int startRow = 11;
+                            sheet.Cells[$"A{startRow}"].Value = "Ngày";
+                            sheet.Cells[$"B{startRow}"].Value = "Số lượng đơn";
+                            sheet.Cells[$"C{startRow}"].Value = "Tỷ trọng đơn";
+                            sheet.Cells[$"D{startRow}"].Value = "Doanh thu";
+                            sheet.Cells[$"E{startRow}"].Value = "Tỷ trọng DT";
+                            sheet.Cells[$"F{startRow}"].Value = "Trung bình/Đơn";
+
+                            int row = startRow + 1;
+                            if (dsNgay != null)
                             {
-                                sheet.Cells[$"A{row}"].Value = stt++;
-                                sheet.Cells[$"B{row}"].Value = sp.TenSP;
-                                sheet.Cells[$"C{row}"].Value = sp.TongSoLuong;
-                                sheet.Cells[$"D{row}"].Value = sp.TongDoanhThu;
-                                sheet.Cells[$"D{row}"].Style.Numberformat.Format = "#,##0 ₫";
-                                row++;
+                                foreach (var dt in dsNgay)
+                                {
+                                    sheet.Cells[$"A{row}"].Value = dt.Ngay.Day; // Just day number for better filtering
+                                    sheet.Cells[$"B{row}"].Value = dt.SoDon;
+                                    sheet.Cells[$"C{row}"].Value = tongDon > 0 ? (double)dt.SoDon / tongDon : 0;
+                                    sheet.Cells[$"C{row}"].Style.Numberformat.Format = "0.0%";
+                                    
+                                    sheet.Cells[$"D{row}"].Value = dt.DoanhThu;
+                                    sheet.Cells[$"D{row}"].Style.Numberformat.Format = "#,##0 ₫";
+                                    
+                                    sheet.Cells[$"E{row}"].Value = tongDT > 0 ? (double)dt.DoanhThu / (double)tongDT : 0;
+                                    sheet.Cells[$"E{row}"].Style.Numberformat.Format = "0.0%";
+                                    
+                                    sheet.Cells[$"F{row}"].Value = dt.SoDon > 0 ? dt.DoanhThu / dt.SoDon : 0;
+                                    sheet.Cells[$"F{row}"].Style.Numberformat.Format = "#,##0 ₫";
+                                    row++;
+                                }
+                            }
+
+                            if (row > startRow + 1)
+                            {
+                                var tableRange = sheet.Cells[$"A{startRow}:F{row - 1}"];
+                                var table = sheet.Tables.Add(tableRange, "BangDoanhThuNgay");
+                                table.TableStyle = OfficeOpenXml.Table.TableStyles.Medium2;
+                            }
+
+                            // Second Table: Product Details
+                            int startRowSP = row + 2;
+                            sheet.Cells[$"A{startRowSP}"].Value = "Tên Sản phẩm";
+                            sheet.Cells[$"B{startRowSP}"].Value = "Số lượng bán";
+                            sheet.Cells[$"C{startRowSP}"].Value = "Doanh thu";
+
+                            int rowSP = startRowSP + 1;
+                            if (topSP != null)
+                            {
+                                foreach (var sp in topSP)
+                                {
+                                    sheet.Cells[$"A{rowSP}"].Value = sp.TenSP;
+                                    sheet.Cells[$"B{rowSP}"].Value = sp.TongSoLuong;
+                                    sheet.Cells[$"C{rowSP}"].Value = sp.TongDoanhThu;
+                                    sheet.Cells[$"C{rowSP}"].Style.Numberformat.Format = "#,##0 ₫";
+                                    rowSP++;
+                                }
+                            }
+
+                            if (rowSP > startRowSP + 1)
+                            {
+                                var tableRangeSP = sheet.Cells[$"A{startRowSP}:C{rowSP - 1}"];
+                                var tableSP = sheet.Tables.Add(tableRangeSP, "BangSanPhamBanChay");
+                                tableSP.TableStyle = OfficeOpenXml.Table.TableStyles.Medium14;
                             }
 
                             sheet.Cells.AutoFitColumns();
@@ -164,7 +222,7 @@ namespace FloriSys.Services
             }
         }
 
-        public static void ExportBaoCaoQuyExcel(int quy, int nam, BaoCaoDoanhThu dtCurrent, BaoCaoDoanhThu dtPrev, List<DoanhThuThang> dttList)
+        public static void ExportBaoCaoQuyExcel(int quy, int nam, BaoCaoDoanhThu dtCurrent, BaoCaoDoanhThu dtPrev, List<DoanhThuThang> dttList, List<SanPhamBanChay> topSP)
         {
             using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Excel Workbook|*.xlsx", FileName = $"BaoCaoQuy_{quy}_{nam}.xlsx" })
             {
@@ -174,52 +232,108 @@ namespace FloriSys.Services
                     {
                         using (ExcelPackage excel = new ExcelPackage())
                         {
-                            var sheet = excel.Workbook.Worksheets.Add("Báo Cáo Quý");
+                            var sheet = excel.Workbook.Worksheets.Add("Dữ liệu Báo Cáo");
+                            sheet.View.ShowGridLines = true; // Show gridlines for a data-centric feel
 
-                            sheet.Cells["A1:D1"].Merge = true;
+                            // Title
                             sheet.Cells["A1"].Value = $"BÁO CÁO DOANH THU QUÝ {quy} NĂM {nam}";
                             sheet.Cells["A1"].Style.Font.Bold = true;
-                            sheet.Cells["A1"].Style.Font.Size = 16;
-                            sheet.Cells["A1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            sheet.Cells["A1"].Style.Font.Color.SetColor(Color.FromArgb(232, 57, 77));
+                            sheet.Cells["A1"].Style.Font.Size = 14;
 
-                            sheet.Cells["A3"].Value = "Doanh thu quý:";
-                            sheet.Cells["B3"].Value = dtCurrent != null ? dtCurrent.TongDoanhThu : 0;
-                            sheet.Cells["B3"].Style.Numberformat.Format = "#,##0 ₫";
+                            sheet.Cells["A2"].Value = $"Ngày lập báo cáo: {DateTime.Now:dd/MM/yyyy HH:mm}";
+                            sheet.Cells["A2"].Style.Font.Italic = true;
+
+                            // Calculate Extra Metrics
+                            int tongDon = 0;
+                            foreach (var dt in dttList) tongDon += dt.SoDon;
+                            decimal tongDT = dtCurrent != null ? dtCurrent.TongDoanhThu : 0;
+                            decimal tbDon = tongDon > 0 ? tongDT / tongDon : 0;
                             
-                            string compare = "Chưa có dữ liệu quý trước";
+                            string compare = "Chưa có dữ liệu";
                             if (dtCurrent != null && dtPrev != null && dtPrev.TongDoanhThu > 0)
                             {
-                                decimal phanTram = ((dtCurrent.TongDoanhThu - dtPrev.TongDoanhThu) / dtPrev.TongDoanhThu) * 100;
-                                compare = $"{(phanTram >= 0 ? "+" : "")}{phanTram:N1}% so với quý trước";
+                                decimal phanTram = ((tongDT - dtPrev.TongDoanhThu) / dtPrev.TongDoanhThu) * 100;
+                                compare = $"{(phanTram >= 0 ? "Tăng" : "Giảm")} {Math.Abs(phanTram):N1}%";
                             }
-                            sheet.Cells["A4"].Value = "So với quý trước:";
-                            sheet.Cells["B4"].Value = compare;
 
-                            sheet.Cells["A3:A4"].Style.Font.Bold = true;
-
-                            sheet.Cells["A6:C6"].Merge = true;
-                            sheet.Cells["A6"].Value = "Doanh Thu Các Tháng Trong Quý";
-                            sheet.Cells["A6"].Style.Font.Bold = true;
-
-                            sheet.Cells["A7"].Value = "Tháng";
-                            sheet.Cells["B7"].Value = "Số Đơn";
-                            sheet.Cells["C7"].Value = "Doanh Thu";
+                            // Summary Data
+                            sheet.Cells["A4"].Value = "TỔNG QUAN";
+                            sheet.Cells["A4"].Style.Font.Bold = true;
                             
-                            var headerRange = sheet.Cells["A7:C7"];
-                            headerRange.Style.Font.Bold = true;
-                            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            headerRange.Style.Fill.BackgroundColor.SetColor(Color.FromArgb(45, 106, 79));
-                            headerRange.Style.Font.Color.SetColor(Color.White);
+                            sheet.Cells["A5"].Value = "Tổng doanh thu:";
+                            sheet.Cells["B5"].Value = tongDT;
+                            sheet.Cells["B5"].Style.Numberformat.Format = "#,##0 ₫";
+                            
+                            sheet.Cells["A6"].Value = "So với quý trước:";
+                            sheet.Cells["B6"].Value = compare;
+                            
+                            sheet.Cells["A7"].Value = "Tổng số đơn hàng:";
+                            sheet.Cells["B7"].Value = tongDon;
+                            
+                            sheet.Cells["A8"].Value = "Giá trị TB / đơn:";
+                            sheet.Cells["B8"].Value = tbDon;
+                            sheet.Cells["B8"].Style.Numberformat.Format = "#,##0 ₫";
 
-                            int row = 8;
+                            // Main Data Table
+                            int startRow = 11;
+                            sheet.Cells[$"A{startRow}"].Value = "Tháng";
+                            sheet.Cells[$"B{startRow}"].Value = "Số lượng đơn";
+                            sheet.Cells[$"C{startRow}"].Value = "Tỷ trọng đơn";
+                            sheet.Cells[$"D{startRow}"].Value = "Doanh thu";
+                            sheet.Cells[$"E{startRow}"].Value = "Tỷ trọng DT";
+                            sheet.Cells[$"F{startRow}"].Value = "Trung bình/Đơn";
+
+                            int row = startRow + 1;
                             foreach (var dt in dttList)
                             {
-                                sheet.Cells[$"A{row}"].Value = "Tháng " + dt.Thang;
+                                sheet.Cells[$"A{row}"].Value = dt.Thang; // Just number for better filtering
                                 sheet.Cells[$"B{row}"].Value = dt.SoDon;
-                                sheet.Cells[$"C{row}"].Value = dt.DoanhThu;
-                                sheet.Cells[$"C{row}"].Style.Numberformat.Format = "#,##0 ₫";
+                                sheet.Cells[$"C{row}"].Value = tongDon > 0 ? (double)dt.SoDon / tongDon : 0;
+                                sheet.Cells[$"C{row}"].Style.Numberformat.Format = "0.0%";
+                                
+                                sheet.Cells[$"D{row}"].Value = dt.DoanhThu;
+                                sheet.Cells[$"D{row}"].Style.Numberformat.Format = "#,##0 ₫";
+                                
+                                sheet.Cells[$"E{row}"].Value = tongDT > 0 ? (double)dt.DoanhThu / (double)tongDT : 0;
+                                sheet.Cells[$"E{row}"].Style.Numberformat.Format = "0.0%";
+                                
+                                sheet.Cells[$"F{row}"].Value = dt.SoDon > 0 ? dt.DoanhThu / dt.SoDon : 0;
+                                sheet.Cells[$"F{row}"].Style.Numberformat.Format = "#,##0 ₫";
                                 row++;
+                            }
+
+                            // Convert to Excel Table (ListObject)
+                            if (row > startRow + 1)
+                            {
+                                var tableRange = sheet.Cells[$"A{startRow}:F{row - 1}"];
+                                var table = sheet.Tables.Add(tableRange, "BangDoanhThuThang");
+                                table.TableStyle = OfficeOpenXml.Table.TableStyles.Medium2; // Standard Excel Table style
+                            }
+
+                            // Second Table: Product Details
+                            int startRowSP = row + 2;
+                            sheet.Cells[$"A{startRowSP}"].Value = "Tên Sản phẩm";
+                            sheet.Cells[$"B{startRowSP}"].Value = "Số lượng bán";
+                            sheet.Cells[$"C{startRowSP}"].Value = "Doanh thu";
+
+                            int rowSP = startRowSP + 1;
+                            if (topSP != null)
+                            {
+                                foreach (var sp in topSP)
+                                {
+                                    sheet.Cells[$"A{rowSP}"].Value = sp.TenSP;
+                                    sheet.Cells[$"B{rowSP}"].Value = sp.TongSoLuong;
+                                    sheet.Cells[$"C{rowSP}"].Value = sp.TongDoanhThu;
+                                    sheet.Cells[$"C{rowSP}"].Style.Numberformat.Format = "#,##0 ₫";
+                                    rowSP++;
+                                }
+                            }
+
+                            if (rowSP > startRowSP + 1)
+                            {
+                                var tableRangeSP = sheet.Cells[$"A{startRowSP}:C{rowSP - 1}"];
+                                var tableSP = sheet.Tables.Add(tableRangeSP, "BangSanPhamBanChay");
+                                tableSP.TableStyle = OfficeOpenXml.Table.TableStyles.Medium14; // Give it a different color flavor
                             }
 
                             sheet.Cells.AutoFitColumns();
