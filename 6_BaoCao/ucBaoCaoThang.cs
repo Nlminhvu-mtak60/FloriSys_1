@@ -6,6 +6,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using FloriSys.DataAccess;
 using FloriSys.Shared;
 using FloriSys.Models;
+using FloriSys.Services;
 
 namespace FloriSys._6_BaoCao
 {
@@ -101,16 +102,19 @@ namespace FloriSys._6_BaoCao
                 // Top sản phẩm tháng
                 _topSP = _bcRepo.SanPhamBanChay(thang, nam);
                 dgvTopSP.DataSource = _topSP;
-                if (dgvTopSP.Columns.Count > 0)
-                {
-                    var visibleCols = new List<string> { "TenSP", "TongSoLuong", "TongDoanhThu" };
-                    foreach (DataGridViewColumn col in dgvTopSP.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
 
-                    dgvTopSP.Columns["TenSP"].HeaderText = "Sản phẩm";
-                    dgvTopSP.Columns["TongSoLuong"].HeaderText = "SL bán";
-                    dgvTopSP.Columns["TongDoanhThu"].HeaderText = "Doanh thu";
-                    dgvTopSP.Columns["TongDoanhThu"].DefaultCellStyle.Format = "N0";
-                }
+                var visibleCols = new List<string> { "TenSP", "TongSoLuong", "TongDoanhThu" };
+                var headers = new Dictionary<string, string>
+                {
+                    { "TenSP", "Sản phẩm" },
+                    { "TongSoLuong", "SL bán" },
+                    { "TongDoanhThu", "Doanh thu" }
+                };
+                var formats = new Dictionary<string, string>
+                {
+                    { "TongDoanhThu", "N0" }
+                };
+                GridHelper.FormatGrid(dgvTopSP, visibleCols, headers, formats);
 
             }
             catch (Exception ex)
@@ -121,70 +125,15 @@ namespace FloriSys._6_BaoCao
 
         private void DrawChart(int thang, int nam)
         {
-            pnlChartMock.Controls.Clear();
-
-            Chart chart = new Chart();
-            chart.Dock = DockStyle.Fill;
-            chart.BackColor = Color.White;
-
-            ChartArea area = new ChartArea("MainArea");
-            area.BackColor = Color.White;
-            area.AxisX.MajorGrid.LineColor = Color.FromArgb(243, 244, 246);
-            area.AxisY.MajorGrid.LineColor = Color.FromArgb(243, 244, 246);
-            area.AxisX.LabelStyle.Font = new Font("Segoe UI", 7f);
-            area.AxisY.LabelStyle.Font = new Font("Segoe UI", 7f);
-            area.AxisY.LabelStyle.Format = "N0";
-            area.AxisX.Title = "Ngày";
-            area.AxisY.Title = "Doanh thu (đ)";
-            area.AxisX.TitleFont = new Font("Segoe UI", 8f);
-            area.AxisY.TitleFont = new Font("Segoe UI", 8f);
-            chart.ChartAreas.Add(area);
-
-            Series series = new Series("DoanhThu");
-            series.ChartType = SeriesChartType.Column;
-            series.Color = Color.FromArgb(232, 57, 77);
-            series.BorderWidth = 0;
-            series.IsVisibleInLegend = false;
-            chart.Series.Add(series);
-
             try
             {
                 _dsNgay = _bcRepo.DoanhThuTheoNgayTrongThang(thang, nam);
-                foreach (DoanhThuNgay item in _dsNgay)
-                {
-                    int idx = series.Points.AddXY(item.Ngay.Day, item.DoanhThu);
-                    if (item.DoanhThu == 0) series.Points[idx].Color = Color.FromArgb(229, 231, 235);
-                }
             }
             catch
             {
-                // SP chưa tồn tại, vẽ placeholder
-                int soNgay = DateTime.DaysInMonth(nam, thang);
-                Random rnd = new Random(42);
-                for (int i = 1; i <= soNgay; i++)
-                {
-                    series.Points.AddXY(i, rnd.Next(100000, 2000000));
-                }
+                _dsNgay = null;
             }
-
-            Legend legend = new Legend("MainLegend");
-            legend.Docking = Docking.Bottom;
-            legend.Alignment = StringAlignment.Center;
-            legend.Font = new Font("Segoe UI", 8f);
-
-            LegendItem itemCoDoanhThu = new LegendItem();
-            itemCoDoanhThu.Name = "Có doanh thu";
-            itemCoDoanhThu.Color = Color.FromArgb(232, 57, 77);
-            legend.CustomItems.Add(itemCoDoanhThu);
-
-            LegendItem itemKhongDoanhThu = new LegendItem();
-            itemKhongDoanhThu.Name = "Không có doanh thu";
-            itemKhongDoanhThu.Color = Color.FromArgb(229, 231, 235);
-            legend.CustomItems.Add(itemKhongDoanhThu);
-            
-            chart.Legends.Add(legend);
-
-            pnlChartMock.Controls.Add(chart);
+            ChartHelper.DrawRevenueColumnChart(pnlChartMock, _dsNgay, thang, nam);
         }
 
         private void btnXuatPDF_Click(object sender, EventArgs e)

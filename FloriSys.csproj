@@ -320,6 +320,9 @@
     <Compile Include="Services\GiaoHangService.cs" />
     <Compile Include="Services\KhoHangService.cs" />
     <Compile Include="Services\TraHangService.cs" />
+    <Compile Include="Services\GridHelper.cs" />
+    <Compile Include="Services\ChartHelper.cs" />
+    <Compile Include="Services\OrderParser.cs" />
     <!-- ===== Shared ===== -->
     <Compile Include="Shared\BaseUserControl.cs" />
     <Compile Include="Shared\ucThanhMenu.cs">

@@ -6,6 +6,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using FloriSys.DataAccess;
 using FloriSys.Shared;
 using FloriSys.Models;
+using FloriSys.Services;
 
 namespace FloriSys._6_BaoCao
 {
@@ -46,25 +47,22 @@ namespace FloriSys._6_BaoCao
                 
                 dgvSanPham.DataSource = dsSP;
 
-                if (dgvSanPham.Columns.Count > 0)
+                var visibleCols = new List<string> { "TenSP", "TongSoLuong", "TongDoanhThu" };
+                var headers = new Dictionary<string, string>
                 {
-                    var visibleCols = new List<string> { "TenSP", "TongSoLuong", "TongDoanhThu" };
-                    foreach (DataGridViewColumn col in dgvSanPham.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+                    { "TenSP", "Tên sản phẩm" },
+                    { "TongSoLuong", "Số lượng đã bán" },
+                    { "TongDoanhThu", "Tổng doanh thu" }
+                };
+                var formats = new Dictionary<string, string>
+                {
+                    { "TongDoanhThu", "N0" }
+                };
+                GridHelper.FormatGrid(dgvSanPham, visibleCols, headers, formats);
 
-                    dgvSanPham.Columns["TenSP"].HeaderText = "Tên sản phẩm";
-                    dgvSanPham.Columns["TongSoLuong"].HeaderText = "Số lượng đã bán";
-                    dgvSanPham.Columns["TongDoanhThu"].HeaderText = "Tổng doanh thu";
-                    dgvSanPham.Columns["TongDoanhThu"].DefaultCellStyle.Format = "N0";
-
-                    // Add percentage column if not exists
-                    if (!dgvSanPham.Columns.Contains("colTyTrong"))
-                    {
-                        DataGridViewTextBoxColumn colPercent = new DataGridViewTextBoxColumn();
-                        colPercent.Name = "colTyTrong";
-                        colPercent.HeaderText = "Tỷ trọng";
-                        colPercent.Width = 120;
-                        dgvSanPham.Columns.Add(colPercent);
-                    }
+                if (dsSP != null && dsSP.Count > 0)
+                {
+                    GridHelper.EnsureColumnExists(dgvSanPham, "colTyTrong", "Tỷ trọng");
 
                     // Calculate total revenue for percentage
                     decimal totalRevenue = 0;
@@ -80,7 +78,7 @@ namespace FloriSys._6_BaoCao
                 }
 
                 // Draw chart
-                DrawPieChart(dsSP);
+                ChartHelper.DrawProductPieChart(pnlChartArea, dsSP);
             }
             catch (Exception ex)
             {
@@ -88,73 +86,7 @@ namespace FloriSys._6_BaoCao
             }
         }
 
-        private void DrawPieChart(List<SanPhamBanChay> dsSP)
-        {
-            pnlChartArea.Controls.Clear();
 
-            if (dsSP.Count == 0) return;
-
-            // Sắp xếp theo doanh thu giảm dần để top 5 luôn là sản phẩm doanh thu cao nhất
-            dsSP = new List<SanPhamBanChay>(dsSP);
-            dsSP.Sort((a, b) => b.TongDoanhThu.CompareTo(a.TongDoanhThu));
-
-            Chart chart = new Chart();
-            chart.Name = "chartSP";
-            chart.Dock = DockStyle.Fill;
-            chart.BackColor = Color.White;
-
-            ChartArea area = new ChartArea("Main");
-            area.BackColor = Color.White;
-            area.Area3DStyle.Enable3D = true;
-            area.Area3DStyle.Inclination = 50;
-            chart.ChartAreas.Add(area);
-
-            Series series = new Series("SP");
-            series.ChartType = SeriesChartType.Pie;
-            series.Label = "#PERCENT{P0}";
-            series.Font = new Font("Segoe UI", 8f);
-            series["PieLabelStyle"] = "Outside";
-            series["PieLineColor"] = "Gray";
-            series.Palette = ChartColorPalette.Pastel;
-            series.LegendText = "#VALX";
-            chart.Series.Add(series);
-
-            int count = 0;
-            decimal doanhThuKhac = 0;
-
-            foreach (SanPhamBanChay sp in dsSP)
-            {
-                if (sp.TongDoanhThu > 0)
-                {
-                    if (count < 5)
-                    {
-                        int idx = series.Points.AddXY(sp.TenSP, sp.TongDoanhThu);
-                        if (count == 0) series.Points[idx].CustomProperties = "Exploded=true";
-                    }
-                    else
-                    {
-                        doanhThuKhac += sp.TongDoanhThu;
-                    }
-                    count++;
-                }
-            }
-
-            if (doanhThuKhac > 0)
-            {
-                series.Points.AddXY("Khác", doanhThuKhac);
-            }
-
-            Title title = new Title("TỶ TRỌNG DOANH THU", Docking.Top, new Font("Segoe UI", 10f, FontStyle.Bold), Color.FromArgb(64, 64, 64));
-            chart.Titles.Add(title);
-
-            Legend legend = new Legend("MainLegend");
-            legend.Docking = Docking.Bottom;
-            legend.Alignment = StringAlignment.Center;
-            legend.Font = new Font("Segoe UI", 8f);
-            chart.Legends.Add(legend);
-
-            pnlChartArea.Controls.Add(chart);
-        }
 
         private void btnLoc_Click(object sender, EventArgs e)
         {

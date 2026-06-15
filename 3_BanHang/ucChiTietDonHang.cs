@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 using FloriSys.Shared;
+using FloriSys.Services;
 
 namespace FloriSys._3_BanHang
 {
@@ -43,27 +44,11 @@ namespace FloriSys._3_BanHang
                     lblTenKH.Text = "Người đặt: " + dh.TenKH;
                     lblSDT.Text = "SĐT: " + dh.SoDienThoai;
                     
-                    string ghiChu = dh.GhiChu ?? "";
-                    string tenNhan = "";
-                    string sdtNhan = "";
-                    string diaChiNhan = dh.DiaChi;
-
-                    if (ghiChu.StartsWith("[Giao cho:"))
-                    {
-                        int closeIdx = ghiChu.IndexOf("]");
-                        if (closeIdx > 0)
-                        {
-                            string receiverInfo = ghiChu.Substring(11, closeIdx - 11);
-                            string[] parts = receiverInfo.Split(new string[] { " - " }, StringSplitOptions.None);
-                            if (parts.Length >= 2)
-                            {
-                                tenNhan = parts[0].Trim();
-                                sdtNhan = parts[1].Trim();
-                                if (parts.Length >= 3) diaChiNhan = parts[2].Trim();
-                                ghiChu = ghiChu.Substring(closeIdx + 1).Trim();
-                            }
-                        }
-                    }
+                    var receiverInfo = OrderParser.ParseReceiverInfo(dh.GhiChu, dh.DiaChi);
+                    string ghiChu = receiverInfo.GhiChuRutGon;
+                    string tenNhan = receiverInfo.TenNhan;
+                    string sdtNhan = receiverInfo.SdtNhan;
+                    string diaChiNhan = receiverInfo.DiaChiNhan;
 
                     // Remove dynamically added label if any
                     var oldLabels = grpKhachHang.Controls.OfType<Label>().Where(l => l.Name == "lblNguoiNhanDynamic").ToList();
@@ -159,23 +144,22 @@ namespace FloriSys._3_BanHang
 
         public override void FormatGrid()
         {
-            if (dgvChiTiet.Columns.Count == 0) return;
-
             var visibleCols = new List<string> { "MaSP", "TenSP", "SoLuong", "DonGia", "ThanhTien" };
-            foreach (DataGridViewColumn col in dgvChiTiet.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
+            var headers = new Dictionary<string, string>
+            {
+                { "MaSP", "Mã SP" },
+                { "TenSP", "Tên sản phẩm" },
+                { "SoLuong", "Số lượng" },
+                { "DonGia", "Đơn giá" },
+                { "ThanhTien", "Thành tiền" }
+            };
+            var formats = new Dictionary<string, string>
+            {
+                { "DonGia", "#,##0" },
+                { "ThanhTien", "#,##0" }
+            };
 
-            dgvChiTiet.Columns["MaSP"].HeaderText = "Mã SP";
-            dgvChiTiet.Columns["TenSP"].HeaderText = "Tên sản phẩm";
-            dgvChiTiet.Columns["SoLuong"].HeaderText = "Số lượng";
-            dgvChiTiet.Columns["DonGia"].HeaderText = "Đơn giá";
-            dgvChiTiet.Columns["ThanhTien"].HeaderText = "Thành tiền";
-
-            dgvChiTiet.Columns["DonGia"].DefaultCellStyle.Format = "#,##0";
-            dgvChiTiet.Columns["ThanhTien"].DefaultCellStyle.Format = "#,##0";
-            
-            dgvChiTiet.ReadOnly = true;
-            dgvChiTiet.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvChiTiet.MultiSelect = false;
+            GridHelper.FormatGrid(dgvChiTiet, visibleCols, headers, formats);
         }
 
         private void LoadTimeline()

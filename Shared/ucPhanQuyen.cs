@@ -80,7 +80,7 @@ namespace FloriSys.Shared
 
         private void LoadQuyen()
         {
-            lblTableTitle.Text = "Ma trận quyền hạn cho vai trò: " + selectedRole;
+           
             List<PhanQuyen> dsPQ = _pqRepo.LayPhanQuyen(selectedRole);
             
             // Ẩn dòng PhanQuyen trên UI theo yêu cầu

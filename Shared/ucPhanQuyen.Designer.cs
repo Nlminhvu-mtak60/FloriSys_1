@@ -23,7 +23,6 @@
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlRoles = new System.Windows.Forms.FlowLayoutPanel();
             this.dgvQuyen = new System.Windows.Forms.DataGridView();
-            this.lblTableTitle = new System.Windows.Forms.Label();
             this.pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuyen)).BeginInit();
             this.SuspendLayout();
@@ -95,32 +94,19 @@
             this.dgvQuyen.BackgroundColor = System.Drawing.Color.White;
             this.dgvQuyen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvQuyen.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvQuyen.Location = new System.Drawing.Point(0, 160);
+            this.dgvQuyen.Location = new System.Drawing.Point(0, 130);
             this.dgvQuyen.Name = "dgvQuyen";
             this.dgvQuyen.RowHeadersVisible = false;
             this.dgvQuyen.RowHeadersWidth = 51;
             this.dgvQuyen.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dgvQuyen.Size = new System.Drawing.Size(1000, 560);
+            this.dgvQuyen.Size = new System.Drawing.Size(1000, 590);
             this.dgvQuyen.TabIndex = 2;
-            // 
-            // lblTableTitle
-            // 
-            this.lblTableTitle.BackColor = System.Drawing.Color.White;
-            this.lblTableTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblTableTitle.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.lblTableTitle.Location = new System.Drawing.Point(0, 130);
-            this.lblTableTitle.Name = "lblTableTitle";
-            this.lblTableTitle.Padding = new System.Windows.Forms.Padding(20, 5, 0, 0);
-            this.lblTableTitle.Size = new System.Drawing.Size(1000, 30);
-            this.lblTableTitle.TabIndex = 3;
-            this.lblTableTitle.Text = "Ma trận quyền hạn cho vai trò: ...";
             // 
             // ucPhanQuyen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dgvQuyen);
-            this.Controls.Add(this.lblTableTitle);
             this.Controls.Add(this.pnlRoles);
             this.Controls.Add(this.pnlHeader);
             this.Name = "ucPhanQuyen";
@@ -141,6 +127,5 @@
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.FlowLayoutPanel pnlRoles;
         private System.Windows.Forms.DataGridView dgvQuyen;
-        private System.Windows.Forms.Label lblTableTitle;
     }
 }
