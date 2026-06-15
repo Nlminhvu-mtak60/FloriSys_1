@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
@@ -11,48 +11,36 @@ namespace FloriSys._4_KhoHang
     {
         private readonly SanPhamRepository _spRepo = new SanPhamRepository();
 
-        public ucTonKho() { InitializeComponent(); }
+        public ucTonKho()
+        {
+            InitializeComponent();
+            if (btnConfig != null)
+            {
+                btnConfig.Click += (s, ev) => 
+                {
+                    var parentForm = this.FindForm() as FloriSys._2_QuanLy.frmMain;
+                    if (parentForm != null)
+                    {
+                        var found = parentForm.Controls.Find("panel1", true);
+                        if (found.Length > 0)
+                        {
+                            var pnl = found[0] as Panel;
+                            if (pnl != null)
+                            {
+                                while (pnl.Controls.Count > 0) { var old = pnl.Controls[0]; pnl.Controls.RemoveAt(0); old.Dispose(); }
+                                var uc = new _4_KhoHang.ucCauHinhTonKho();
+                                uc.Dock = DockStyle.Fill;
+                                pnl.Controls.Add(uc);
+                            }
+                        }
+                    }
+                };
+            }
+        }
+
         private void ucTonKho_Load(object sender, EventArgs e) 
         { 
             LoadData(); 
-            AddConfigButton();
-        }
-
-        private void AddConfigButton()
-        {
-            Button btnConfig = new Button();
-            btnConfig.Text = "⚙ Cấu hình định mức";
-            btnConfig.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            btnConfig.BackColor = System.Drawing.Color.FromArgb(232, 57, 77);
-            btnConfig.ForeColor = System.Drawing.Color.White;
-            btnConfig.FlatStyle = FlatStyle.Flat;
-            btnConfig.FlatAppearance.BorderSize = 0;
-            btnConfig.Size = new System.Drawing.Size(180, 36);
-            btnConfig.Location = new System.Drawing.Point(txtTimKiem.Right - 180, 3);
-            btnConfig.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnConfig.Cursor = Cursors.Hand;
-            btnConfig.Click += (s, ev) => 
-            {
-                var parentForm = this.FindForm() as FloriSys._2_QuanLy.frmMain;
-                if (parentForm != null)
-                {
-                    // FIX: Kiểm tra length trước khi truy cập index [0] – tránh IndexOutOfRangeException
-                    var found = parentForm.Controls.Find("panel1", true);
-                    if (found.Length > 0)
-                    {
-                        var pnl = found[0] as Panel;
-                        if (pnl != null)
-                        {
-                            while (pnl.Controls.Count > 0) { var old = pnl.Controls[0]; pnl.Controls.RemoveAt(0); old.Dispose(); }
-                            var uc = new _4_KhoHang.ucCauHinhTonKho();
-                            uc.Dock = DockStyle.Fill;
-                            pnl.Controls.Add(uc);
-                        }
-                    }
-                }
-            };
-            this.Controls.Add(btnConfig);
-            btnConfig.BringToFront();
         }
 
         public override void LoadData()

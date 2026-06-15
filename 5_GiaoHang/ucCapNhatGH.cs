@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -23,15 +23,7 @@ namespace FloriSys._5_GiaoHang
 
         private void ShowPlaceholder()
         {
-            Label lbl = new Label
-            {
-                Text = "ℹ️  Chức năng này đang được phát triển.\n\nVui lòng sử dụng màn hình Danh Sách Giao Hàng\nhoặc Dashboard Shipper để cập nhật trạng thái.",
-                Font = new Font("Segoe UI", 12F),
-                ForeColor = Color.FromArgb(75, 85, 99),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Fill
-            };
-            this.Controls.Add(lbl);
+            lblPlaceholder.BringToFront();
         }
 
         private void lblTien1_Click(object sender, EventArgs e) { }

@@ -14,32 +14,21 @@ namespace FloriSys._4_KhoHang
     {
         private readonly BaoCaoRepository _bcRepo = new BaoCaoRepository();
         private readonly SanPhamRepository _spRepo = new SanPhamRepository();
-        private Button btnXuLyNgay;
-        
-        private Panel pnlAlert;
-        private Label lblAlert;
 
         public ucDashboardKho()
         {
             InitializeComponent();
             
-            pnlAlert = new Panel
+            // Cài đặt sự kiện cho nút Xử lý ngay
+            if (btnXuLyNgay != null)
             {
-                Dock = DockStyle.Top,
-                Height = 40,
-                BackColor = Color.FromArgb(255, 243, 205),
-                Visible = false
-            };
-            lblAlert = new Label
-            {
-                AutoSize = false,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font("Segoe UI", 10f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(133, 100, 4)
-            };
-            pnlAlert.Controls.Add(lblAlert);
-            this.Controls.Add(pnlAlert);
+                btnXuLyNgay.Click += (s, ev) => 
+                {
+                    var mainForm = this.FindForm() as frmMain;
+                    if (mainForm != null)
+                        mainForm.OnMenuClicked("XuatKho");
+                };
+            }
         }
 
         private void ucDashboardKho_Load(object sender, EventArgs e)
@@ -71,34 +60,12 @@ namespace FloriSys._4_KhoHang
                     pnlDonChoXuat.BackColor = Color.FromArgb(254, 226, 226);
                     lblTitleChoXuat.ForeColor = Color.FromArgb(185, 28, 28);
                     
-                    // Tạo button nếu chưa có
-                    if (btnXuLyNgay == null)
+                    // Hiển thị nút xử lý ngay đã có sẵn trên Designer
+                    if (btnXuLyNgay != null)
                     {
-                        btnXuLyNgay = new Button
-                        {
-                            Text = "⚡ Xử lý ngay",
-                            Font = new Font("Segoe UI", 9F, FontStyle.Bold),
-                            BackColor = Color.FromArgb(185, 28, 28),
-                            ForeColor = Color.White,
-                            FlatStyle = FlatStyle.Flat,
-                            Size = new Size(130, 30),
-                            Cursor = Cursors.Hand
-                        };
-                        btnXuLyNgay.FlatAppearance.BorderSize = 0;
-                        
-                        // Đặt vị trí sang bên phải để không đè lên số lượng
-                        btnXuLyNgay.Location = new Point(pnlDonChoXuat.Width - 140, pnlDonChoXuat.Height - 40);
-                        
-                        btnXuLyNgay.Click += (s, ev) => 
-                        {
-                            var mainForm = this.FindForm() as frmMain;
-                            if (mainForm != null)
-                                mainForm.OnMenuClicked("XuatKho");
-                        };
-                        pnlDonChoXuat.Controls.Add(btnXuLyNgay);
+                        btnXuLyNgay.Visible = true;
+                        btnXuLyNgay.Text = $"⚡ Xử lý {donChoXuat} đơn";
                     }
-                    btnXuLyNgay.Visible = true;
-                    btnXuLyNgay.Text = $"⚡ Xử lý {donChoXuat} đơn";
                 }
                 else
                 {

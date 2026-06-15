@@ -10,7 +10,6 @@ namespace FloriSys.Shared
         public event Action<string> MenuClicked;
         private Button _activeButton;
         
-        private Label lblBadgeXuatKho;
         private Timer badgeTimer;
 
         public ucThanhMenu()
@@ -21,21 +20,7 @@ namespace FloriSys.Shared
 
         private void SetupLayout()
         {
-            // Tái cấu trúc layout để tránh lỗi overlap và lỗi scroll không hết cỡ
-            Panel pnlHeader = new Panel();
-            pnlHeader.Height = 82;
-            pnlHeader.Dock = DockStyle.Top;
-            pnlHeader.BackColor = Color.White;
 
-            // Chuyển logo và phụ đề vào pnlHeader
-            pnlHeader.Controls.Add(lblLogo);
-            lblLogo.Location = new Point(10, 20);
-            pnlHeader.Controls.Add(lblPhuDe);
-            lblPhuDe.Location = new Point(10, 52);
-            pnlHeader.Controls.Add(lblDuongKe);
-            lblDuongKe.Location = new Point(0, 76);
-
-            this.Controls.Add(pnlHeader);
 
             // Cấu hình thứ tự Dock (Z-Order)
             pnlNguoiDung.Dock = DockStyle.Bottom;
@@ -45,8 +30,6 @@ namespace FloriSys.Shared
             pnlMenu.Dock = DockStyle.Fill;
             pnlMenu.BringToFront(); // Chiếm khoảng trống còn lại ở giữa
             
-            // Padding cuối để cuộn đủ thấy các nút cuối cùng
-            pnlMenu.AutoScrollMargin = new Size(0, 30);
         }
 
         private void ucThanhMenu_Load(object sender, EventArgs e)
@@ -76,22 +59,15 @@ namespace FloriSys.Shared
             SetActive(btnDashboard);
 
             // Cài đặt Badge Xuất Kho
-            lblBadgeXuatKho = new Label
+            lblBadgeXuatKho.BringToFront();
+            
+            if (!this.DesignMode && System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
             {
-                AutoSize = true,
-                BackColor = Color.FromArgb(220, 38, 38), // Màu đỏ
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 8F, FontStyle.Bold),
-                Location = new Point(btnXuatKho.Width - 30, 10),
-                Visible = false,
-                Padding = new Padding(3, 1, 3, 1)
-            };
-            btnXuatKho.Controls.Add(lblBadgeXuatKho);
-
-            badgeTimer = new Timer { Interval = 3000 };
-            badgeTimer.Tick += (s, ev) => RefreshBadge();
-            badgeTimer.Start();
-            RefreshBadge();
+                badgeTimer = new Timer { Interval = 3000 };
+                badgeTimer.Tick += (s, ev) => RefreshBadge();
+                badgeTimer.Start();
+                RefreshBadge();
+            }
         }
 
         private void Navigate(string menuName, Button btn)
@@ -169,34 +145,44 @@ namespace FloriSys.Shared
             lblNhomGiaoHang.Visible = btnDanhSachGiao.Visible || btnPhanCong.Visible;
             lblNhomQuanLy.Visible = btnNhanVien.Visible || btnPhanQuyen.Visible || btnSanPham.Visible || btnKhachHang.Visible;
             lblNhomBaoCao.Visible = btnBaoCao.Visible;
-            //ReArrangeMenu(); chuan hoa menu phan quyen 
+            ReArrangeMenu(); // Chuẩn hóa menu phân quyền
         }
 
-    //     private void ReArrangeMenu()
-    //     {
-    // // Lấy tất cả controls trong pnlMenu, sắp xếp theo vị trí Y hiện tại (thứ tự ban đầu)
-    //         var allControls = new System.Collections.Generic.List<Control>();
-    //         foreach (Control c in pnlMenu.Controls)
-    //             allControls.Add(c);
+        private void ReArrangeMenu()
+        {
+            // Lấy tất cả controls trong pnlMenu, sắp xếp theo vị trí Y hiện tại (thứ tự ban đầu)
+            var allControls = new System.Collections.Generic.List<Control>();
+            foreach (Control c in pnlMenu.Controls)
+                allControls.Add(c);
 
-    //         allControls.Sort((a, b) => a.Location.Y.CompareTo(b.Location.Y));
+            allControls.Sort((a, b) => a.Location.Y.CompareTo(b.Location.Y));
 
-    //         int currentY = 5;        // Y bắt đầu (khoảng cách từ trên xuống)
-    //         int btnSpacing = 2;      // Khoảng cách giữa các button
-    //         int groupSpacing = 8;    // Khoảng cách trước label nhóm
+            int currentY = 5;        // Y bắt đầu (khoảng cách từ trên xuống)
+            int btnSpacing = 2;      // Khoảng cách giữa các button
+            int groupSpacing = 8;    // Khoảng cách trước label nhóm
 
-    //         foreach (Control c in allControls)
-    //         {
-    //             if (!c.Visible) continue;
+            foreach (Control c in allControls)
+            {
+                if (!c.Visible) continue;
 
-    //             // Nếu là Label nhóm (lblNhom...) thêm khoảng cách trên
-    //             if (c is Label)
-    //                 currentY += groupSpacing;
+                // Bỏ qua badge vì nó phải đi theo btnXuatKho
+                if (c == lblBadgeXuatKho) continue;
 
-    //             c.Location = new Point(c.Location.X, currentY);
-    //             currentY += c.Height + btnSpacing;
-    //         }
-    //     }
+                // Nếu là Label nhóm (lblNhom...) thêm khoảng cách trên
+                if (c is Label)
+                    currentY += groupSpacing;
+
+                c.Location = new Point(c.Location.X, currentY);
+
+                // Nếu control này là btnXuatKho, cập nhật vị trí của badge theo nó
+                if (c == btnXuatKho)
+                {
+                    lblBadgeXuatKho.Location = new Point(btnXuatKho.Right - 35, currentY + 8);
+                }
+
+                currentY += c.Height + btnSpacing;
+            }
+        }
 
 
         public void SetActiveMenu(string menuName)

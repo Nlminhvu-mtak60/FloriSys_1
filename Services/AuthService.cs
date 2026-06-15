@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 
@@ -64,6 +64,26 @@ namespace FloriSys.Services
                 // 4. Load phân quyền cho vai trò của user
                 var pqRepo = new PhanQuyenRepository();
                 var permissions = pqRepo.LayPhanQuyen(nv.ChucVu);
+
+                // Tự động seed/force quyền PhanQuyen cho Admin (Đảm bảo chuẩn 3 lớp, gọi qua Repo)
+                if (nv.ChucVu == "Admin")
+                {
+                    var existingPq = permissions.Find(p => p.Module.Equals("PhanQuyen", StringComparison.OrdinalIgnoreCase));
+                    if (existingPq == null)
+                    {
+                        var adminPq = new PhanQuyen { ChucVu = "Admin", Module = "PhanQuyen", Xem = true, Them = true, Sua = true, Xoa = true, Export = true };
+                        pqRepo.CapNhatQuyen(adminPq);
+                        permissions.Add(adminPq);
+                    }
+                    else if (!existingPq.Xem)
+                    {
+                        existingPq.Xem = true;
+                        existingPq.Them = true;
+                        existingPq.Sua = true;
+                        existingPq.Xoa = true;
+                        pqRepo.CapNhatQuyen(existingPq);
+                    }
+                }
 
                 SessionManager.Instance.Login(nv, permissions);
                 return true;

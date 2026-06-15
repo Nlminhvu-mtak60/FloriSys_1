@@ -1,16 +1,9 @@
-﻿namespace FloriSys._5_GiaoHang
+namespace FloriSys._5_GiaoHang
 {
     partial class ucCapNhatGH
     {
-        /// <summary> 
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,10 +15,6 @@
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.pnlHeader = new System.Windows.Forms.Panel();
@@ -50,6 +39,7 @@
             this.lblTien1 = new System.Windows.Forms.Label();
             this.lblInfo1 = new System.Windows.Forms.Label();
             this.lblMaDon1 = new System.Windows.Forms.Label();
+            this.lblPlaceholder = new System.Windows.Forms.Label();
             this.pnlHeader.SuspendLayout();
             this.pnlContent.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -326,11 +316,24 @@
             this.lblMaDon1.TabIndex = 0;
             this.lblMaDon1.Text = " DH2026046 – Trần Văn Hùng";
             // 
+            // lblPlaceholder
+            // 
+            this.lblPlaceholder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblPlaceholder.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.lblPlaceholder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(85)))), ((int)(((byte)(99)))));
+            this.lblPlaceholder.Location = new System.Drawing.Point(0, 0);
+            this.lblPlaceholder.Name = "lblPlaceholder";
+            this.lblPlaceholder.Size = new System.Drawing.Size(1024, 720);
+            this.lblPlaceholder.TabIndex = 2;
+            this.lblPlaceholder.Text = "ℹ️  Chức năng này đang được phát triển.\\n\\nVui lòng sử dụng màn hình Danh Sách Giao Hàng\\nhoặc Dashboard Shipper để cập nhật trạng thái.";
+            this.lblPlaceholder.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // ucCapNhatGH
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(245)))), ((int)(((byte)(246)))));
+            this.Controls.Add(this.lblPlaceholder);
             this.Controls.Add(this.pnlContent);
             this.Controls.Add(this.pnlHeader);
             this.Name = "ucCapNhatGH";
@@ -372,5 +375,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblPlaceholder;
     }
 }

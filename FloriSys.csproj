@@ -389,6 +389,9 @@
     <EmbeddedResource Include="4_KhoHang\ucNhapKho.resx">
       <DependentUpon>ucNhapKho.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="4_KhoHang\ucTonKho.resx">
+      <DependentUpon>ucTonKho.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="5_GiaoHang\ucCapNhatGH.resx">
       <DependentUpon>ucCapNhatGH.cs</DependentUpon>
     </EmbeddedResource>
@@ -421,6 +424,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="6_BaoCao\ucBaoCaoNhanVien.resx">
       <DependentUpon>ucBaoCaoNhanVien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Shared\ucPhanQuyen.resx">
+      <DependentUpon>ucPhanQuyen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Shared\ucThanhMenu.resx">
       <DependentUpon>ucThanhMenu.cs</DependentUpon>

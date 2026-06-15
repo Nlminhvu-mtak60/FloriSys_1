@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,31 +12,10 @@ namespace FloriSys._4_KhoHang
     public partial class ucXuatKho : BaseUserControl
     {
         private readonly DonHangRepository _dhRepo = new DonHangRepository();
-        
-        private Panel pnlAlert;
-        private Label lblAlert;
 
         public ucXuatKho()
         {
             InitializeComponent();
-            
-            pnlAlert = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 40,
-                BackColor = Color.FromArgb(255, 243, 205),
-                Visible = false
-            };
-            lblAlert = new Label
-            {
-                AutoSize = false,
-                Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Font = new Font("Segoe UI", 10f, FontStyle.Bold),
-                ForeColor = Color.FromArgb(133, 100, 4)
-            };
-            pnlAlert.Controls.Add(lblAlert);
-            this.Controls.Add(pnlAlert);
         }
 
         private void ucXuatKho_Load(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-﻿-- =====================================================
+-- =====================================================
 -- FloriSys – Cơ sở dữ liệu Quản lý Cửa hàng Hoa
 -- SQL Server 2022 – Developer Edition
 -- =====================================================
@@ -156,6 +156,20 @@ CREATE TABLE PHAN_QUYEN (
     Export   BIT           NOT NULL DEFAULT 0,
     PRIMARY KEY (ChucVu, Module)
 );
+GO
+
+-- Seed toàn bộ quyền cho Admin
+INSERT INTO PHAN_QUYEN (ChucVu, Module, Xem, Them, Sua, Xoa, Export) VALUES
+('Admin', 'DonHang', 1, 1, 1, 1, 1),
+('Admin', 'KhoHang', 1, 1, 1, 1, 1),
+('Admin', 'GiaoHang', 1, 1, 1, 1, 1),
+('Admin', 'PhanHoi', 1, 1, 1, 1, 1),
+('Admin', 'TraHang', 1, 1, 1, 1, 1),
+('Admin', 'SanPham', 1, 1, 1, 1, 1),
+('Admin', 'KhachHang', 1, 1, 1, 1, 1),
+('Admin', 'NhanVien', 1, 1, 1, 1, 1),
+('Admin', 'BaoCao', 1, 1, 1, 1, 1),
+('Admin', 'PhanQuyen', 1, 1, 1, 1, 1);
 GO
 
 -- =====================================================
@@ -730,24 +744,42 @@ INSERT INTO PHAN_QUYEN VALUES
 (N'Admin', N'NhanVien',     1, 1, 1, 1, 1),
 (N'Admin', N'KhachHang',    1, 1, 1, 1, 1),
 (N'Admin', N'SanPham',      1, 1, 1, 1, 1),
-(N'Admin', N'PhanQuyen',    1, 1, 1, 0, 0),
-(N'Admin', N'BaoCao',       1, 0, 0, 0, 1),
-(N'Admin', N'TraHang',      1, 1, 1, 0, 0),
-(N'Admin', N'PhanHoi',      1, 1, 1, 0, 0),
+(N'Admin', N'BaoCao',       1, 1, 1, 1, 1),
+(N'Admin', N'TraHang',      1, 1, 1, 1, 1),
+(N'Admin', N'PhanHoi',      1, 1, 1, 1, 1),
 -- Cashier: bán hàng, khách hàng
 (N'Cashier', N'Dashboard',  1, 0, 0, 0, 0),
 (N'Cashier', N'DonHang',    1, 1, 1, 0, 0),
+(N'Cashier', N'KhoHang',    0, 0, 0, 0, 0),
+(N'Cashier', N'GiaoHang',   0, 0, 0, 0, 0),
+(N'Cashier', N'NhanVien',   0, 0, 0, 0, 0),
 (N'Cashier', N'KhachHang',  1, 1, 1, 0, 0),
 (N'Cashier', N'SanPham',    1, 0, 0, 0, 0),
+(N'Cashier', N'BaoCao',     0, 0, 0, 0, 0),
 (N'Cashier', N'TraHang',    1, 1, 0, 0, 0),
 (N'Cashier', N'PhanHoi',    1, 1, 0, 0, 0),
 -- Warehouse: kho hàng
 (N'Warehouse', N'Dashboard',1, 0, 0, 0, 0),
+(N'Warehouse', N'DonHang',  0, 0, 0, 0, 0),
 (N'Warehouse', N'KhoHang',  1, 1, 1, 0, 1),
+(N'Warehouse', N'GiaoHang', 0, 0, 0, 0, 0),
+(N'Warehouse', N'NhanVien', 0, 0, 0, 0, 0),
+(N'Warehouse', N'KhachHang',0, 0, 0, 0, 0),
 (N'Warehouse', N'SanPham',  1, 1, 1, 0, 0),
+(N'Warehouse', N'BaoCao',   0, 0, 0, 0, 0),
+(N'Warehouse', N'TraHang',  0, 0, 0, 0, 0),
+(N'Warehouse', N'PhanHoi',  0, 0, 0, 0, 0),
 -- Shipper: giao hàng
 (N'Shipper', N'Dashboard',  1, 0, 0, 0, 0),
-(N'Shipper', N'GiaoHang',   1, 0, 1, 0, 0);
+(N'Shipper', N'DonHang',    0, 0, 0, 0, 0),
+(N'Shipper', N'KhoHang',    0, 0, 0, 0, 0),
+(N'Shipper', N'GiaoHang',   1, 0, 1, 0, 0),
+(N'Shipper', N'NhanVien',   0, 0, 0, 0, 0),
+(N'Shipper', N'KhachHang',  0, 0, 0, 0, 0),
+(N'Shipper', N'SanPham',    0, 0, 0, 0, 0),
+(N'Shipper', N'BaoCao',     0, 0, 0, 0, 0),
+(N'Shipper', N'TraHang',    0, 0, 0, 0, 0),
+(N'Shipper', N'PhanHoi',    0, 0, 0, 0, 0);
 
 -- =====================================================
 -- SP: Doanh thu theo ngày trong tháng (biểu đồ báo cáo tháng)

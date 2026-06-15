@@ -79,11 +79,11 @@ graph TD
 | | Receipt History | View historical inventory receipt records |
 | **Delivery** | Delivery Assignment | Assign shippers to delivery orders |
 | | Delivery Status Update | Track delivery progress (waiting, delivering, delivered, returned) |
-| **Reports** | Daily Revenue | Revenue summary by day with order counts |
-| | Monthly Revenue | Revenue summary by month with daily chart breakdown |
-| | Product Sales | Top 10 best-selling products by quantity and revenue |
+| **Reports** | Daily Revenue | Revenue summary by day with order counts (supports Excel export) |
+| | Monthly Revenue | Revenue summary by month with daily chart breakdown (supports Excel export) |
+| | Product Sales | Top 10 best-selling products by quantity and revenue (supports Excel export) |
 | | Staff Performance | Employee order counts, revenue, and cancellation rates |
-| | Inventory Report | Stock levels with shortage alerts |
+| | Inventory Report | Stock levels with shortage alerts (supports Excel export) |
 | **Master Data** | Product Management | CRUD for products (flower types, accessories) |
 | | Customer Management | CRUD for customers with phone-based lookup |
 | **Admin** | Staff Management | CRUD for employees with role assignment |
@@ -100,6 +100,7 @@ graph TD
 | **Database** | SQL Server 2022 (Developer Edition) |
 | **Data Access** | ADO.NET (SqlClient) + Custom Reflection ORM + Repository Pattern |
 | **Charts** | System.Windows.Forms.DataVisualization |
+| **Excel Export** | EPPlus (v4.5.3.3) |
 | **Password Hashing** | SHA-256 (System.Security.Cryptography) |
 | **Architecture** | 3-Layer (UI → Repository Layer → Database) |
 
@@ -417,7 +418,7 @@ graph TB
 | `7_DanhMuc/` | Master Data: Products, Customers | 2 files |
 | `DataAccess/` | BaseRepository, DatabaseHelper + 11 Repositories | 13 files |
 | `Models/` | 11 Entity classes, BaseEntity, Enums, DTOs | 13 files |
-| `Services/` | SessionManager | 1 file |
+| `Services/` | SessionManager, ReportExcelHelper | 2 files |
 | `Shared/` | Navigation Menu + Permission UC | 2 files |
 
 ---
