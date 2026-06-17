@@ -586,7 +586,7 @@ FROM SAN_PHAM JOIN inserted ON SAN_PHAM.MaSP = inserted.MaSP
 ### 6.1 Cấu Trúc Bài Trình Bày (Gợi Ý 15-20 Phút)
 
 #### Phần 1: Giới Thiệu (2-3 phút)
-> *"Chào thầy/cô, nhóm em xin trình bày dự án FloriSys — Hệ thống Quản lý Cửa hàng Hoa."*
+> *"Chào thầy/cô, nhóm em xin trình bày dự án    — Hệ thống Quản lý Cửa hàng Hoa."*
 
 - Nêu bài toán thực tế: cửa hàng hoa quản lý thủ công gặp nhiều vấn đề (nhầm đơn, thiếu hàng, khó theo dõi)
 - Mục tiêu: xây dựng hệ thống desktop quản lý toàn diện

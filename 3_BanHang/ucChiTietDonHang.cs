@@ -294,5 +294,24 @@ namespace FloriSys._3_BanHang
                 frmMain.OnMenuClicked("DanhSachDon");
             }
         }
+
+        private void btnInHoaDon_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(_maDon)) return;
+                DonHang dh = _dhRepo.LayThongTinDon(_maDon);
+                List<ChiTietDonHang> dsCT = _dhRepo.LayChiTiet(_maDon);
+
+                if (dh != null)
+                {
+                    ReportPdfHelper.ExportHoaDon(dh, dsCT);
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError("Lỗi khi in hóa đơn: " + ex.Message);
+            }
+        }
     }
 }

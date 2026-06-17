@@ -708,6 +708,112 @@ namespace FloriSys.Services
             }
         }
 
+        public static void ExportHoaDon(DonHang dh, List<ChiTietDonHang> chiTiet)
+        {
+            string defaultName = $"HoaDon_{dh.MaDon}.pdf";
+            string filePath = ShowSaveDialog(defaultName);
+            if (string.IsNullOrEmpty(filePath)) return;
+
+            try
+            {
+                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                {
+                    // POS receipt width is usually 80mm (~226 points)
+                    // Calculate height based on number of items (approx 20 points per item + 350 for headers/footers)
+                    float height = 350f + (chiTiet.Count * 25f);
+                    iTextSharp.text.Rectangle receiptSize = new iTextSharp.text.Rectangle(226f, height);
+                    Document doc = new Document(receiptSize, 10, 10, 10, 10);
+                    PdfWriter writer = PdfWriter.GetInstance(doc, fs);
+                    doc.Open();
+
+                    // Fonts for receipt
+                    var fHeader = new iTextSharp.text.Font(_baseFont, 11, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
+                    var fBold = new iTextSharp.text.Font(_baseFont, 9, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
+                    var fNormal = new iTextSharp.text.Font(_baseFont, 9, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+                    var fSmall = new iTextSharp.text.Font(_baseFont, 8, iTextSharp.text.Font.NORMAL, BaseColor.BLACK);
+
+                    // STORE INFO
+                    var pStore = new Paragraph("FLORISYS\nCỬA HÀNG HOA TƯƠI\n123 Đường Cầu Giấy, Hà Nội\nSĐT: 0987.654.321", fBold);
+                    pStore.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(pStore);
+
+                    doc.Add(new Paragraph(new string('-', 40), fSmall) { Alignment = Element.ALIGN_CENTER });
+
+                    // TITLE
+                    var pTitle = new Paragraph("HÓA ĐƠN BÁN HÀNG", fHeader);
+                    pTitle.Alignment = Element.ALIGN_CENTER;
+                    pTitle.SpacingBefore = 5;
+                    pTitle.SpacingAfter = 5;
+                    doc.Add(pTitle);
+
+                    doc.Add(new Paragraph(new string('-', 40), fSmall) { Alignment = Element.ALIGN_CENTER });
+
+                    // ORDER INFO
+                    doc.Add(new Paragraph($"Mã đơn: {dh.MaDon}", fNormal));
+                    doc.Add(new Paragraph($"Ngày: {dh.NgayTao:dd/MM/yyyy HH:mm}", fNormal));
+                    doc.Add(new Paragraph($"Nhân viên: {dh.TenNV}", fNormal));
+
+                    doc.Add(new Paragraph("\nKhách hàng: " + dh.TenKH, fNormal));
+                    doc.Add(new Paragraph("SĐT: " + dh.SoDienThoai, fNormal));
+                    if (!string.IsNullOrEmpty(dh.DiaChi))
+                        doc.Add(new Paragraph("Địa chỉ: " + dh.DiaChi, fNormal));
+
+                    doc.Add(new Paragraph(new string('-', 40), fSmall) { Alignment = Element.ALIGN_CENTER });
+
+                    // ITEMS TABLE
+                    PdfPTable table = new PdfPTable(3);
+                    table.WidthPercentage = 100;
+                    table.SetWidths(new float[] { 55f, 15f, 30f });
+                    table.SpacingBefore = 5;
+                    table.SpacingAfter = 5;
+
+                    // Table Header
+                    table.AddCell(new PdfPCell(new Phrase("SẢN PHẨM", fBold)) { Border = iTextSharp.text.Rectangle.BOTTOM_BORDER, PaddingBottom = 5 });
+                    table.AddCell(new PdfPCell(new Phrase("SL", fBold)) { Border = iTextSharp.text.Rectangle.BOTTOM_BORDER, HorizontalAlignment = Element.ALIGN_CENTER, PaddingBottom = 5 });
+                    table.AddCell(new PdfPCell(new Phrase("THÀNH TIỀN", fBold)) { Border = iTextSharp.text.Rectangle.BOTTOM_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingBottom = 5 });
+
+                    foreach (var item in chiTiet)
+                    {
+                        table.AddCell(new PdfPCell(new Phrase(item.TenSP, fNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, PaddingTop = 4 });
+                        table.AddCell(new PdfPCell(new Phrase("x" + item.SoLuong, fNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_CENTER, PaddingTop = 4 });
+                        table.AddCell(new PdfPCell(new Phrase(item.ThanhTien.ToString("N0"), fNormal)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT, PaddingTop = 4 });
+                    }
+                    doc.Add(table);
+
+                    doc.Add(new Paragraph(new string('-', 40), fSmall) { Alignment = Element.ALIGN_CENTER });
+
+                    // TOTAL
+                    PdfPTable totalTable = new PdfPTable(2);
+                    totalTable.WidthPercentage = 100;
+                    totalTable.SetWidths(new float[] { 40f, 60f });
+                    totalTable.AddCell(new PdfPCell(new Phrase("TỔNG CỘNG:", fBold)) { Border = iTextSharp.text.Rectangle.NO_BORDER });
+                    totalTable.AddCell(new PdfPCell(new Phrase(dh.TongTien.ToString("N0") + " đ", fHeader)) { Border = iTextSharp.text.Rectangle.NO_BORDER, HorizontalAlignment = Element.ALIGN_RIGHT });
+                    doc.Add(totalTable);
+
+                    if (!string.IsNullOrEmpty(dh.GhiChu))
+                    {
+                        doc.Add(new Paragraph("\nGhi chú: " + dh.GhiChu, fSmall));
+                    }
+
+                    // FOOTER
+                    var pFooter = new Paragraph("\nFLORISYS CẢM ƠN QUÝ KHÁCH\nHẸN GẶP LẠI QUÝ KHÁCH", fBold);
+                    pFooter.Alignment = Element.ALIGN_CENTER;
+                    pFooter.SpacingBefore = 10;
+                    doc.Add(pFooter);
+
+                    doc.Add(new Paragraph(new string('=', 40), fSmall) { Alignment = Element.ALIGN_CENTER, SpacingBefore = 5 });
+
+                    doc.Close();
+                }
+
+                ShowSuccessMessage(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi xuất PDF hóa đơn: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private static void ShowSuccessMessage(string filePath)
         {
             DialogResult result = MessageBox.Show(

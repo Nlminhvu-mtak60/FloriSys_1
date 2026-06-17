@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
@@ -50,17 +50,31 @@ namespace FloriSys._7_DanhMuc
         {
             if (dgvSanPham.Columns.Count == 0) return;
 
-            var visibleCols = new List<string> { "MaSP", "TenSP", "LoaiHoa", "GiaBan", "GiaNhap", "SoLuongTon", "MucTonToiThieu", "TrangThai" };
+            var visibleCols = new List<string> { "MaSP", "TenSP", "LoaiHoa", "GiaBan", "SoLuongTon" };
+            
+            // Chỉ những người có quyền Sửa (Admin, Warehouse) mới được xem Giá nhập, Mức tồn tối thiểu, Trạng thái
+            bool canEdit = FloriSys.Services.SessionManager.Instance.HasPermission("SanPham", "Sua");
+            if (canEdit)
+            {
+                visibleCols.Add("GiaNhap");
+                visibleCols.Add("MucTonToiThieu");
+                visibleCols.Add("TrangThai");
+            }
+
             foreach (DataGridViewColumn col in dgvSanPham.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
 
             dgvSanPham.Columns["MaSP"].HeaderText = "Mã SP";
             dgvSanPham.Columns["TenSP"].HeaderText = "Tên sản phẩm";
             dgvSanPham.Columns["LoaiHoa"].HeaderText = "Loại";
             dgvSanPham.Columns["GiaBan"].HeaderText = "Giá bán";
-            dgvSanPham.Columns["GiaNhap"].HeaderText = "Giá nhập";
             dgvSanPham.Columns["SoLuongTon"].HeaderText = "Tồn kho";
-            dgvSanPham.Columns["MucTonToiThieu"].HeaderText = "Tối thiểu";
-            dgvSanPham.Columns["TrangThai"].HeaderText = "Trạng thái";
+
+            if (canEdit)
+            {
+                dgvSanPham.Columns["GiaNhap"].HeaderText = "Giá nhập";
+                dgvSanPham.Columns["MucTonToiThieu"].HeaderText = "Tối thiểu";
+                dgvSanPham.Columns["TrangThai"].HeaderText = "Trạng thái";
+            }
 
             dgvSanPham.Columns["GiaBan"].DefaultCellStyle.Format = "#,##0";
             dgvSanPham.Columns["GiaNhap"].DefaultCellStyle.Format = "#,##0";

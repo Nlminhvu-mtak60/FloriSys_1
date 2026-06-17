@@ -1,4 +1,4 @@
-﻿namespace FloriSys._3_BanHang
+namespace FloriSys._3_BanHang
 {
     partial class ucChiTietDonHang
     {
@@ -19,6 +19,7 @@
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
+            this.btnInHoaDon = new System.Windows.Forms.Button();
             this.btnPhanHoi = new System.Windows.Forms.Button();
             this.lblStatusBadge = new System.Windows.Forms.Label();
             this.lblMaDon = new System.Windows.Forms.Label();
@@ -60,6 +61,7 @@
             // pnlHeader
             // 
             this.pnlHeader.BackColor = System.Drawing.Color.White;
+            this.pnlHeader.Controls.Add(this.btnInHoaDon);
             this.pnlHeader.Controls.Add(this.btnPhanHoi);
             this.pnlHeader.Controls.Add(this.lblStatusBadge);
             this.pnlHeader.Controls.Add(this.lblMaDon);
@@ -69,6 +71,23 @@
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1100, 100);
             this.pnlHeader.TabIndex = 0;
+            // 
+            // btnInHoaDon
+            // 
+            this.btnInHoaDon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnInHoaDon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
+            this.btnInHoaDon.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnInHoaDon.FlatAppearance.BorderSize = 0;
+            this.btnInHoaDon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnInHoaDon.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnInHoaDon.ForeColor = System.Drawing.Color.White;
+            this.btnInHoaDon.Location = new System.Drawing.Point(760, 30);
+            this.btnInHoaDon.Name = "btnInHoaDon";
+            this.btnInHoaDon.Size = new System.Drawing.Size(150, 40);
+            this.btnInHoaDon.TabIndex = 4;
+            this.btnInHoaDon.Text = "🖨️ In hóa đơn";
+            this.btnInHoaDon.UseVisualStyleBackColor = false;
+            this.btnInHoaDon.Click += new System.EventHandler(this.btnInHoaDon_Click);
             // 
             // btnPhanHoi
             // 
@@ -420,6 +439,7 @@
         private System.Windows.Forms.Label lblMaDon;
         private System.Windows.Forms.Label lblBack;
         private System.Windows.Forms.Label lblStatusBadge;
+        private System.Windows.Forms.Button btnInHoaDon;
         private System.Windows.Forms.Button btnPhanHoi;
         private System.Windows.Forms.TableLayoutPanel pnlMain;
         private System.Windows.Forms.Panel pnlLeft;

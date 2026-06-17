@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
@@ -78,8 +78,8 @@ namespace FloriSys._3_BanHang
                     int pct = (int)((myStats.TongDoanhThu / targetDT) * 100);
                     pbDoanhThu.Value = Math.Min(pct, 100);
 
-                    // Cập nhật Xếp hạng
-                    lblRank.Text = $"🥇 Xếp hạng: #{myRank} / {dsHieuSuat.Count} nv";
+                    // Ẩn Xếp hạng
+                    lblRank.Visible = false;
                 }
             }
         }
