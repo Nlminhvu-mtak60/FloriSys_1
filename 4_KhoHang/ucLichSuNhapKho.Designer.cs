@@ -1,4 +1,4 @@
-﻿namespace FloriSys._4_KhoHang
+namespace FloriSys._4_KhoHang
 {
     partial class ucLichSuNhapKho
     {
@@ -17,6 +17,10 @@
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblSubTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
@@ -28,9 +32,21 @@
             this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
             this.dgvPhieuNhap = new System.Windows.Forms.DataGridView();
+            this.colMaPhieu = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNgayNhap = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTenNV = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoLoaiSP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTongSL = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTongTien = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colGhiChu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlDetail = new System.Windows.Forms.Panel();
             this.lblDetailTitle = new System.Windows.Forms.Label();
             this.dgvChiTiet = new System.Windows.Forms.DataGridView();
+            this.colMaSP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTenSP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoLuong = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colGiaNhap = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colThanhTien = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlStats = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlHeader.SuspendLayout();
             this.pnlFilter.SuspendLayout();
@@ -148,6 +164,14 @@
             this.dgvPhieuNhap.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvPhieuNhap.BackgroundColor = System.Drawing.Color.White;
             this.dgvPhieuNhap.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvPhieuNhap.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colMaPhieu,
+            this.colNgayNhap,
+            this.colTenNV,
+            this.colSoLoaiSP,
+            this.colTongSL,
+            this.colTongTien,
+            this.colGhiChu});
             this.dgvPhieuNhap.Dock = System.Windows.Forms.DockStyle.Top;
             this.dgvPhieuNhap.Location = new System.Drawing.Point(0, 140);
             this.dgvPhieuNhap.Name = "dgvPhieuNhap";
@@ -158,6 +182,59 @@
             this.dgvPhieuNhap.Size = new System.Drawing.Size(1000, 300);
             this.dgvPhieuNhap.TabIndex = 2;
             this.dgvPhieuNhap.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPhieuNhap_CellClick);
+            // 
+            // colMaPhieu
+            // 
+            this.colMaPhieu.DataPropertyName = "MaPhieu";
+            this.colMaPhieu.HeaderText = "Mã phiếu";
+            this.colMaPhieu.Name = "colMaPhieu";
+            this.colMaPhieu.ReadOnly = true;
+            // 
+            // colNgayNhap
+            // 
+            this.colNgayNhap.DataPropertyName = "NgayNhap";
+            dataGridViewCellStyle1.Format = "dd/MM/yyyy HH:mm";
+            this.colNgayNhap.DefaultCellStyle = dataGridViewCellStyle1;
+            this.colNgayNhap.HeaderText = "Ngày nhập";
+            this.colNgayNhap.Name = "colNgayNhap";
+            this.colNgayNhap.ReadOnly = true;
+            // 
+            // colTenNV
+            // 
+            this.colTenNV.DataPropertyName = "TenNV";
+            this.colTenNV.HeaderText = "Nhân viên";
+            this.colTenNV.Name = "colTenNV";
+            this.colTenNV.ReadOnly = true;
+            // 
+            // colSoLoaiSP
+            // 
+            this.colSoLoaiSP.DataPropertyName = "SoLoaiSP";
+            this.colSoLoaiSP.HeaderText = "Số loại SP";
+            this.colSoLoaiSP.Name = "colSoLoaiSP";
+            this.colSoLoaiSP.ReadOnly = true;
+            // 
+            // colTongSL
+            // 
+            this.colTongSL.DataPropertyName = "TongSL";
+            this.colTongSL.HeaderText = "Tổng SL";
+            this.colTongSL.Name = "colTongSL";
+            this.colTongSL.ReadOnly = true;
+            // 
+            // colTongTien
+            // 
+            this.colTongTien.DataPropertyName = "TongTien";
+            dataGridViewCellStyle2.Format = "N0";
+            this.colTongTien.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colTongTien.HeaderText = "Tổng tiền";
+            this.colTongTien.Name = "colTongTien";
+            this.colTongTien.ReadOnly = true;
+            // 
+            // colGhiChu
+            // 
+            this.colGhiChu.DataPropertyName = "GhiChu";
+            this.colGhiChu.HeaderText = "Ghi chú";
+            this.colGhiChu.Name = "colGhiChu";
+            this.colGhiChu.ReadOnly = true;
             // 
             // pnlDetail
             // 
@@ -190,6 +267,12 @@
             this.dgvChiTiet.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvChiTiet.BackgroundColor = System.Drawing.Color.White;
             this.dgvChiTiet.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvChiTiet.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colMaSP,
+            this.colTenSP,
+            this.colSoLuong,
+            this.colGiaNhap,
+            this.colThanhTien});
             this.dgvChiTiet.Location = new System.Drawing.Point(10, 40);
             this.dgvChiTiet.Name = "dgvChiTiet";
             this.dgvChiTiet.ReadOnly = true;
@@ -197,6 +280,45 @@
             this.dgvChiTiet.RowHeadersWidth = 51;
             this.dgvChiTiet.Size = new System.Drawing.Size(980, 230);
             this.dgvChiTiet.TabIndex = 0;
+            // 
+            // colMaSP
+            // 
+            this.colMaSP.DataPropertyName = "MaSP";
+            this.colMaSP.HeaderText = "Mã SP";
+            this.colMaSP.Name = "colMaSP";
+            this.colMaSP.ReadOnly = true;
+            // 
+            // colTenSP
+            // 
+            this.colTenSP.DataPropertyName = "TenSP";
+            this.colTenSP.HeaderText = "Tên sản phẩm";
+            this.colTenSP.Name = "colTenSP";
+            this.colTenSP.ReadOnly = true;
+            // 
+            // colSoLuong
+            // 
+            this.colSoLuong.DataPropertyName = "SoLuong";
+            this.colSoLuong.HeaderText = "Số lượng";
+            this.colSoLuong.Name = "colSoLuong";
+            this.colSoLuong.ReadOnly = true;
+            // 
+            // colGiaNhap
+            // 
+            this.colGiaNhap.DataPropertyName = "GiaNhap";
+            dataGridViewCellStyle3.Format = "N0";
+            this.colGiaNhap.DefaultCellStyle = dataGridViewCellStyle3;
+            this.colGiaNhap.HeaderText = "Giá nhập";
+            this.colGiaNhap.Name = "colGiaNhap";
+            this.colGiaNhap.ReadOnly = true;
+            // 
+            // colThanhTien
+            // 
+            this.colThanhTien.DataPropertyName = "ThanhTien";
+            dataGridViewCellStyle4.Format = "N0";
+            this.colThanhTien.DefaultCellStyle = dataGridViewCellStyle4;
+            this.colThanhTien.HeaderText = "Thành tiền";
+            this.colThanhTien.Name = "colThanhTien";
+            this.colThanhTien.ReadOnly = true;
             // 
             // ucLichSuNhapKho
             // 
@@ -234,9 +356,21 @@
         private System.Windows.Forms.DateTimePicker dtpTuNgay;
         private System.Windows.Forms.TextBox txtTimKiem;
         private System.Windows.Forms.DataGridView dgvPhieuNhap;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMaPhieu;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNgayNhap;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTenNV;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoLoaiSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTongSL;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTongTien;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colGhiChu;
         private System.Windows.Forms.Panel pnlDetail;
         private System.Windows.Forms.Label lblDetailTitle;
         private System.Windows.Forms.DataGridView dgvChiTiet;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMaSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTenSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoLuong;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colGiaNhap;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colThanhTien;
         private System.Windows.Forms.FlowLayoutPanel pnlStats;
     }
 }

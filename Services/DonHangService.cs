@@ -1,15 +1,11 @@
-﻿using System;
+using System;
 using System.Data;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 
 namespace FloriSys.Services
 {
-    /// <summary>
-    /// Order service - encapsulates complex order creation and status management.
-    /// Demonstrates: ENCAPSULATION (multi-step order creation hidden from UI),
-    /// ABSTRACTION (UI only calls TaoDonHang, doesn't know about SPs/transactions).
-    /// </summary>
+  
     public class DonHangService
     {
         private readonly KhachHangRepository _khRepo;
@@ -23,41 +19,54 @@ namespace FloriSys.Services
             _ghRepo = new GiaoHangRepository();
         }
 
-        /// <summary>
-        /// Create a complete order: find/create customer → create order → add items → create delivery.
-        /// ENCAPSULATION: all logic in one method (was scattered in ucTaoDon UI).
-        /// </summary>
-        public string TaoDonHang(string tenKH, string sdt, string diaChi,
+       
+        public string TaoDonHang(string tenKH, string sdt, string tenNhan, string sdtNhan, string diaChi, string email,
                                  string hinhThuc, string ghiChu, DataTable gioHang,
                                  string maNV, out string error)
         {
             error = "";
 
-            // Step 1: Validate
+            // Bước 1: Kiểm tra tính hợp lệ
             if (string.IsNullOrEmpty(tenKH) || string.IsNullOrEmpty(sdt))
             {
-                error = "Thiếu thông tin khách hàng (tên, SĐT).";
+                error = "Vui lòng nhập thông tin người đặt!";
+                return null;
+            }
+            if (string.IsNullOrEmpty(tenNhan) || string.IsNullOrEmpty(sdtNhan))
+            {
+                error = "Vui lòng nhập thông tin người nhận!";
                 return null;
             }
             if (gioHang == null || gioHang.Rows.Count == 0)
             {
-                error = "Giỏ hàng trống.";
+                error = "Giỏ hàng trống!";
                 return null;
             }
 
-            // Step 2: Find or create customer
-            string maKH = _khRepo.TimHoacTao(tenKH, sdt, diaChi);
+            // Xử lý logic gộp ghi chú nếu người nhận khác người đặt
+            bool isDifferentReceiver = (tenKH != tenNhan) || (sdt != sdtNhan);
+            if (isDifferentReceiver)
+            {
+                ghiChu = $"[Giao cho: {tenNhan} - {sdtNhan} - {diaChi}] {ghiChu}";
+            }
 
-            // Step 3: Create order with full transaction (atomic)
+            // Bước 2: Tìm hoặc tạo khách hàng mới
+            string maKH = _khRepo.TimHoacTao(tenKH, sdt, diaChi, email);
+
+            // Bước 3: Tạo đơn hàng với transaction đầy đủ (đảm bảo tính toàn vẹn)
             string maDon = _dhRepo.TaoDonHangHoanChinh(maKH, maNV, hinhThuc, ghiChu, gioHang);
+
+            // Bước 4: Tự động xuất kho và hoàn thành cho đơn nhận tại quầy
+            if (hinhThuc == "TaiQuay")
+            {
+                _dhRepo.CapNhatTrangThai(maDon, "DangXuLy"); // Trừ tồn kho
+                _dhRepo.CapNhatTrangThai(maDon, "HoanThanh"); // Hoàn thành luôn
+            }
 
             return maDon;
         }
 
-        /// <summary>
-        /// Update order status with validation.
-        /// ENCAPSULATION: business rules checked before DB update.
-        /// </summary>
+      
         public bool CapNhatTrangThai(string maDon, string trangThaiMoi, out string error)
         {
             error = "";
@@ -68,7 +77,7 @@ namespace FloriSys.Services
                 return false;
             }
 
-            // Business rules: can't change completed/cancelled orders
+            // Luật kinh doanh: không thể thay đổi đơn hàng đã hoàn thành hoặc đã hủy
             if (don.IsComplete || don.IsCancelled)
             {
                 error = "Không thể thay đổi trạng thái đơn hàng đã hoàn thành hoặc đã hủy.";
@@ -79,9 +88,7 @@ namespace FloriSys.Services
             return true;
         }
 
-        /// <summary>
-        /// Get order details with full info.
-        /// </summary>
+        
         public DonHang LayChiTietDon(string maDon)
         {
             var don = _dhRepo.LayThongTinDon(maDon);

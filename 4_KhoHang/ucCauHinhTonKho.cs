@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -26,29 +26,9 @@ namespace FloriSys._4_KhoHang
         {
             string keyword = txtTimKiem.Text == "🔍 Tìm mã hoặc tên sản phẩm..." ? "" : txtTimKiem.Text.Trim();
             List<SanPham> dsSP = _spRepo.LayDanhSach(keyword);
+            dgvSanPham.AutoGenerateColumns = false;
+            dgvSanPham.DataSource = null;
             dgvSanPham.DataSource = dsSP;
-
-            foreach (DataGridViewColumn col in dgvSanPham.Columns)
-                col.ReadOnly = true;
-
-            var visibleCols = new List<string> { "MaSP", "TenSP", "LoaiHoa", "SoLuongTon", "MucTonToiThieu" };
-            foreach (DataGridViewColumn col in dgvSanPham.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
-
-            if (dgvSanPham.Columns.Contains("MaSP")) dgvSanPham.Columns["MaSP"].HeaderText = "Mã SP";
-            if (dgvSanPham.Columns.Contains("TenSP")) dgvSanPham.Columns["TenSP"].HeaderText = "Tên sản phẩm";
-            if (dgvSanPham.Columns.Contains("LoaiHoa")) dgvSanPham.Columns["LoaiHoa"].HeaderText = "Loại";
-            if (dgvSanPham.Columns.Contains("SoLuongTon")) dgvSanPham.Columns["SoLuongTon"].HeaderText = "Tồn thực tế";
-            
-            if (dgvSanPham.Columns.Contains("MucTonToiThieu"))
-            {
-                dgvSanPham.Columns["MucTonToiThieu"].HeaderText = "Ngưỡng tối thiểu";
-                dgvSanPham.Columns["MucTonToiThieu"].ReadOnly = false;
-                dgvSanPham.Columns["MucTonToiThieu"].DefaultCellStyle.BackColor = Color.LightYellow;
-            }
-
-            if (dgvSanPham.Columns.Contains("GiaBan")) dgvSanPham.Columns["GiaBan"].Visible = false;
-            if (dgvSanPham.Columns.Contains("GiaNhap")) dgvSanPham.Columns["GiaNhap"].Visible = false;
-            if (dgvSanPham.Columns.Contains("TrangThai")) dgvSanPham.Columns["TrangThai"].Visible = false;
         }
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
@@ -82,10 +62,10 @@ namespace FloriSys._4_KhoHang
 
             foreach (DataGridViewRow row in dgvSanPham.Rows)
             {
-                if (row.Cells["MaSP"].Value != null && row.Cells["MucTonToiThieu"].Value != null)
+                if (row.Cells["colMaSP"].Value != null && row.Cells["colMucTonToiThieu"].Value != null)
                 {
-                    string maSP = row.Cells["MaSP"].Value.ToString();
-                    if (int.TryParse(row.Cells["MucTonToiThieu"].Value.ToString(), out int mucTon))
+                    string maSP = row.Cells["colMaSP"].Value.ToString();
+                    if (int.TryParse(row.Cells["colMucTonToiThieu"].Value.ToString(), out int mucTon))
                     {
                         _spRepo.CapNhatMucTonToiThieu(maSP, mucTon);
                     }
@@ -105,10 +85,10 @@ namespace FloriSys._4_KhoHang
 
         private void dgvSanPham_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (dgvSanPham.Columns[e.ColumnIndex].Name == "SoLuongTon")
+            if (dgvSanPham.Columns[e.ColumnIndex].Name == "colSoLuongTon")
             {
                 int ton = Convert.ToInt32(e.Value);
-                int nguong = Convert.ToInt32(dgvSanPham.Rows[e.RowIndex].Cells["MucTonToiThieu"].Value);
+                int nguong = Convert.ToInt32(dgvSanPham.Rows[e.RowIndex].Cells["colMucTonToiThieu"].Value);
 
                 if (ton == 0)
                 {

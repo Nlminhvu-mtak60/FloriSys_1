@@ -40,10 +40,10 @@ namespace FloriSys._4_KhoHang
                         donTre++;
                     }
                 }
-
+                
                 if (donTre > 0)
                 {
-                    lblAlert.Text = $"⚠️ CẢNH BÁO TỒN ĐỌNG! Hiện đang có {donTre} đơn hàng chờ xuất kho quá 30 phút! Vui lòng kiểm tra và ưu tiên xử lý ngay.";
+                    lblAlert.Text = $"⚠️ CẢNH BÁO TỒN ĐỌNG! Hiện đang có {donTre} đơn hàng chờ xuất kho quá 30p ! Vui lòng kiểm tra và ưu tiên xử lý ngay.";
                     pnlAlert.Visible = true;
                     dgvXuatKho.BringToFront();
                 }
@@ -151,15 +151,21 @@ namespace FloriSys._4_KhoHang
             else if (colName == "TinhTrangKho" && e.Value != null)
             {
                 string val = e.Value.ToString();
-                if (val == "DuHang") { e.Value = "Đủ hàng"; e.CellStyle.ForeColor = Color.FromArgb(22, 101, 52); }
-                else if (val == "KhongDu") { e.Value = "Không đủ"; e.CellStyle.ForeColor = Color.FromArgb(185, 28, 28); }
+                if (val == "DuHang") {
+                    e.Value = "Đủ hàng";
+                    e.CellStyle.ForeColor = Color.FromArgb(22, 101, 52); 
+                }
+                else if (val == "KhongDu") {
+                    e.Value = "Không đủ";
+                    e.CellStyle.ForeColor = Color.FromArgb(185, 28, 28); 
+                }
                 e.CellStyle.Font = new Font("Segoe UI", 9f, FontStyle.Bold);
             }
 
             TimeSpan totalWait = DateTime.Now - item.NgayTao;
             if (totalWait.TotalMinutes >= 30)
             {
-                e.CellStyle.BackColor = Color.FromArgb(254, 226, 226); 
+               // e.CellStyle.BackColor = Color.FromArgb(254, 226, 226); 
                 e.CellStyle.ForeColor = (colName == "TinhTrangKho" || colName == "HinhThucNhanHang") ? e.CellStyle.ForeColor : Color.FromArgb(153, 27, 27); 
             }
         }

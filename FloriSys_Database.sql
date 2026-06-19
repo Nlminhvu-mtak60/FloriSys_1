@@ -1,6 +1,7 @@
 -- =====================================================
 -- FloriSys – Cơ sở dữ liệu Quản lý Cửa hàng Hoa
 -- SQL Server 2022 – Developer Edition
+-- Script có thể chạy lại an toàn (idempotent)
 -- =====================================================
 
 IF DB_ID('FloriSys') IS NULL CREATE DATABASE FloriSys;
@@ -9,8 +10,26 @@ USE FloriSys;
 GO
 
 -- =====================================================
--- 1. BẢNG NHÂN VIÊN
+-- DROP tất cả bảng theo đúng thứ tự (con trước, cha sau)
+-- để đảm bảo chạy lại an toàn
 -- =====================================================
+IF OBJECT_ID('CT_TRA_HANG', 'U') IS NOT NULL DROP TABLE CT_TRA_HANG;
+IF OBJECT_ID('TRA_HANG', 'U') IS NOT NULL DROP TABLE TRA_HANG;
+IF OBJECT_ID('LICH_SU_DON_HANG', 'U') IS NOT NULL DROP TABLE LICH_SU_DON_HANG;
+IF OBJECT_ID('PHAN_HOI', 'U') IS NOT NULL DROP TABLE PHAN_HOI;
+IF OBJECT_ID('CT_NHAP_KHO', 'U') IS NOT NULL DROP TABLE CT_NHAP_KHO;
+IF OBJECT_ID('PHIEU_NHAP_KHO', 'U') IS NOT NULL DROP TABLE PHIEU_NHAP_KHO;
+IF OBJECT_ID('GIAO_HANG', 'U') IS NOT NULL DROP TABLE GIAO_HANG;
+IF OBJECT_ID('CHI_TIET_DON_HANG', 'U') IS NOT NULL DROP TABLE CHI_TIET_DON_HANG;
+IF OBJECT_ID('DON_HANG', 'U') IS NOT NULL DROP TABLE DON_HANG;
+IF OBJECT_ID('HANG_HU', 'U') IS NOT NULL DROP TABLE HANG_HU;
+IF OBJECT_ID('PHAN_QUYEN', 'U') IS NOT NULL DROP TABLE PHAN_QUYEN;
+IF OBJECT_ID('SAN_PHAM', 'U') IS NOT NULL DROP TABLE SAN_PHAM;
+IF OBJECT_ID('KHACH_HANG', 'U') IS NOT NULL DROP TABLE KHACH_HANG;
+IF OBJECT_ID('NHAN_VIEN', 'U') IS NOT NULL DROP TABLE NHAN_VIEN;
+GO
+
+-- 1. BẢNG NHÂN VIÊN
 CREATE TABLE NHAN_VIEN (
     MaNV        NVARCHAR(20)  PRIMARY KEY,
     HoTen       NVARCHAR(100) NOT NULL,
@@ -22,9 +41,7 @@ CREATE TABLE NHAN_VIEN (
 );
 GO
 
--- =====================================================
 -- 2. BẢNG KHÁCH HÀNG
--- =====================================================
 CREATE TABLE KHACH_HANG (
     MaKH        NVARCHAR(20)  PRIMARY KEY,
     HoTen       NVARCHAR(100) NOT NULL,
@@ -35,9 +52,7 @@ CREATE TABLE KHACH_HANG (
 );
 GO
 
--- =====================================================
 -- 3. BẢNG SẢN PHẨM
--- =====================================================
 CREATE TABLE SAN_PHAM (
     MaSP          NVARCHAR(20)   PRIMARY KEY,
     TenSP         NVARCHAR(100)  NOT NULL,
@@ -50,9 +65,7 @@ CREATE TABLE SAN_PHAM (
 );
 GO
 
--- =====================================================
 -- 4. BẢNG ĐƠN HÀNG
--- =====================================================
 CREATE TABLE DON_HANG (
     MaDon            NVARCHAR(20)   PRIMARY KEY,
     NgayTao          DATETIME       NOT NULL DEFAULT GETDATE(),
@@ -66,9 +79,7 @@ CREATE TABLE DON_HANG (
 );
 GO
 
--- =====================================================
 -- 5. BẢNG CHI TIẾT ĐƠN HÀNG
--- =====================================================
 CREATE TABLE CHI_TIET_DON_HANG (
     MaDon     NVARCHAR(20)   NOT NULL REFERENCES DON_HANG(MaDon),
     MaSP      NVARCHAR(20)   NOT NULL REFERENCES SAN_PHAM(MaSP),
@@ -79,9 +90,7 @@ CREATE TABLE CHI_TIET_DON_HANG (
 );
 GO
 
--- =====================================================
 -- 6. BẢNG GIAO HÀNG
--- =====================================================
 CREATE TABLE GIAO_HANG (
     MaGiaoHang     NVARCHAR(20)  PRIMARY KEY,
     MaDon          NVARCHAR(20)  NOT NULL REFERENCES DON_HANG(MaDon),
@@ -93,9 +102,7 @@ CREATE TABLE GIAO_HANG (
 );
 GO
 
--- =====================================================
 -- 7. BẢNG PHIẾU NHẬP KHO
--- =====================================================
 CREATE TABLE PHIEU_NHAP_KHO (
     MaPhieu  NVARCHAR(20)  PRIMARY KEY,
     NgayNhap DATETIME      NOT NULL DEFAULT GETDATE(),
@@ -104,9 +111,7 @@ CREATE TABLE PHIEU_NHAP_KHO (
 );
 GO
 
--- =====================================================
 -- 8. BẢNG CHI TIẾT NHẬP KHO
--- =====================================================
 CREATE TABLE CT_NHAP_KHO (
     MaPhieu  NVARCHAR(20)   NOT NULL REFERENCES PHIEU_NHAP_KHO(MaPhieu),
     MaSP     NVARCHAR(20)   NOT NULL REFERENCES SAN_PHAM(MaSP),
@@ -116,9 +121,7 @@ CREATE TABLE CT_NHAP_KHO (
 );
 GO
 
--- =====================================================
 -- 9. BẢNG PHẢN HỒI
--- =====================================================
 CREATE TABLE PHAN_HOI (
     MaPH          NVARCHAR(20)  PRIMARY KEY,
     MaDon         NVARCHAR(20)  NOT NULL REFERENCES DON_HANG(MaDon),
@@ -130,9 +133,7 @@ CREATE TABLE PHAN_HOI (
 );
 GO
 
--- =====================================================
 -- 11. BẢNG HÀNG HƯ (Lịch sử hủy hàng)
--- =====================================================
 CREATE TABLE HANG_HU (
     MaPhieuHuy  NVARCHAR(20)    PRIMARY KEY,
     MaSP        NVARCHAR(20)    NOT NULL REFERENCES SAN_PHAM(MaSP),
@@ -143,9 +144,7 @@ CREATE TABLE HANG_HU (
 );
 GO
 
--- =====================================================
 -- 12. BẢNG PHÂN QUYỀN
--- =====================================================
 CREATE TABLE PHAN_QUYEN (
     ChucVu   NVARCHAR(20)  NOT NULL,
     Module   NVARCHAR(50)  NOT NULL,
@@ -158,23 +157,7 @@ CREATE TABLE PHAN_QUYEN (
 );
 GO
 
--- Seed toàn bộ quyền cho Admin
-INSERT INTO PHAN_QUYEN (ChucVu, Module, Xem, Them, Sua, Xoa, Export) VALUES
-('Admin', 'DonHang', 1, 1, 1, 1, 1),
-('Admin', 'KhoHang', 1, 1, 1, 1, 1),
-('Admin', 'GiaoHang', 1, 1, 1, 1, 1),
-('Admin', 'PhanHoi', 1, 1, 1, 1, 1),
-('Admin', 'TraHang', 1, 1, 1, 1, 1),
-('Admin', 'SanPham', 1, 1, 1, 1, 1),
-('Admin', 'KhachHang', 1, 1, 1, 1, 1),
-('Admin', 'NhanVien', 1, 1, 1, 1, 1),
-('Admin', 'BaoCao', 1, 1, 1, 1, 1),
-('Admin', 'PhanQuyen', 1, 1, 1, 1, 1);
-GO
-
--- =====================================================
 -- 13. BẢNG TRẢ HÀNG
--- =====================================================
 CREATE TABLE TRA_HANG (
     MaPhieuTra      NVARCHAR(20)   PRIMARY KEY,
     MaDon           NVARCHAR(20)   NOT NULL REFERENCES DON_HANG(MaDon),
@@ -186,15 +169,25 @@ CREATE TABLE TRA_HANG (
 );
 GO
 
--- =====================================================
 -- 14. BẢNG CHI TIẾT TRẢ HÀNG
--- =====================================================
 CREATE TABLE CT_TRA_HANG (
     MaPhieuTra  NVARCHAR(20)  NOT NULL REFERENCES TRA_HANG(MaPhieuTra),
     MaSP        NVARCHAR(20)  NOT NULL REFERENCES SAN_PHAM(MaSP),
     SoLuong     INT           NOT NULL CHECK (SoLuong > 0),
     CoNhapKho   BIT           NOT NULL DEFAULT 0,
     PRIMARY KEY (MaPhieuTra, MaSP)
+);
+GO
+
+-- =====================================================
+-- 15. BẢNG LỊCH SỬ TRẠNG THÁI ĐƠN HÀNG
+-- =====================================================
+CREATE TABLE LICH_SU_DON_HANG (
+    Id           INT IDENTITY(1,1) PRIMARY KEY,
+    MaDon        NVARCHAR(20)  NOT NULL REFERENCES DON_HANG(MaDon),
+    TrangThai    NVARCHAR(20)  NOT NULL,
+    ThoiGian     DATETIME      NOT NULL DEFAULT GETDATE(),
+    GhiChu       NVARCHAR(500)
 );
 GO
 
@@ -242,12 +235,55 @@ BEGIN
 END;
 GO
 
+-- Trigger: Tự động ghi log khi INSERT đơn mới
+CREATE OR ALTER TRIGGER trg_DonHang_Insert_Log
+ON DON_HANG
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
+    SELECT MaDon, TrangThai, GETDATE(), N'Tạo đơn hàng mới'
+    FROM inserted;
+END;
+GO
+
+-- Trigger: Tự động ghi log khi UPDATE trạng thái
+CREATE OR ALTER TRIGGER trg_DonHang_Update_Log
+ON DON_HANG
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    -- Chỉ ghi log khi TrangThai thay đổi
+    IF UPDATE(TrangThai)
+    BEGIN
+        INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
+        SELECT i.MaDon, i.TrangThai, GETDATE(),
+            CASE i.TrangThai
+                WHEN N'Moi'       THEN N'Đơn hàng mới'
+                WHEN N'DangXuLy'  THEN N'Đã xuất kho - đang xử lý'
+                WHEN N'DaGiao'    THEN N'Đã giao cho shipper'
+                WHEN N'HoanThanh' THEN N'Đơn hàng hoàn thành'
+                WHEN N'Huy'       THEN N'Đơn hàng bị hủy'
+                WHEN N'HoanHang'  THEN N'Khách yêu cầu hoàn hàng'
+                ELSE N'Cập nhật trạng thái: ' + i.TrangThai
+            END
+        FROM inserted i
+        INNER JOIN deleted d ON i.MaDon = d.MaDon
+        WHERE i.TrangThai <> d.TrangThai;
+    END
+END;
+GO
+
 -- =====================================================
 -- STORED PROCEDURES
 -- =====================================================
 
 -- SP: Đăng nhập
-CREATE OR ALTER PROCEDURE sp_DangNhap
+DROP PROCEDURE IF EXISTS sp_DangNhap;
+GO
+CREATE PROCEDURE sp_DangNhap
     @TaiKhoan NVARCHAR(50),
     @MatKhau  NVARCHAR(256)
 AS
@@ -259,7 +295,9 @@ END;
 GO
 
 -- SP: Đổi mật khẩu
-CREATE OR ALTER PROCEDURE sp_DoiMatKhau
+DROP PROCEDURE IF EXISTS sp_DoiMatKhau;
+GO
+CREATE PROCEDURE sp_DoiMatKhau
     @MaNV      NVARCHAR(20),
     @MatKhauCu NVARCHAR(256),
     @MatKhauMoi NVARCHAR(256)
@@ -276,7 +314,9 @@ END;
 GO
 
 -- SP: Tạo đơn hàng
-CREATE OR ALTER PROCEDURE sp_TaoDonHang
+DROP PROCEDURE IF EXISTS sp_TaoDonHang;
+GO
+CREATE PROCEDURE sp_TaoDonHang
     @MaDon            NVARCHAR(20),
     @MaKH             NVARCHAR(20),
     @MaNV_TaoDon      NVARCHAR(20),
@@ -290,7 +330,9 @@ END;
 GO
 
 -- SP: Thêm chi tiết đơn hàng
-CREATE OR ALTER PROCEDURE sp_ThemChiTietDon
+DROP PROCEDURE IF EXISTS sp_ThemChiTietDon;
+GO
+CREATE PROCEDURE sp_ThemChiTietDon
     @MaDon  NVARCHAR(20),
     @MaSP   NVARCHAR(20),
     @SoLuong INT,
@@ -316,7 +358,9 @@ END;
 GO
 
 -- SP: Cập nhật trạng thái đơn hàng
-CREATE OR ALTER PROCEDURE sp_CapNhatTrangThaiDon
+DROP PROCEDURE IF EXISTS sp_CapNhatTrangThaiDon;
+GO
+CREATE PROCEDURE sp_CapNhatTrangThaiDon
     @MaDon     NVARCHAR(20),
     @TrangThai NVARCHAR(20)
 AS
@@ -346,7 +390,9 @@ END;
 GO
 
 -- SP: Tạo phiếu nhập kho
-CREATE OR ALTER PROCEDURE sp_TaoPhieuNhap
+DROP PROCEDURE IF EXISTS sp_TaoPhieuNhap;
+GO
+CREATE PROCEDURE sp_TaoPhieuNhap
     @MaPhieu NVARCHAR(20),
     @MaNV    NVARCHAR(20),
     @GhiChu  NVARCHAR(500) = NULL
@@ -358,7 +404,9 @@ END;
 GO
 
 -- SP: Thêm chi tiết nhập kho (trigger sẽ tự tăng tồn kho)
-CREATE OR ALTER PROCEDURE sp_ThemChiTietNhap
+DROP PROCEDURE IF EXISTS sp_ThemChiTietNhap;
+GO
+CREATE PROCEDURE sp_ThemChiTietNhap
     @MaPhieu NVARCHAR(20),
     @MaSP    NVARCHAR(20),
     @SoLuong INT,
@@ -371,7 +419,9 @@ END;
 GO
 
 -- SP: Ghi nhận hàng hư (giảm tồn kho + lưu lịch sử)
-CREATE OR ALTER PROCEDURE sp_GhiNhanHangHu
+DROP PROCEDURE IF EXISTS sp_GhiNhanHangHu;
+GO
+CREATE PROCEDURE sp_GhiNhanHangHu
     @MaPhieuHuy NVARCHAR(20),
     @MaSP       NVARCHAR(20),
     @SoLuong    INT,
@@ -399,7 +449,9 @@ END;
 GO
 
 -- SP: Tạo lệnh giao hàng
-CREATE OR ALTER PROCEDURE sp_TaoGiaoHang
+DROP PROCEDURE IF EXISTS sp_TaoGiaoHang;
+GO
+CREATE PROCEDURE sp_TaoGiaoHang
     @MaGiaoHang NVARCHAR(20),
     @MaDon      NVARCHAR(20),
     @GhiChu     NVARCHAR(500) = NULL
@@ -411,7 +463,9 @@ END;
 GO
 
 -- SP: Phân công shipper
-CREATE OR ALTER PROCEDURE sp_PhanCongShipper
+DROP PROCEDURE IF EXISTS sp_PhanCongShipper;
+GO
+CREATE PROCEDURE sp_PhanCongShipper
     @MaGiaoHang  NVARCHAR(20),
     @MaNV_Shipper NVARCHAR(20)
 AS
@@ -423,7 +477,9 @@ END;
 GO
 
 -- SP: Cập nhật trạng thái giao hàng
-CREATE OR ALTER PROCEDURE sp_CapNhatTrangThaiGiao
+DROP PROCEDURE IF EXISTS sp_CapNhatTrangThaiGiao;
+GO
+CREATE PROCEDURE sp_CapNhatTrangThaiGiao
     @MaGiaoHang NVARCHAR(20),
     @TrangThai  NVARCHAR(20),
     @GhiChu     NVARCHAR(500) = NULL
@@ -464,7 +520,9 @@ END;
 GO
 
 -- SP: Ghi nhận phản hồi
-CREATE OR ALTER PROCEDURE sp_GhiNhanPhanHoi
+DROP PROCEDURE IF EXISTS sp_GhiNhanPhanHoi;
+GO
+CREATE PROCEDURE sp_GhiNhanPhanHoi
     @MaPH    NVARCHAR(20),
     @MaDon   NVARCHAR(20),
     @NoiDung NVARCHAR(1000)
@@ -476,7 +534,9 @@ END;
 GO
 
 -- SP: Báo cáo doanh thu theo ngày
-CREATE OR ALTER PROCEDURE sp_BaoCaoDoanhThuNgay
+DROP PROCEDURE IF EXISTS sp_BaoCaoDoanhThuNgay;
+GO
+CREATE PROCEDURE sp_BaoCaoDoanhThuNgay
     @Ngay DATE
 AS
 BEGIN
@@ -490,7 +550,9 @@ END;
 GO
 
 -- SP: Báo cáo doanh thu theo tháng
-CREATE OR ALTER PROCEDURE sp_BaoCaoDoanhThuThang
+DROP PROCEDURE IF EXISTS sp_BaoCaoDoanhThuThang;
+GO
+CREATE PROCEDURE sp_BaoCaoDoanhThuThang
     @Thang INT,
     @Nam   INT
 AS
@@ -504,7 +566,9 @@ END;
 GO
 
 -- SP: Sản phẩm bán chạy
-CREATE OR ALTER PROCEDURE sp_SanPhamBanChay
+DROP PROCEDURE IF EXISTS sp_SanPhamBanChay;
+GO
+CREATE PROCEDURE sp_SanPhamBanChay
     @Thang INT = NULL,
     @Nam   INT = NULL
 AS
@@ -524,8 +588,35 @@ BEGIN
 END;
 GO
 
+-- SP: Sản phẩm bán ế (ít bán nhất)
+-- FIX: Stored procedure này bị thiếu trong script gốc nhưng code C# gọi nó
+DROP PROCEDURE IF EXISTS sp_SanPhamE;
+GO
+CREATE PROCEDURE sp_SanPhamE
+    @Thang INT = NULL,
+    @Nam   INT = NULL
+AS
+BEGIN
+    SELECT TOP 10
+        sp.MaSP, sp.TenSP, sp.LoaiHoa,
+        ISNULL(SUM(ct.SoLuong), 0) AS TongSoLuong,
+        ISNULL(SUM(ct.ThanhTien), 0) AS TongDoanhThu
+    FROM SAN_PHAM sp
+    LEFT JOIN CHI_TIET_DON_HANG ct ON ct.MaSP = sp.MaSP
+    LEFT JOIN DON_HANG dh ON ct.MaDon = dh.MaDon
+        AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
+        AND (@Thang IS NULL OR MONTH(dh.NgayTao) = @Thang)
+        AND (@Nam IS NULL OR YEAR(dh.NgayTao) = @Nam)
+    WHERE sp.TrangThai = N'DangBan'
+    GROUP BY sp.MaSP, sp.TenSP, sp.LoaiHoa
+    ORDER BY TongSoLuong ASC;
+END;
+GO
+
 -- SP: Hiệu suất nhân viên
-CREATE OR ALTER PROCEDURE sp_HieuSuatNhanVien
+DROP PROCEDURE IF EXISTS sp_HieuSuatNhanVien;
+GO
+CREATE PROCEDURE sp_HieuSuatNhanVien
     @Thang INT = NULL,
     @Nam   INT = NULL
 AS
@@ -546,7 +637,9 @@ END;
 GO
 
 -- SP: Lấy cảnh báo tồn kho
-CREATE OR ALTER PROCEDURE sp_CanhBaoTonKho
+DROP PROCEDURE IF EXISTS sp_CanhBaoTonKho;
+GO
+CREATE PROCEDURE sp_CanhBaoTonKho
 AS
 BEGIN
     SELECT sp.MaSP, sp.TenSP, sp.LoaiHoa, sp.SoLuongTon, sp.MucTonToiThieu,
@@ -562,7 +655,9 @@ END;
 GO
 
 -- SP: Sinh mã tự động
-CREATE OR ALTER PROCEDURE sp_SinhMa
+DROP PROCEDURE IF EXISTS sp_SinhMa;
+GO
+CREATE PROCEDURE sp_SinhMa
     @Prefix NVARCHAR(10),
     @Table  NVARCHAR(50),
     @Column NVARCHAR(50),
@@ -574,6 +669,86 @@ BEGIN
     SET @SQL = N'SELECT @Num = ISNULL(MAX(CAST(SUBSTRING(' + QUOTENAME(@Column) + N', LEN(''' + @Prefix + N''')+1, 10) AS INT)), 0) FROM ' + QUOTENAME(@Table);
     EXEC sp_executesql @SQL, N'@Num INT OUTPUT', @Num = @MaxNum OUTPUT;
     SET @NewCode = @Prefix + RIGHT('000000' + CAST(@MaxNum + 1 AS NVARCHAR), 6);
+END;
+GO
+
+-- SP: Doanh thu theo ngày trong tháng (biểu đồ báo cáo tháng)
+DROP PROCEDURE IF EXISTS sp_DoanhThuTheoNgayTrongThang;
+GO
+CREATE PROCEDURE sp_DoanhThuTheoNgayTrongThang
+    @Thang INT,
+    @Nam   INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    ;WITH DaysInMonth AS (
+        SELECT DATEFROMPARTS(@Nam, @Thang, 1) AS Ngay
+        UNION ALL
+        SELECT DATEADD(DAY, 1, Ngay)
+        FROM DaysInMonth
+        WHERE DATEADD(DAY, 1, Ngay) < DATEADD(MONTH, 1, DATEFROMPARTS(@Nam, @Thang, 1))
+    )
+    SELECT 
+        d.Ngay,
+        DAY(d.Ngay) AS NgayTrongThang,
+        ISNULL(SUM(dh.TongTien), 0) AS DoanhThu,
+        COUNT(dh.MaDon) AS SoDon
+    FROM DaysInMonth d
+    LEFT JOIN DON_HANG dh 
+        ON CAST(dh.NgayTao AS DATE) = d.Ngay 
+        AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
+    GROUP BY d.Ngay
+    ORDER BY d.Ngay ASC
+    OPTION (MAXRECURSION 31);
+END;
+GO
+
+-- SP: Báo cáo doanh thu theo Quý
+DROP PROCEDURE IF EXISTS sp_BaoCaoDoanhThuQuy;
+GO
+CREATE PROCEDURE sp_BaoCaoDoanhThuQuy
+    @Quy INT, -- 1..4
+    @Nam INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @ThangDau INT = (@Quy - 1) * 3 + 1;
+    DECLARE @ThangCuoi INT = @Quy * 3;
+    SELECT 
+        COUNT(*) AS TongDon,
+        ISNULL(SUM(TongTien), 0) AS TongDoanhThu
+    FROM DON_HANG
+    WHERE MONTH(NgayTao) BETWEEN @ThangDau AND @ThangCuoi 
+      AND YEAR(NgayTao) = @Nam 
+      AND TrangThai NOT IN (N'Huy');
+END;
+GO
+
+-- SP: Doanh thu theo từng tháng trong Quý (biểu đồ)
+DROP PROCEDURE IF EXISTS sp_DoanhThuTheoThangTrongQuy;
+GO
+CREATE PROCEDURE sp_DoanhThuTheoThangTrongQuy
+    @Quy INT,
+    @Nam INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @ThangDau INT = (@Quy - 1) * 3 + 1;
+    ;WITH Months AS (
+        SELECT @ThangDau AS Thang
+        UNION ALL
+        SELECT Thang + 1 FROM Months WHERE Thang < @ThangDau + 2
+    )
+    SELECT 
+        m.Thang,
+        ISNULL(SUM(dh.TongTien), 0) AS DoanhThu,
+        COUNT(dh.MaDon) AS SoDon
+    FROM Months m
+    LEFT JOIN DON_HANG dh 
+        ON MONTH(dh.NgayTao) = m.Thang AND YEAR(dh.NgayTao) = @Nam
+        AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
+    GROUP BY m.Thang
+    ORDER BY m.Thang;
 END;
 GO
 
@@ -594,21 +769,53 @@ INSERT INTO NHAN_VIEN VALUES
 
 -- Sản phẩm
 INSERT INTO SAN_PHAM VALUES
-(N'SP000001', N'Hoa hồng đỏ (bó 10)',    N'Hoa tươi', 180000, 120000, 42, 10, N'DangBan'),
-(N'SP000002', N'Tulip hồng (bó 5)',       N'Hoa tươi', 220000, 160000, 28, 10, N'DangBan'),
-(N'SP000003', N'Cúc vàng (bó 10)',        N'Hoa tươi', 80000,  45000,  3,  10, N'DangBan'),
-(N'SP000004', N'Ly trắng (bó 5)',         N'Hoa tươi', 150000, 100000, 8,  10, N'DangBan'),
-(N'SP000005', N'Hoa anh đào (bó 7)',      N'Hoa tươi', 160000, 110000, 15, 5,  N'DangBan'),
-(N'SP000006', N'Lá decor xanh',           N'Phụ kiện', 30000,  20000,  0,  5,  N'DangBan'),
-(N'SP000007', N'Ruy băng trang trí',      N'Phụ kiện', 15000,  8000,   200,50, N'DangBan'),
-(N'SP000008', N'Hoa lay ơn (bó 10)',      N'Hoa tươi', 90000,  55000,  0,  10, N'NgungBan');
+(N'SP000001', N'Hoa hồng đỏ (bó 10)',            N'Hoa tươi', 180000, 120000, 42, 10, N'DangBan'),
+(N'SP000002', N'Hoa hồng trắng (bó 10)',         N'Hoa tươi', 180000, 120000, 35, 10, N'DangBan'),
+(N'SP000003', N'Hoa tulip hồng (bó 5)',          N'Hoa tươi', 220000, 160000, 28, 10, N'DangBan'),
+(N'SP000004', N'Hoa hướng dương (bó 5)',         N'Hoa tươi', 140000, 95000, 40, 10, N'DangBan'),
+(N'SP000005', N'Hoa ly trắng (bó 5)',            N'Hoa tươi', 150000, 100000, 22, 10, N'DangBan'),
+(N'SP000006', N'Hoa cúc vàng (bó 10)',           N'Hoa tươi', 90000, 60000, 55, 15, N'DangBan'),
+(N'SP000007', N'Hoa baby trắng',                 N'Hoa tươi', 100000, 65000, 45, 10, N'DangBan'),
+(N'SP000008', N'Hoa cẩm tú cầu xanh',            N'Hoa tươi', 250000, 180000, 18, 5, N'DangBan'),
+(N'SP000009', N'Hoa lan hồ điệp tím',            N'Hoa tươi', 420000, 320000, 12, 3, N'DangBan'),
+(N'SP000010', N'Hoa cẩm chướng đỏ (bó 10)',      N'Hoa tươi', 120000, 80000, 30, 10, N'DangBan'),
+(N'SP000011', N'Bó hoa sinh nhật',               N'Hoa bó', 350000, 250000, 20, 5, N'DangBan'),
+(N'SP000012', N'Bó hoa tình yêu',                N'Hoa bó', 500000, 360000, 15, 5, N'DangBan'),
+(N'SP000013', N'Bó hoa tốt nghiệp',              N'Hoa bó', 280000, 190000, 18, 5, N'DangBan'),
+(N'SP000014', N'Bó hoa cảm ơn',                  N'Hoa bó', 320000, 220000, 14, 5, N'DangBan'),
+(N'SP000015', N'Giỏ hoa sinh nhật',              N'Giỏ hoa', 580000, 420000, 12, 3, N'DangBan'),
+(N'SP000016', N'Giỏ hoa chúc mừng',              N'Giỏ hoa', 650000, 480000, 10, 3, N'DangBan'),
+(N'SP000017', N'Kệ hoa khai trương',             N'Kệ hoa', 1200000, 900000, 5, 1, N'DangBan'),
+(N'SP000018', N'Kệ hoa khai trương cao cấp',     N'Kệ hoa', 1800000, 1400000, 4, 1, N'DangBan'),
+(N'SP000019', N'Lẵng hoa chia buồn',             N'Lẵng hoa', 1100000, 850000, 5, 1, N'DangBan'),
+(N'SP000020', N'Lẵng hoa chia buồn cao cấp',     N'Lẵng hoa', 1800000, 1400000, 3, 1, N'DangBan'),
+(N'SP000021', N'Hoa cưới cầm tay',               N'Hoa cưới', 550000, 400000, 8, 2, N'DangBan'),
+(N'SP000022', N'Hoa cưới baby',                  N'Hoa cưới', 650000, 480000, 6, 2, N'DangBan'),
+(N'SP000023', N'Giấy gói hoa kraft',             N'Phụ kiện', 15000, 8000, 200, 50, N'DangBan'),
+(N'SP000024', N'Giấy gói hoa Hàn Quốc',          N'Phụ kiện', 25000, 15000, 150, 30, N'DangBan'),
+(N'SP000025', N'Ruy băng lụa',                   N'Phụ kiện', 20000, 12000, 180, 50, N'DangBan'),
+(N'SP000026', N'Nơ trang trí',                   N'Phụ kiện', 10000, 5000, 250, 50, N'DangBan'),
+(N'SP000027', N'Xốp cắm hoa Oasis',              N'Phụ kiện', 35000, 22000, 100, 20, N'DangBan'),
+(N'SP000028', N'Giỏ mây cắm hoa',                N'Phụ kiện', 80000, 55000, 40, 10, N'DangBan'),
+(N'SP000029', N'Bình thủy tinh cắm hoa',         N'Phụ kiện', 120000, 85000, 25, 5, N'DangBan'),
+(N'SP000030', N'Lá bạc trang trí',               N'Phụ kiện', 30000, 18000, 120, 20, N'DangBan');
 
 -- Khách hàng
 INSERT INTO KHACH_HANG VALUES
-(N'KH000001', N'Nguyễn Thị Lan',  N'0901234567', N'12 Lê Lợi, Q.1, TP.HCM',       N'lan.nt@gmail.com',  '2025-06-15'),
-(N'KH000002', N'Trần Văn Hùng',   N'0912345678', N'45 Nguyễn Huệ, Q.1, TP.HCM',   N'hung.tv@gmail.com', '2025-09-01'),
-(N'KH000003', N'Lê Thị Mai',      N'0923456789', NULL,                              NULL,                 '2026-01-20'),
-(N'KH000004', N'Phạm Văn An',     N'0934567890', N'78 Trần Phú, Q.5, TP.HCM',      N'an.pv@email.com',   '2025-03-10');
+(N'KH000001', N'Nguyễn Thị Lan',  N'0901234567', N'12 Hàng Bông, Q.Hoàn Kiếm, Hà Nội',      N'lan.nt@gmail.com',   '2025-06-15'),
+(N'KH000002', N'Trần Văn Hùng',   N'0912345678', N'45 Phố Huế, Q.Hai Bà Trưng, Hà Nội',    N'hung.tv@gmail.com',  '2025-09-01'),
+(N'KH000003', N'Lê Thị Mai',      N'0923456789', N'78 Kim Mã, Q.Ba Đình, Hà Nội',           N'mai.lt@gmail.com',   '2026-01-20'),
+(N'KH000004', N'Phạm Văn An',     N'0934567890', N'23 Trần Phú, Q.Hà Đông, Hà Nội',         N'an.pv@email.com',    '2025-03-10'),
+(N'KH000005', N'Đỗ Minh Tuấn',    N'0941122334', N'56 Láng Hạ, Q.Đống Đa, Hà Nội',          N'tuan.dm@gmail.com',  '2025-11-05'),
+(N'KH000006', N'Vũ Thị Hương',    N'0952233445', N'102 Nguyễn Trãi, Q.Thanh Xuân, Hà Nội',  N'huong.vt@gmail.com', '2025-12-18'),
+(N'KH000007', N'Hoàng Đức Anh',   N'0963344556', N'8 Xuân Diệu, Q.Tây Hồ, Hà Nội',         N'anh.hd@gmail.com',   '2026-02-01'),
+(N'KH000008', N'Ngô Thanh Thảo',  N'0974455667', N'31 Trần Duy Hưng, Q.Cầu Giấy, Hà Nội',  N'thao.nt@gmail.com',  '2026-03-05'),
+(N'KH000009', N'Bùi Quang Hải',   N'0985566778', N'15 Lê Duẩn, Q.Hoàn Kiếm, Hà Nội',       N'hai.bq@gmail.com',   '2026-04-12'),
+(N'KH000010', N'Đinh Thị Ngọc',   N'0996677889', N'67 Đội Cấn, Q.Ba Đình, Hà Nội',          N'ngoc.dt@gmail.com',  '2026-05-20');
+
+-- Tắt trigger Insert Log tạm thời để tránh duplicate khi insert đơn mẫu
+DISABLE TRIGGER trg_DonHang_Insert_Log ON DON_HANG;
+GO
 
 -- Đơn hàng mẫu
 INSERT INTO DON_HANG VALUES
@@ -637,35 +844,39 @@ INSERT INTO DON_HANG VALUES
 (N'DH000023', '2026-03-21 14:10', N'KH000003', N'NV000002', N'GiaoTanNoi', N'DaGiao',   0, NULL),
 (N'DH000024', '2026-03-21 16:45', N'KH000004', N'NV000005', N'TaiQuay',    N'HoanThanh',0, NULL);
 
--- Chi tiết đơn hàng
+-- Bật lại trigger Insert Log
+ENABLE TRIGGER trg_DonHang_Insert_Log ON DON_HANG;
+GO
+
+-- Chi tiết đơn hàng (giá khớp với SAN_PHAM mới, đa dạng sản phẩm)
 INSERT INTO CHI_TIET_DON_HANG (MaDon, MaSP, SoLuong, DonGia, ThanhTien) VALUES
 (N'DH000001', N'SP000001', 2, 180000, 360000),
-(N'DH000001', N'SP000002', 1, 220000, 220000),
-(N'DH000002', N'SP000001', 1, 180000, 180000),
-(N'DH000002', N'SP000002', 1, 220000, 220000),
-(N'DH000003', N'SP000003', 2, 80000,  160000),
-(N'DH000004', N'SP000001', 1, 180000, 180000),
-(N'DH000004', N'SP000004', 2, 150000, 300000),
-(N'DH000005', N'SP000002', 1, 220000, 220000),
-(N'DH000006', N'SP000003', 3, 80000,  240000),
-(N'DH000007', N'SP000001', 1, 180000, 180000),
-(N'DH000008', N'SP000005', 2, 160000, 320000),
-(N'DH000009', N'SP000004', 1, 150000, 150000),
-(N'DH000010', N'SP000002', 2, 220000, 440000),
-(N'DH000011', N'SP000003', 1, 80000,  80000),
-(N'DH000012', N'SP000001', 3, 180000, 540000),
-(N'DH000013', N'SP000005', 1, 160000, 160000),
-(N'DH000014', N'SP000004', 2, 150000, 300000),
-(N'DH000015', N'SP000002', 1, 220000, 220000),
-(N'DH000016', N'SP000003', 2, 80000,  160000),
+(N'DH000001', N'SP000007', 1, 100000, 100000),
+(N'DH000002', N'SP000011', 1, 350000, 350000),
+(N'DH000002', N'SP000023', 2, 15000,  30000),
+(N'DH000003', N'SP000006', 2, 90000,  180000),
+(N'DH000004', N'SP000012', 1, 500000, 500000),
+(N'DH000004', N'SP000025', 1, 20000,  20000),
+(N'DH000005', N'SP000003', 1, 220000, 220000),
+(N'DH000006', N'SP000004', 3, 140000, 420000),
+(N'DH000007', N'SP000002', 1, 180000, 180000),
+(N'DH000008', N'SP000005', 2, 150000, 300000),
+(N'DH000009', N'SP000008', 1, 250000, 250000),
+(N'DH000010', N'SP000009', 1, 420000, 420000),
+(N'DH000011', N'SP000010', 2, 120000, 240000),
+(N'DH000012', N'SP000013', 1, 280000, 280000),
+(N'DH000013', N'SP000014', 1, 320000, 320000),
+(N'DH000014', N'SP000015', 1, 580000, 580000),
+(N'DH000015', N'SP000003', 1, 220000, 220000),
+(N'DH000016', N'SP000006', 2, 90000,  180000),
 (N'DH000017', N'SP000001', 1, 180000, 180000),
-(N'DH000018', N'SP000005', 3, 160000, 480000),
-(N'DH000019', N'SP000004', 1, 150000, 150000),
-(N'DH000020', N'SP000002', 2, 220000, 440000),
-(N'DH000021', N'SP000003', 1, 80000,  80000),
+(N'DH000018', N'SP000016', 1, 650000, 650000),
+(N'DH000019', N'SP000004', 1, 140000, 140000),
+(N'DH000020', N'SP000002', 2, 180000, 360000),
+(N'DH000021', N'SP000017', 1, 1200000, 1200000),
 (N'DH000022', N'SP000001', 2, 180000, 360000),
-(N'DH000023', N'SP000005', 1, 160000, 160000),
-(N'DH000024', N'SP000004', 2, 150000, 300000);
+(N'DH000023', N'SP000005', 1, 150000, 150000),
+(N'DH000024', N'SP000021', 1, 550000, 550000);
 
 -- Cập nhật TongTien dựa trên chi tiết
 UPDATE dh SET dh.TongTien = (SELECT ISNULL(SUM(ThanhTien),0) FROM CHI_TIET_DON_HANG WHERE MaDon = dh.MaDon)
@@ -702,7 +913,7 @@ GO
 
 INSERT INTO CT_NHAP_KHO VALUES
 (N'PN000001', N'SP000001', 50, 120000),
-(N'PN000001', N'SP000002', 30, 160000);
+(N'PN000001', N'SP000002', 30, 120000);
 
 -- Bật lại trigger
 ENABLE TRIGGER trg_NhapKho_TangTon ON CT_NHAP_KHO;
@@ -734,7 +945,7 @@ INSERT INTO PHAN_HOI VALUES
 (N'PH000019', N'DH000023', N'Hoa dập nát nhiều, yêu cầu hoàn tiền hoặc đổi trả.', '2026-03-21 16:00', N'DaXuLy', N'Đã đồng ý hoàn trả 100%'),
 (N'PH000020', N'DH000024', N'Dịch vụ tệ, gói hoa rất cẩu thả.', '2026-03-21 18:00', N'ChuaXuLy', NULL);
 
--- Phân quyền mẫu
+-- Phân quyền mẫu (CHỈ INSERT 1 LẦN - FIX lỗi trùng khóa từ script gốc)
 INSERT INTO PHAN_QUYEN VALUES
 -- Admin: toàn quyền
 (N'Admin', N'Dashboard',    1, 1, 1, 1, 1),
@@ -747,6 +958,7 @@ INSERT INTO PHAN_QUYEN VALUES
 (N'Admin', N'BaoCao',       1, 1, 1, 1, 1),
 (N'Admin', N'TraHang',      1, 1, 1, 1, 1),
 (N'Admin', N'PhanHoi',      1, 1, 1, 1, 1),
+(N'Admin', N'PhanQuyen',    1, 1, 1, 1, 1),
 -- Cashier: bán hàng, khách hàng
 (N'Cashier', N'Dashboard',  1, 0, 0, 0, 0),
 (N'Cashier', N'DonHang',    1, 1, 1, 0, 0),
@@ -781,115 +993,7 @@ INSERT INTO PHAN_QUYEN VALUES
 (N'Shipper', N'TraHang',    0, 0, 0, 0, 0),
 (N'Shipper', N'PhanHoi',    0, 0, 0, 0, 0);
 
--- =====================================================
--- SP: Doanh thu theo ngày trong tháng (biểu đồ báo cáo tháng)
--- =====================================================
-GO
-
-CREATE OR ALTER PROCEDURE sp_DoanhThuTheoNgayTrongThang
-    @Thang INT,
-    @Nam   INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    ;WITH DaysInMonth AS (
-        SELECT DATEFROMPARTS(@Nam, @Thang, 1) AS Ngay
-        UNION ALL
-        SELECT DATEADD(DAY, 1, Ngay)
-        FROM DaysInMonth
-        WHERE DATEADD(DAY, 1, Ngay) < DATEADD(MONTH, 1, DATEFROMPARTS(@Nam, @Thang, 1))
-    )
-    SELECT 
-        d.Ngay,
-        DAY(d.Ngay) AS NgayTrongThang,
-        ISNULL(SUM(dh.TongTien), 0) AS DoanhThu,
-        COUNT(dh.MaDon) AS SoDon
-    FROM DaysInMonth d
-    LEFT JOIN DON_HANG dh 
-        ON CAST(dh.NgayTao AS DATE) = d.Ngay 
-        AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
-    GROUP BY d.Ngay
-    ORDER BY d.Ngay ASC
-    OPTION (MAXRECURSION 31);
-END;
-GO
-
-PRINT N'✅ Database FloriSys đã được tạo thành công!';
-GO
-
-
--- =====================================================
--- PH?N B? SUNG: L?CH S? ��N H�NG V� D? LI?U M?U
--- =====================================================
-
--- =====================================================
--- BẢNG LỊCH SỬ TRẠNG THÁI ĐƠN HÀNG
--- Tự động ghi log mỗi khi đơn hàng thay đổi trạng thái
--- =====================================================
-
--- 1. Tạo bảng lịch sử
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LICH_SU_DON_HANG')
-BEGIN
-    CREATE TABLE LICH_SU_DON_HANG (
-        Id           INT IDENTITY(1,1) PRIMARY KEY,
-        MaDon        NVARCHAR(20)  NOT NULL REFERENCES DON_HANG(MaDon),
-        TrangThai    NVARCHAR(20)  NOT NULL,
-        ThoiGian     DATETIME      NOT NULL DEFAULT GETDATE(),
-        GhiChu       NVARCHAR(500)
-    );
-END
-GO
-
--- 2. Trigger: Tự động ghi log khi INSERT đơn mới
-IF EXISTS (SELECT * FROM sys.triggers WHERE name = 'trg_DonHang_Insert_Log')
-    DROP TRIGGER trg_DonHang_Insert_Log;
-GO
-
-CREATE TRIGGER trg_DonHang_Insert_Log
-ON DON_HANG
-AFTER INSERT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
-    SELECT MaDon, TrangThai, GETDATE(), N'Tạo đơn hàng mới'
-    FROM inserted;
-END
-GO
-
--- 3. Trigger: Tự động ghi log khi UPDATE trạng thái
-IF EXISTS (SELECT * FROM sys.triggers WHERE name = 'trg_DonHang_Update_Log')
-    DROP TRIGGER trg_DonHang_Update_Log;
-GO
-
-CREATE TRIGGER trg_DonHang_Update_Log
-ON DON_HANG
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    -- Chỉ ghi log khi TrangThai thay đổi
-    IF UPDATE(TrangThai)
-    BEGIN
-        INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
-        SELECT i.MaDon, i.TrangThai, GETDATE(),
-            CASE i.TrangThai
-                WHEN N'Moi'       THEN N'Đơn hàng mới'
-                WHEN N'DangXuLy'  THEN N'Đã xuất kho - đang xử lý'
-                WHEN N'DaGiao'    THEN N'Đã giao cho shipper'
-                WHEN N'HoanThanh' THEN N'Đơn hàng hoàn thành'
-                WHEN N'Huy'       THEN N'Đơn hàng bị hủy'
-                WHEN N'HoanHang'  THEN N'Khách yêu cầu hoàn hàng'
-                ELSE N'Cập nhật trạng thái: ' + i.TrangThai
-            END
-        FROM inserted i
-        INNER JOIN deleted d ON i.MaDon = d.MaDon
-        WHERE i.TrangThai <> d.TrangThai;
-    END
-END
-GO
-
--- 4. Backfill: Ghi log cho các đơn hàng đã tồn tại (chưa có lịch sử)
+-- Backfill lịch sử đơn hàng
 INSERT INTO LICH_SU_DON_HANG (MaDon, TrangThai, ThoiGian, GhiChu)
 SELECT dh.MaDon, N'Moi', dh.NgayTao, N'Tạo đơn hàng mới (backfill)'
 FROM DON_HANG dh
@@ -917,171 +1021,219 @@ AND NOT EXISTS (
 );
 GO
 
-PRINT N'✅ Tạo bảng LICH_SU_DON_HANG + trigger thành công!';
+PRINT N'✅ Tạo bảng + Trigger + Dữ liệu mẫu cơ bản thành công!';
 GO
+-- =====================================================
+-- PHẦN BỔ SUNG: DỮ LIỆU MẪU MỞ RỘNG
+-- 10 đơn/ngày × 169 ngày (01/01 → 18/06/2026)
+-- Chia đều cho Cashier, Shipper, Khách hàng
+-- =====================================================
 
-
-
-
--- Phan bo sung: Du lieu mau mo rong
-IF DB_ID('FloriSys') IS NULL CREATE DATABASE FloriSys;
-GO
-USE FloriSys;
-GO
-
--- 1. THÊM PHIẾU NHẬP KHO (Để có hàng bán)
+-- 1. THÊM PHIẾU NHẬP KHO HÀNG THÁNG (Để có đủ hàng bán)
 DECLARE @MaNV_Kho NVARCHAR(20) = (SELECT TOP 1 MaNV FROM NHAN_VIEN WHERE ChucVu = 'Warehouse');
 IF @MaNV_Kho IS NULL SET @MaNV_Kho = 'NV000003';
 
 IF NOT EXISTS (SELECT 1 FROM PHIEU_NHAP_KHO WHERE MaPhieu = 'PN000002')
 BEGIN
     INSERT INTO PHIEU_NHAP_KHO (MaPhieu, NgayNhap, MaNV, GhiChu) VALUES
-    ('PN000002', '2026-01-05 08:00', @MaNV_Kho, N'Nhập hàng đầu năm'),
-    ('PN000003', '2026-03-15 09:00', @MaNV_Kho, N'Nhập hàng bổ sung tháng 3'),
-    ('PN000004', '2026-04-25 14:00', @MaNV_Kho, N'Nhập hàng chuẩn bị lễ');
+    ('PN000002', '2026-01-02 08:00', @MaNV_Kho, N'Nhập hàng đầu năm'),
+    ('PN000003', '2026-02-01 08:00', @MaNV_Kho, N'Nhập hàng tháng 2'),
+    ('PN000004', '2026-03-01 08:00', @MaNV_Kho, N'Nhập hàng tháng 3'),
+    ('PN000005', '2026-04-01 08:00', @MaNV_Kho, N'Nhập hàng tháng 4'),
+    ('PN000006', '2026-05-01 08:00', @MaNV_Kho, N'Nhập hàng tháng 5'),
+    ('PN000007', '2026-06-01 08:00', @MaNV_Kho, N'Nhập hàng tháng 6');
 
-    INSERT INTO CT_NHAP_KHO (MaPhieu, MaSP, SoLuong, GiaNhap)
-    SELECT 'PN000002', MaSP, 100, GiaNhap FROM SAN_PHAM;
-    
-    INSERT INTO CT_NHAP_KHO (MaPhieu, MaSP, SoLuong, GiaNhap)
-    SELECT 'PN000003', MaSP, 50, GiaNhap FROM SAN_PHAM WHERE MaSP LIKE '%1%';
+    -- Mỗi tháng nhập 200 đơn vị cho mỗi sản phẩm
+    DECLARE @pn NVARCHAR(20);
+    DECLARE pn_cursor CURSOR FOR 
+        SELECT MaPhieu FROM PHIEU_NHAP_KHO WHERE MaPhieu IN ('PN000002','PN000003','PN000004','PN000005','PN000006','PN000007');
+    OPEN pn_cursor;
+    FETCH NEXT FROM pn_cursor INTO @pn;
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        INSERT INTO CT_NHAP_KHO (MaPhieu, MaSP, SoLuong, GiaNhap)
+        SELECT @pn, MaSP, 200, GiaNhap FROM SAN_PHAM;
+        FETCH NEXT FROM pn_cursor INTO @pn;
+    END
+    CLOSE pn_cursor;
+    DEALLOCATE pn_cursor;
 END
+GO
 
--- 2. TẠO ĐƠN HÀNG VÀ CHIA ĐỀU CHO NHÂN VIÊN
-DECLARE @StartDate DATETIME = '2026-01-10';
-DECLARE @EndDate DATETIME = '2026-05-07'; -- Trước ngày 8/5
+-- 2. TẠO ĐƠN HÀNG: 10 đơn/ngày từ 01/01/2026 → 18/06/2026
 DECLARE @CurrentOrderNum INT = (SELECT ISNULL(MAX(CAST(SUBSTRING(MaDon, 3, 6) AS INT)), 0) FROM DON_HANG);
 DECLARE @GHNum INT = (SELECT ISNULL(MAX(CAST(SUBSTRING(MaGiaoHang, 3, 6) AS INT)), 0) FROM GIAO_HANG);
 
--- Lấy danh sách nhân viên vào bảng tạm để chia đều
+-- Bảng tạm nhân viên
 SELECT MaNV, ROW_NUMBER() OVER (ORDER BY MaNV) as ID INTO #Cashiers FROM NHAN_VIEN WHERE ChucVu IN ('Cashier', 'Admin');
 SELECT MaNV, ROW_NUMBER() OVER (ORDER BY MaNV) as ID INTO #Shippers FROM NHAN_VIEN WHERE ChucVu = 'Shipper';
+SELECT MaKH, ROW_NUMBER() OVER (ORDER BY MaKH) as ID INTO #Customers FROM KHACH_HANG;
 
 DECLARE @NumCashiers INT = (SELECT COUNT(*) FROM #Cashiers);
 DECLARE @NumShippers INT = (SELECT COUNT(*) FROM #Shippers);
+DECLARE @NumCustomers INT = (SELECT COUNT(*) FROM #Customers);
 
-IF @NumCashiers > 0 AND @NumShippers > 0
+IF @NumCashiers > 0 AND @NumShippers > 0 AND @NumCustomers > 0
 BEGIN
-    DECLARE @i INT = 1;
-    DECLARE @TotalOrders INT = 120; 
+    DECLARE @DayDate DATE = '2026-01-01';
+    DECLARE @EndDate DATE = '2026-06-18';
+    DECLARE @j INT;
+    DECLARE @OrderGlobalIdx INT = 0;
 
-    DECLARE @CurrentDate DATETIME = @StartDate;
-    WHILE @i <= @TotalOrders
+    -- Khai báo biến trước vòng lặp
+    DECLARE @OrderTime DATETIME;
+    DECLARE @MaDon NVARCHAR(20);
+    DECLARE @CashierID INT;
+    DECLARE @MaNV_Tao NVARCHAR(20);
+    DECLARE @MaKH NVARCHAR(20);
+    DECLARE @CustomerID INT;
+    DECLARE @TrangThaiDon NVARCHAR(20);
+    DECLARE @HinhThuc NVARCHAR(30);
+    DECLARE @MaGH NVARCHAR(20);
+    DECLARE @ShipperID INT;
+    DECLARE @MaNV_Ship NVARCHAR(20);
+    DECLARE @NumProducts INT;
+    DECLARE @k INT;
+    DECLARE @MaSP_Random NVARCHAR(20);
+    DECLARE @GiaBan_Random DECIMAL(18,0);
+    DECLARE @SoLuong_Random INT;
+    DECLARE @DaysFromEnd INT;
+
+    WHILE @DayDate <= @EndDate
     BEGIN
-        SET @CurrentDate = DATEADD(MINUTE, 30 + ABS(CHECKSUM(NEWID())) % 1440, @CurrentDate);
-        DECLARE @OrderDate DATETIME = @CurrentDate;
-        
-        SET @CurrentOrderNum = @CurrentOrderNum + 1;
-        DECLARE @MaDon NVARCHAR(20) = 'DH' + RIGHT('000000' + CAST(@CurrentOrderNum AS NVARCHAR), 6);
-        
-        DECLARE @CashierID INT = (@i % @NumCashiers) + 1;
-        DECLARE @MaNV_Tao NVARCHAR(20) = (SELECT MaNV FROM #Cashiers WHERE ID = @CashierID);
-        
-        DECLARE @MaKH NVARCHAR(20) = (SELECT TOP 1 MaKH FROM KHACH_HANG ORDER BY NEWID());
-        DECLARE @TrangThaiDon NVARCHAR(20) = CASE WHEN (@i % 10 = 0) THEN N'HoanHang' ELSE N'HoanThanh' END;
+        SET @j = 1;
+        WHILE @j <= 10 -- 10 đơn mỗi ngày
+        BEGIN
+            SET @OrderGlobalIdx = @OrderGlobalIdx + 1;
 
-        INSERT INTO DON_HANG (MaDon, NgayTao, MaKH, MaNV_TaoDon, HinhThucNhanHang, TrangThai, TongTien)
-        VALUES (@MaDon, @OrderDate, @MaKH, @MaNV_Tao, N'GiaoTanNoi', @TrangThaiDon, 0);
+            -- Giờ tạo đơn ngẫu nhiên 8h-18h
+            SET @OrderTime = CAST(@DayDate AS DATETIME) 
+                + CAST(DATEADD(MINUTE, 480 + ABS(CHECKSUM(NEWID())) % 600, 0) AS DATETIME);
 
-        INSERT INTO CHI_TIET_DON_HANG (MaDon, MaSP, SoLuong, DonGia)
-        SELECT TOP 1 @MaDon, MaSP, (1 + ABS(CHECKSUM(NEWID())) % 2), GiaBan 
-        FROM SAN_PHAM ORDER BY NEWID();
+            -- Mã đơn
+            SET @CurrentOrderNum = @CurrentOrderNum + 1;
+            SET @MaDon = 'DH' + RIGHT('000000' + CAST(@CurrentOrderNum AS NVARCHAR), 6);
 
-        UPDATE DON_HANG SET TongTien = (SELECT SUM(ThanhTien) FROM CHI_TIET_DON_HANG WHERE MaDon = @MaDon) WHERE MaDon = @MaDon;
+            -- Chia đều Cashier (round-robin)
+            SET @CashierID = ((@OrderGlobalIdx - 1) % @NumCashiers) + 1;
+            SET @MaNV_Tao = (SELECT MaNV FROM #Cashiers WHERE ID = @CashierID);
 
-        SET @GHNum = @GHNum + 1;
-        DECLARE @MaGH NVARCHAR(20) = 'GH' + RIGHT('000000' + CAST(@GHNum AS NVARCHAR), 6);
-        DECLARE @ShipperID INT = (@i % @NumShippers) + 1;
-        DECLARE @MaNV_Ship NVARCHAR(20) = (SELECT MaNV FROM #Shippers WHERE ID = @ShipperID);
-        
-        INSERT INTO GIAO_HANG (MaGiaoHang, MaDon, MaNV_Shipper, NgayGiao, TrangThai)
-        VALUES (@MaGH, @MaDon, @MaNV_Ship, DATEADD(MINUTE, 30 + (ABS(CHECKSUM(NEWID())) % 120), @OrderDate), 
-                CASE WHEN @TrangThaiDon = N'HoanHang' THEN N'HoanHang' ELSE N'GiaoThanhCong' END);
+            -- Chia đều Khách hàng (round-robin)
+            SET @CustomerID = ((@OrderGlobalIdx - 1) % @NumCustomers) + 1;
+            SET @MaKH = (SELECT MaKH FROM #Customers WHERE ID = @CustomerID);
 
-        SET @i = @i + 1;
+            -- Trạng thái: đơn cũ → HoanThanh/HoanHang/Huy, đơn gần đây → DaGiao/DangXuLy/Moi
+            SET @DaysFromEnd = DATEDIFF(DAY, @DayDate, @EndDate);
+            SET @TrangThaiDon = CASE
+                WHEN @DaysFromEnd <= 1 AND @j <= 3  THEN N'Moi'        -- 3 đơn mới nhất
+                WHEN @DaysFromEnd <= 3 AND @j <= 5  THEN N'DangXuLy'   -- đang xử lý
+                WHEN @DaysFromEnd <= 5               THEN N'DaGiao'     -- vừa giao
+                WHEN @OrderGlobalIdx % 20 = 0       THEN N'HoanHang'   -- 5% hoàn hàng
+                WHEN @OrderGlobalIdx % 20 = 10      THEN N'Huy'        -- 5% hủy
+                ELSE N'HoanThanh'                                       -- 90% hoàn thành
+            END;
+
+            -- Hình thức: 70% giao tận nơi, 30% tại quầy
+            SET @HinhThuc = CASE WHEN @j <= 7 THEN N'GiaoTanNoi' ELSE N'TaiQuay' END;
+
+            -- Tạo đơn hàng
+            INSERT INTO DON_HANG (MaDon, NgayTao, MaKH, MaNV_TaoDon, HinhThucNhanHang, TrangThai, TongTien)
+            VALUES (@MaDon, @OrderTime, @MaKH, @MaNV_Tao, @HinhThuc, @TrangThaiDon, 0);
+
+            -- Thêm 1-3 sản phẩm ngẫu nhiên vào đơn
+            SET @NumProducts = 1 + ABS(CHECKSUM(NEWID())) % 3; -- 1, 2 hoặc 3 SP
+            SET @k = 1;
+            WHILE @k <= @NumProducts
+            BEGIN
+                -- Chọn SP ngẫu nhiên chưa có trong đơn này
+                SELECT TOP 1 @MaSP_Random = MaSP, @GiaBan_Random = GiaBan 
+                FROM SAN_PHAM 
+                WHERE MaSP NOT IN (SELECT MaSP FROM CHI_TIET_DON_HANG WHERE MaDon = @MaDon)
+                ORDER BY NEWID();
+
+                SET @SoLuong_Random = 1 + ABS(CHECKSUM(NEWID())) % 3; -- 1-3
+
+                IF @MaSP_Random IS NOT NULL
+                BEGIN
+                    INSERT INTO CHI_TIET_DON_HANG (MaDon, MaSP, SoLuong, DonGia)
+                    VALUES (@MaDon, @MaSP_Random, @SoLuong_Random, @GiaBan_Random);
+                END
+
+                SET @k = @k + 1;
+            END
+
+            -- Cập nhật tổng tiền
+            UPDATE DON_HANG SET TongTien = (SELECT ISNULL(SUM(ThanhTien),0) FROM CHI_TIET_DON_HANG WHERE MaDon = @MaDon) WHERE MaDon = @MaDon;
+
+            -- Tạo giao hàng (chỉ cho GiaoTanNoi)
+            IF @HinhThuc = N'GiaoTanNoi'
+            BEGIN
+                SET @GHNum = @GHNum + 1;
+                SET @MaGH = 'GH' + RIGHT('000000' + CAST(@GHNum AS NVARCHAR), 6);
+                
+                -- Chia đều Shipper (round-robin)
+                SET @ShipperID = ((@GHNum - 1) % @NumShippers) + 1;
+                SET @MaNV_Ship = (SELECT MaNV FROM #Shippers WHERE ID = @ShipperID);
+                
+                INSERT INTO GIAO_HANG (MaGiaoHang, MaDon, MaNV_Shipper, NgayGiao, TrangThai)
+                VALUES (@MaGH, @MaDon, @MaNV_Ship, 
+                    DATEADD(MINUTE, 30 + (ABS(CHECKSUM(NEWID())) % 120), @OrderTime),
+                    CASE 
+                        WHEN @TrangThaiDon = N'HoanHang'  THEN N'HoanHang'
+                        WHEN @TrangThaiDon = N'Huy'       THEN N'ChoPhanCong'
+                        WHEN @TrangThaiDon = N'Moi'       THEN N'ChoPhanCong'
+                        WHEN @TrangThaiDon = N'DangXuLy'  THEN N'DangGiao'
+                        WHEN @TrangThaiDon = N'DaGiao'    THEN N'GiaoThanhCong'
+                        ELSE N'GiaoThanhCong'
+                    END);
+            END
+
+            SET @j = @j + 1;
+        END
+
+        SET @DayDate = DATEADD(DAY, 1, @DayDate);
     END
 END
 
 DROP TABLE #Cashiers;
 DROP TABLE #Shippers;
+DROP TABLE #Customers;
 
-PRINT N'Done';
+PRINT N'✅ Dữ liệu mở rộng (10 đơn/ngày × 169 ngày) đã được tạo thành công!';
 GO
 
-
 -- =====================================================
--- 12. TỐI ƯU HÓA HIỆU SUẤT (INDEXES)
--- Cải thiện tốc độ tìm kiếm và phân trang cho dữ liệu lớn
+-- TỐI ƯU HÓA HIỆU SUẤT (INDEXES)
 -- =====================================================
 
--- Index hỗ trợ phân trang danh sách đơn hàng (Sắp xếp theo ngày tạo)
+-- Drop trước nếu tồn tại, rồi tạo lại
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'idx_DonHang_NgayTao' AND object_id = OBJECT_ID('DON_HANG'))
+    DROP INDEX idx_DonHang_NgayTao ON DON_HANG;
 CREATE NONCLUSTERED INDEX idx_DonHang_NgayTao 
 ON DON_HANG(NgayTao DESC) 
 INCLUDE (TrangThai, TongTien);
 GO
 
--- Index hỗ trợ tìm kiếm đơn hàng theo Trạng thái & Nhân viên tạo
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'idx_DonHang_TrangThai_MaNV' AND object_id = OBJECT_ID('DON_HANG'))
+    DROP INDEX idx_DonHang_TrangThai_MaNV ON DON_HANG;
 CREATE NONCLUSTERED INDEX idx_DonHang_TrangThai_MaNV 
 ON DON_HANG(TrangThai, MaNV_TaoDon);
 GO
 
--- Index hỗ trợ lọc dữ liệu Giao hàng (cho màn hình Shipper)
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'idx_GiaoHang_TrangThai_MaNV' AND object_id = OBJECT_ID('GIAO_HANG'))
+    DROP INDEX idx_GiaoHang_TrangThai_MaNV ON GIAO_HANG;
 CREATE NONCLUSTERED INDEX idx_GiaoHang_TrangThai_MaNV 
 ON GIAO_HANG(MaNV_Shipper, TrangThai)
 INCLUDE (NgayGiao);
 GO
 
--- Index hỗ trợ tìm kiếm sản phẩm theo Trạng thái (để nhanh chóng lấy danh sách đang bán)
+IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'idx_SanPham_TrangThai' AND object_id = OBJECT_ID('SAN_PHAM'))
+    DROP INDEX idx_SanPham_TrangThai ON SAN_PHAM;
 CREATE NONCLUSTERED INDEX idx_SanPham_TrangThai 
 ON SAN_PHAM(TrangThai) 
 INCLUDE (TenSP, GiaBan, SoLuongTon);
 GO
 
--- =====================================================
--- SP: Báo cáo doanh thu theo Quý
--- =====================================================
-CREATE OR ALTER PROCEDURE sp_BaoCaoDoanhThuQuy
-    @Quy INT, -- 1..4
-    @Nam INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    DECLARE @ThangDau INT = (@Quy - 1) * 3 + 1;
-    DECLARE @ThangCuoi INT = @Quy * 3;
-    SELECT 
-        COUNT(*) AS TongDon,
-        ISNULL(SUM(TongTien), 0) AS TongDoanhThu
-    FROM DON_HANG
-    WHERE MONTH(NgayTao) BETWEEN @ThangDau AND @ThangCuoi 
-      AND YEAR(NgayTao) = @Nam 
-      AND TrangThai NOT IN (N'Huy');
-END;
+PRINT N'✅ Database FloriSys đã được tạo lại hoàn chỉnh!';
 GO
 
--- =====================================================
--- SP: Doanh thu theo từng tháng trong Quý (biểu đồ)
--- =====================================================
-CREATE OR ALTER PROCEDURE sp_DoanhThuTheoThangTrongQuy
-    @Quy INT,
-    @Nam INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-    DECLARE @ThangDau INT = (@Quy - 1) * 3 + 1;
-    ;WITH Months AS (
-        SELECT @ThangDau AS Thang
-        UNION ALL
-        SELECT Thang + 1 FROM Months WHERE Thang < @ThangDau + 2
-    )
-    SELECT 
-        m.Thang,
-        ISNULL(SUM(dh.TongTien), 0) AS DoanhThu,
-        COUNT(dh.MaDon) AS SoDon
-    FROM Months m
-    LEFT JOIN DON_HANG dh 
-        ON MONTH(dh.NgayTao) = m.Thang AND YEAR(dh.NgayTao) = @Nam
-        AND dh.TrangThai NOT IN (N'Huy', N'HoanHang')
-    GROUP BY m.Thang
-    ORDER BY m.Thang;
-END;
-GO

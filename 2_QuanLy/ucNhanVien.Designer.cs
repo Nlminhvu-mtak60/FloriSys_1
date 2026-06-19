@@ -61,6 +61,7 @@
             this.pnlHeader.Name = "pnlHeader";
             this.pnlHeader.Size = new System.Drawing.Size(1000, 80);
             this.pnlHeader.TabIndex = 0;
+            this.pnlHeader.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeader_Paint);
             // 
             // lblSubTitle
             // 
@@ -155,6 +156,9 @@
             // 
             this.dgvNhanVien.AllowUserToAddRows = false;
             this.dgvNhanVien.AllowUserToDeleteRows = false;
+            this.dgvNhanVien.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvNhanVien.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvNhanVien.BackgroundColor = System.Drawing.Color.White;
             this.dgvNhanVien.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -178,9 +182,6 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvNhanVien.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvNhanVien.EnableHeadersVisualStyles = false;
-            this.dgvNhanVien.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvNhanVien.Location = new System.Drawing.Point(20, 170);
             this.dgvNhanVien.Name = "dgvNhanVien";
             this.dgvNhanVien.ReadOnly = true;
@@ -194,6 +195,8 @@
             // 
             // pnlForm
             // 
+            this.pnlForm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlForm.BackColor = System.Drawing.Color.White;
             this.pnlForm.Controls.Add(this.btnReset);
             this.pnlForm.Controls.Add(this.btnUpdateStatus);
@@ -211,8 +214,6 @@
             this.pnlForm.Controls.Add(this.txtMaNV);
             this.pnlForm.Controls.Add(this.lblMaNV);
             this.pnlForm.Controls.Add(this.lblFormTitle);
-            this.pnlForm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlForm.Location = new System.Drawing.Point(640, 100);
             this.pnlForm.Name = "pnlForm";
             this.pnlForm.Size = new System.Drawing.Size(340, 480);

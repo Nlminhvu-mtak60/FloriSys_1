@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 using FloriSys.Shared;
+using FloriSys.Services;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FloriSys._2_QuanLy
@@ -183,49 +184,48 @@ namespace FloriSys._2_QuanLy
         {
             try
             {
-                pnlBieuDo.Controls.Clear();
-                Chart chart = new Chart();
-                chart.Location = new Point(0, 30);
-                chart.Size = new Size(pnlBieuDo.Width - 10, pnlBieuDo.Height - 35);
-                chart.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-                chart.BackColor = Color.White;
-                
-                ChartArea area = new ChartArea("MainArea");
-                area.AxisX.MajorGrid.Enabled = false;
-                area.AxisX.LabelStyle.ForeColor = Color.DimGray;
-                area.AxisX.LineColor = Color.LightGray;
-                
-                area.AxisY.MajorGrid.LineColor = Color.FromArgb(240, 240, 240);
-                area.AxisY.LabelStyle.Format = "{0:N0}";
-                area.AxisY.LabelStyle.ForeColor = Color.DimGray;
-                area.AxisY.LineColor = Color.Transparent;
-                chart.ChartAreas.Add(area);
-                
-                Series series = new Series("Doanh Thu");
-                series.ChartType = SeriesChartType.Column;
-                series.Color = Color.FromArgb(232, 57, 77); // Primary Red
-                series.BackGradientStyle = GradientStyle.TopBottom;
-                series.BackSecondaryColor = Color.FromArgb(255, 182, 193); // Light Pink
-                series.IsValueShownAsLabel = true;
-                series.LabelFormat = "{0:N0}";
-                series.Font = new Font("Segoe UI", 8f, FontStyle.Bold);
-                series["PointWidth"] = "0.6";
-                chart.Series.Add(series);
-                
                 List<DoanhThuNgay> dsDoanhThu = _bcRepo.DoanhThu7Ngay();
+                chartDoanhThu.Series["Doanh Thu"].Points.Clear();
                 foreach (DoanhThuNgay item in dsDoanhThu)
                 {
-                    series.Points.AddXY(item.Ngay.ToString("dd/MM"), item.DoanhThu);
+                    chartDoanhThu.Series["Doanh Thu"].Points.AddXY(item.Ngay.ToString("dd/MM"), item.DoanhThu);
                 }
-
-                // Tiêu đề biểu đồ
-                Title title = new Title("HOẠT ĐỘNG 7 NGÀY GẦN NHẤT", Docking.Top, new Font("Segoe UI", 10f, FontStyle.Bold), Color.FromArgb(64, 64, 64));
-                chart.Titles.Add(title);
-                
-                pnlBieuDo.Controls.Add(chart);
             }
             catch (Exception) { }
         }
 
-    }
+        //private void dgvDonHang_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        //{
+
+
+        //    if (e.RowIndex >= 0)
+        //    {
+
+        //        DataGridViewRow row = dgvDonHang.Rows[e.RowIndex];
+
+
+        //        string maDon = row.Cells["MaDon"].Value.ToString();
+        //        string tenKhach = row.Cells["TenKH"].Value.ToString();
+
+
+        //        MessageBox.Show($"Bạn vừa chọn Đơn mã {maDon} của khách hàng {tenKhach}",
+        //                        "Thông tin", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //    }
+        //}
+
+    //private void button1_Click(object sender, EventArgs e)
+    //{
+    //    // Kiểm tra màu hiện tại của Panel doanh thu (tên thực tế là pnlStat2)
+    //    if (pnlStat2.BackColor == Color.White)
+    //    {
+    //        // Đổi sang màu vàng nhạt
+    //        pnlStat2.BackColor = Color.LightYellow;
+    //    }
+    //    else
+    //    {
+    //        // Đổi lại về màu trắng ban đầu
+    //        pnlStat2.BackColor = Color.White;
+    //    }
+    //}
+}
 }

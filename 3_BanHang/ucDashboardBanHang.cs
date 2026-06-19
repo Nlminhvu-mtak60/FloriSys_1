@@ -87,22 +87,9 @@ namespace FloriSys._3_BanHang
         private void LoadDonHang()
         {
             List<DonHangGanDay> dsDH = _bcRepo.DonHangCuaNV(currentUserMaNV);
+            dgvDonGanDay.AutoGenerateColumns = false;
             dgvDonGanDay.DataSource = null;
             dgvDonGanDay.DataSource = dsDH;
-            
-            if (dgvDonGanDay.Columns.Count > 0)
-            {
-                var visibleCols = new List<string> { "MaDon", "TenKH", "TongTien", "NgayTao", "TrangThai" };
-                foreach (DataGridViewColumn col in dgvDonGanDay.Columns) { if (!visibleCols.Contains(col.Name)) col.Visible = false; }
-
-                dgvDonGanDay.Columns["MaDon"].HeaderText = "Mã đơn";
-                dgvDonGanDay.Columns["TenKH"].HeaderText = "Khách hàng";
-                dgvDonGanDay.Columns["TongTien"].HeaderText = "Tổng tiền";
-                dgvDonGanDay.Columns["TongTien"].DefaultCellStyle.Format = "N0";
-                dgvDonGanDay.Columns["NgayTao"].HeaderText = "Ngày tạo";
-                dgvDonGanDay.Columns["NgayTao"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
-                dgvDonGanDay.Columns["TrangThai"].HeaderText = "Trạng thái";
-            }
         }
 
         private void LoadLookup(string keyword)

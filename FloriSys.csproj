@@ -230,12 +230,7 @@
       <DependentUpon>ucXuatKho.cs</DependentUpon>
     </Compile>
     <!-- ===== 5_GiaoHang ===== -->
-    <Compile Include="5_GiaoHang\ucCapNhatGH.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="5_GiaoHang\ucCapNhatGH.Designer.cs">
-      <DependentUpon>ucCapNhatGH.cs</DependentUpon>
-    </Compile>
+
     <Compile Include="5_GiaoHang\ucGiaoHang.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -380,6 +375,9 @@
     <EmbeddedResource Include="2_QuanLy\ucDashboard.resx">
       <DependentUpon>ucDashboard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="2_QuanLy\ucNhanVien.resx">
+      <DependentUpon>ucNhanVien.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="3_BanHang\ucDanhSachDon.resx">
       <DependentUpon>ucDanhSachDon.cs</DependentUpon>
     </EmbeddedResource>
@@ -395,9 +393,7 @@
     <EmbeddedResource Include="4_KhoHang\ucTonKho.resx">
       <DependentUpon>ucTonKho.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="5_GiaoHang\ucCapNhatGH.resx">
-      <DependentUpon>ucCapNhatGH.cs</DependentUpon>
-    </EmbeddedResource>
+
     <EmbeddedResource Include="5_GiaoHang\ucDashboardShipper.resx">
       <DependentUpon>ucDashboardShipper.cs</DependentUpon>
     </EmbeddedResource>

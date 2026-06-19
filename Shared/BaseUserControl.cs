@@ -3,24 +3,14 @@ using FloriSys.Services;
 
 namespace FloriSys.Shared
 {
-    /// <summary>
-    /// Base UserControl with common UI functionality.
-    /// Demonstrates: INHERITANCE (all UCs inherit this),
-    /// POLYMORPHISM (virtual LoadData/FormatGrid that UCs override),
-    /// ENCAPSULATION (IsLoading hides cursor logic, ShowError/ShowSuccess standardize messaging).
-    /// Not abstract so WinForms Designer can render derived controls.
-    /// </summary>
+  
     public class BaseUserControl : UserControl
     {
-        // ============================================================
-        // ENCAPSULATION: Private field with controlled access
-        // ============================================================
+        
 
         private bool _isLoading = false;
 
-        /// <summary>
-        /// Encapsulated loading state - automatically changes cursor.
-        /// </summary>
+       
         public bool IsLoading
         {
             get => _isLoading;
@@ -30,10 +20,6 @@ namespace FloriSys.Shared
                 this.Cursor = value ? Cursors.WaitCursor : Cursors.Default;
             }
         }
-
-        // ============================================================
-        // ENCAPSULATION: Standardized message dialogs
-        // ============================================================
 
         protected void ShowError(string message, string title = "Loi")
         {

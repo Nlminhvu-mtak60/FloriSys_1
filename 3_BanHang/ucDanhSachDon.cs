@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 using FloriSys.Shared;
+using FloriSys.Services;
 
 namespace FloriSys._3_BanHang
 {
@@ -100,7 +101,7 @@ namespace FloriSys._3_BanHang
         {
             cboTrangThai.Items.Clear();
             cboTrangThai.Items.Add("Tất cả trạng thái");
-            cboTrangThai.Items.AddRange(new object[] { "Moi", "DangXuLy", "DaGiao", "HoanThanh", "Huy", "HoanHang" });
+            cboTrangThai.Items.AddRange(new object[] { "Mới", "Đang xử lý", "Đã giao", "Hoàn thành", "Hủy", "Hoàn hàng" });
             cboTrangThai.SelectedIndex = 0;
         }
 
@@ -109,7 +110,19 @@ namespace FloriSys._3_BanHang
             try
             {
                 string keyword = txtTimKiem.Text == "🔍 Tìm mã đơn, tên khách, SĐT..." ? "" : txtTimKiem.Text.Trim();
-                string tt = cboTrangThai.SelectedIndex > 0 ? cboTrangThai.SelectedItem.ToString() : "";
+                string tt = "";
+                if (cboTrangThai.SelectedIndex > 0)
+                {
+                    switch (cboTrangThai.SelectedItem.ToString())
+                    {
+                        case "Mới": tt = "Moi"; break;
+                        case "Đang xử lý": tt = "DangXuLy"; break;
+                        case "Đã giao": tt = "DaGiao"; break;
+                        case "Hoàn thành": tt = "HoanThanh"; break;
+                        case "Hủy": tt = "Huy"; break;
+                        case "Hoàn hàng": tt = "HoanHang"; break;
+                    }
+                }
                 
                 DateTime? ngayLoc = null;
                 if (chkLocNgay.Checked)
@@ -138,47 +151,38 @@ namespace FloriSys._3_BanHang
 
         public override void FormatGrid()
         {
-            if (dgvDonHang.Columns.Count == 0) return;
-
-            // Define columns we want to show
             var visibleCols = new List<string> { 
                 "MaDon", "NgayTao", "TenKH", "SoDienThoai", "DiaChi", 
                 "TongTien", "HinhThucDisplay", "TrangThaiDisplay", "TenNV" 
             };
 
-            // Hide all other auto-generated columns
-            foreach (DataGridViewColumn col in dgvDonHang.Columns)
+            var headers = new Dictionary<string, string>
             {
-                if (!visibleCols.Contains(col.Name))
-                {
-                    col.Visible = false;
-                }
-            }
+                { "MaDon", "Mã đơn" },
+                { "NgayTao", "Ngày tạo" },
+                { "TenKH", "Khách hàng" },
+                { "SoDienThoai", "SĐT" },
+                { "DiaChi", "Địa chỉ" },
+                { "TongTien", "Tổng tiền" },
+                { "HinhThucDisplay", "Hình thức" },
+                { "TrangThaiDisplay", "Trạng thái" },
+                { "TenNV", "NV tạo" }
+            };
 
-            // Set headers for visible columns
-            if (dgvDonHang.Columns.Contains("MaDon")) dgvDonHang.Columns["MaDon"].HeaderText = "Mã đơn";
-            if (dgvDonHang.Columns.Contains("NgayTao")) 
+            var formats = new Dictionary<string, string>
             {
-                dgvDonHang.Columns["NgayTao"].HeaderText = "Ngày tạo";
-                dgvDonHang.Columns["NgayTao"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
-                dgvDonHang.Columns["NgayTao"].SortMode = DataGridViewColumnSortMode.Programmatic;
-            }
-            if (dgvDonHang.Columns.Contains("TenKH")) dgvDonHang.Columns["TenKH"].HeaderText = "Khách hàng";
-            if (dgvDonHang.Columns.Contains("SoDienThoai")) dgvDonHang.Columns["SoDienThoai"].HeaderText = "SĐT";
-            if (dgvDonHang.Columns.Contains("DiaChi")) dgvDonHang.Columns["DiaChi"].HeaderText = "Địa chỉ";
-            if (dgvDonHang.Columns.Contains("TongTien")) 
-            {
-                dgvDonHang.Columns["TongTien"].HeaderText = "Tổng tiền";
-                dgvDonHang.Columns["TongTien"].DefaultCellStyle.Format = "#,##0";
-            }
-            if (dgvDonHang.Columns.Contains("HinhThucDisplay")) dgvDonHang.Columns["HinhThucDisplay"].HeaderText = "Hình thức";
-            if (dgvDonHang.Columns.Contains("TrangThaiDisplay")) dgvDonHang.Columns["TrangThaiDisplay"].HeaderText = "Trạng thái";
-            if (dgvDonHang.Columns.Contains("TenNV")) dgvDonHang.Columns["TenNV"].HeaderText = "NV tạo";
+                { "NgayTao", "dd/MM/yyyy HH:mm" },
+                { "TongTien", "#,##0" }
+            };
+
+            // Gọi "anh dọn dẹp" GridHelper để xử lý toàn bộ bảng
+            GridHelper.FormatGrid(dgvDonHang, visibleCols, headers, formats);
             
+            // Giữ lại các cài đặt đặc thù của Form này
+            if (dgvDonHang.Columns.Contains("NgayTao"))
+                dgvDonHang.Columns["NgayTao"].SortMode = DataGridViewColumnSortMode.Programmatic;
+                
             dgvDonHang.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvDonHang.ReadOnly = true;
-            dgvDonHang.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDonHang.MultiSelect = false;
         }
 
         private void btnTaoDon_Click(object sender, EventArgs e) { TaoDonMoi?.Invoke(); }

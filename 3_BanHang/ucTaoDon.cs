@@ -15,11 +15,14 @@ namespace FloriSys._3_BanHang
     {
         private readonly SanPhamRepository _spRepo = new SanPhamRepository();
         private readonly KhachHangRepository _khRepo = new KhachHangRepository();
-        private readonly DonHangRepository _dhRepo = new DonHangRepository();
+        private readonly DonHangService _dhService = new DonHangService();
         private DataTable _gioHang;
         private List<KhachHang> _dsKhachHang;
         public event Action DonDaTao;
 
+        /// <summary>
+        /// Khởi tạo UserControl, tạo cấu trúc cho giỏ hàng (DataTable) lưu trong bộ nhớ tạm.
+        /// </summary>
         public ucTaoDon()
         {
             InitializeComponent();
@@ -31,8 +34,12 @@ namespace FloriSys._3_BanHang
             _gioHang.Columns.Add("ThanhTien", typeof(decimal));
         }
 
+       
         public override void LoadData() { LoadSanPham(); }
 
+        
+        // Sự kiện khởi chạy đầu tiên khi mở màn hình: Cài đặt ComboBox, nạp danh sách hoa và thiết lập Autocomplete.
+       
         private void ucTaoDon_Load(object sender, EventArgs e)
         {
             cboHinhThuc.Items.Clear();
@@ -47,6 +54,9 @@ namespace FloriSys._3_BanHang
 
         private ListBox lstGoiY;
 
+        
+        /// Khởi tạo cơ chế tự động gợi ý tên/SĐT khách hàng 
+       
         private void LoadAutocompleteKhachHang()
         {
             _dsKhachHang = _khRepo.LayDanhSach();
@@ -75,6 +85,7 @@ namespace FloriSys._3_BanHang
             txtSDT.Leave += TxtSearch_Leave;
         }
 
+        /// Sự kiện gõ phím vào ô Tên hoặc SĐT: Lọc danh sách khách hàng và hiển thị danh sách gợi ý
         private void TxtSearch_TextChanged(object sender, EventArgs e)
         {
             TextBox txt = sender as TextBox;
@@ -109,6 +120,9 @@ namespace FloriSys._3_BanHang
             }
         }
 
+      
+        // Sự kiện click chọn khách hàng từ danh sách gợi ý: Tự động điền thông tin vào các ô nhập liệu.
+    
         private void LstGoiY_Click(object sender, EventArgs e)
         {
             if (lstGoiY.SelectedItem == null) return;
@@ -119,7 +133,7 @@ namespace FloriSys._3_BanHang
             txtSDT.Text = kh.SoDienThoai;
             txtEmail.Text = kh.Email;
             
-            // Auto-fill Receiver fields by default
+            // Mặc định tự động sao chép thông tin người đặt sang ô người nhận
             txtTenNhan.Text = kh.HoTen;
             txtSDTNhan.Text = kh.SoDienThoai;
             txtDiaChi.Text = kh.DiaChi;
@@ -127,9 +141,12 @@ namespace FloriSys._3_BanHang
             lstGoiY.Visible = false;
         }
 
+       
+        /// Sự kiện khi ô Tên/SĐT mất tiêu điểm (chuột bấm ra ngoài): Ẩn danh sách gợi ý đi (có độ trễ để không bị lỗi click).
+       
         private void TxtSearch_Leave(object sender, EventArgs e)
         {
-            // Delay hiding so Click event can fire if user clicks the listbox
+            // Trì hoãn việc ẩn danh sách một chút để sự kiện Click có thời gian kích hoạt nếu người dùng bấm vào danh sách
             System.Threading.Tasks.Task.Delay(150).ContinueWith(t => 
             {
                 if (this.IsHandleCreated)
@@ -142,6 +159,9 @@ namespace FloriSys._3_BanHang
             });
         }
 
+        
+        /// Tải danh sách hoa đang bán từ Database lên bảng dữ liệu (có hỗ trợ tìm kiếm theo từ khóa).
+       
         private void LoadSanPham(string key = "")
         {
             try
@@ -153,6 +173,9 @@ namespace FloriSys._3_BanHang
             catch (Exception ex) { ShowError(ex.Message); }
         }
 
+       
+        /// Làm đẹp bảng danh sách hoa: Ẩn cột thừa, đổi tên cột sang tiếng Việt, định dạng tiền tệ.
+     
         private void FormatGridSP()
         {
             if (dgvSanPham.Columns.Count == 0) return;
@@ -168,8 +191,14 @@ namespace FloriSys._3_BanHang
             dgvSanPham.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
+        
+        /// Nút Tìm kiếm hoa.
+        
         private void btnTimSP_Click(object sender, EventArgs e) { LoadSanPham(txtTimSP.Text.Trim()); }
 
+        
+        /// Nút Thêm vào giỏ hàng: Kiểm tra tồn kho, cộng dồn số lượng nếu trùng, và tính lại tổng tiền.
+        
         private void btnThemSP_Click(object sender, EventArgs e)
         {
             if (dgvSanPham.CurrentRow == null) return;
@@ -198,6 +227,9 @@ namespace FloriSys._3_BanHang
             nudSoLuongThem.Value = 1; // reset
         }
 
+        
+        /// Nút Xóa khỏi giỏ hàng.
+        
         private void btnXoaSP_Click(object sender, EventArgs e)
         {
             if (dgvGioHang.CurrentRow == null) return;
@@ -205,6 +237,9 @@ namespace FloriSys._3_BanHang
             TinhTong();
         }
 
+        
+        /// Duyệt qua giỏ hàng để cộng dồn Thành Tiền và hiển thị lên nhãn Tổng cộng.
+        
         private void TinhTong()
         {
             decimal tong = 0;
@@ -213,39 +248,31 @@ namespace FloriSys._3_BanHang
             lblTongTien.Text = string.Format("Tổng cộng: {0:#,##0}đ", tong);
         }
 
+        
+        /// Nút Tạo Đơn Hàng: Thu thập toàn bộ dữ liệu từ giao diện và gửi cho Service xử lý chốt đơn.
+        
         private void btnXacNhan_Click(object sender, EventArgs e)
         {
             if (!CheckPermission("DonHang", "Them")) return;
 
-            if (string.IsNullOrEmpty(txtTenKH.Text.Trim()) || string.IsNullOrEmpty(txtSDT.Text.Trim()))
-            { ShowWarning("Vui lòng nhập thông tin người đặt!"); return; }
-            if (string.IsNullOrEmpty(txtTenNhan.Text.Trim()) || string.IsNullOrEmpty(txtSDTNhan.Text.Trim()))
-            { ShowWarning("Vui lòng nhập thông tin người nhận!"); return; }
-            if (_gioHang.Rows.Count == 0)
-            { ShowWarning("Giỏ hàng trống!"); return; }
-
             try
             {
-                string address = txtDiaChi.Text.Trim();
-                string maKH = _khRepo.TimHoacTao(txtTenKH.Text.Trim(), txtSDT.Text.Trim(), address, txtEmail.Text.Trim());
-
                 string hinhThuc = cboHinhThuc.SelectedIndex == 0 ? "TaiQuay" : "GiaoTanNoi";
-                string finalGhiChu = txtGhiChu.Text.Trim();
+                string error;
                 
-                bool isDifferentReceiver = (txtTenKH.Text.Trim() != txtTenNhan.Text.Trim()) || (txtSDT.Text.Trim() != txtSDTNhan.Text.Trim());
-                if (isDifferentReceiver)
-                {
-                    finalGhiChu = $"[Giao cho: {txtTenNhan.Text.Trim()} - {txtSDTNhan.Text.Trim()} - {txtDiaChi.Text.Trim()}] {finalGhiChu}";
-                }
+                // Gọi thẳng Service, đưa hết trách nhiệm kiểm tra và xử lý cho nó
+                string maDon = _dhService.TaoDonHang(
+                    txtTenKH.Text.Trim(), txtSDT.Text.Trim(), 
+                    txtTenNhan.Text.Trim(), txtSDTNhan.Text.Trim(), 
+                    txtDiaChi.Text.Trim(), txtEmail.Text.Trim(),
+                    hinhThuc, txtGhiChu.Text.Trim(), _gioHang, 
+                    SessionManager.MaNV, out error
+                );
 
-                // Gọi hàm Transaction tập trung (TaoDon + ChiTiet + GiaoHang trong 1 transaction)
-                string maDon = _dhRepo.TaoDonHangHoanChinh(maKH, SessionManager.MaNV, hinhThuc, finalGhiChu, _gioHang);
-
-                // Tự động xuất kho và hoàn thành cho đơn nhận tại quầy
-                if (hinhThuc == "TaiQuay")
+                if (maDon == null)
                 {
-                    _dhRepo.CapNhatTrangThai(maDon, "DangXuLy"); // Trừ tồn kho
-                    _dhRepo.CapNhatTrangThai(maDon, "HoanThanh"); // Hoàn thành luôn
+                    ShowWarning(error);
+                    return;
                 }
 
                 ShowSuccess("Tạo đơn hàng " + maDon + " thành công!");
@@ -266,6 +293,9 @@ namespace FloriSys._3_BanHang
             }
         }
 
+      
+        /// Nút Hủy: Xóa sạch giỏ hàng và các ô nhập liệu.
+     
         private void btnHuy_Click(object sender, EventArgs e)
         {
             _gioHang.Clear();

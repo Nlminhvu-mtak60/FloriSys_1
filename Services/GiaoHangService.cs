@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using FloriSys.DataAccess;
 using FloriSys.Models;
 
 namespace FloriSys.Services
 {
     /// <summary>
-    /// Delivery service - encapsulates delivery assignment and status updates.
-    /// Demonstrates: ENCAPSULATION (delivery + order status kept consistent).
+    /// Service Giao Hàng - đóng gói logic phân công shipper và cập nhật trạng thái giao hàng.
+    /// Thể hiện: TÍNH ĐÓNG GÓI (giữ cho trạng thái đơn hàng và trạng thái giao hàng luôn đồng bộ).
     /// </summary>
     public class GiaoHangService
     {
@@ -20,8 +20,8 @@ namespace FloriSys.Services
         }
 
         /// <summary>
-        /// Assign a shipper to a delivery and update order status.
-        /// ENCAPSULATION: keeps delivery and order status in sync.
+        /// Phân công shipper cho một đơn giao hàng và cập nhật trạng thái.
+        /// TÍNH ĐÓNG GÓI: Giữ cho trạng thái giao hàng và đơn hàng đồng bộ.
         /// </summary>
         public bool PhanCongShipper(string maGH, string maNVShipper, out string error)
         {
@@ -38,8 +38,8 @@ namespace FloriSys.Services
         }
 
         /// <summary>
-        /// Update delivery status.
-        /// ENCAPSULATION: validates status transition.
+        /// Cập nhật trạng thái giao hàng.
+        /// TÍNH ĐÓNG GÓI: Kiểm tra tính hợp lệ khi chuyển đổi trạng thái.
         /// </summary>
         public bool CapNhatTrangThaiGiao(string maGH, string trangThai, string ghiChu, out string error)
         {
@@ -56,7 +56,7 @@ namespace FloriSys.Services
         }
 
         /// <summary>
-        /// Get shipper statistics.
+        /// Lấy thống kê hiệu suất của shipper (số đơn thành công, đang giao...).
         /// </summary>
         public ThongKeShipper ThongKe(string maNV)
         {

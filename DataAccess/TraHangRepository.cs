@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using FloriSys.Models;
@@ -14,6 +14,20 @@ namespace FloriSys.DataAccess
         public override string TableName => "TRA_HANG";
         public override string IdColumn => "MaPhieuTra";
         public override string IdPrefix => "PTR";
+
+        /// <summary>
+        /// Lấy danh sách các đơn hàng ở trạng thái HoanHang nhưng chưa có phiếu trả
+        /// </summary>
+        public DataTable LayDanhSachDonChoTra()
+        {
+            string sql = @"SELECT dh.MaDon, kh.HoTen AS TenKH, dh.NgayTao, dh.TongTien
+                          FROM DON_HANG dh
+                          JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
+                          WHERE dh.TrangThai = N'HoanHang'
+                            AND dh.MaDon NOT IN (SELECT MaDon FROM TRA_HANG)
+                          ORDER BY dh.NgayTao DESC";
+            return DatabaseHelper.ExecuteRawQuery(sql);
+        }
 
         /// <summary>
         /// ENCAPSULATION: Full return processing in a single transaction.

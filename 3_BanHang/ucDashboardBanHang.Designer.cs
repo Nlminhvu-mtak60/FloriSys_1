@@ -1,4 +1,4 @@
-﻿namespace FloriSys._3_BanHang
+namespace FloriSys._3_BanHang
 {
     partial class ucDashboardBanHang
     {
@@ -17,6 +17,8 @@
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblSubTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
@@ -37,6 +39,11 @@
             this.pnlLeft = new System.Windows.Forms.Panel();
             this.lblTableTitle = new System.Windows.Forms.Label();
             this.dgvDonGanDay = new System.Windows.Forms.DataGridView();
+            this.colMaDon = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTenKH = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTongTien = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNgayTao = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTrangThai = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlRight = new System.Windows.Forms.TableLayoutPanel();
             this.pnlKhaNang = new System.Windows.Forms.Panel();
             this.lblRank = new System.Windows.Forms.Label();
@@ -307,12 +314,62 @@
             this.dgvDonGanDay.BackgroundColor = System.Drawing.Color.White;
             this.dgvDonGanDay.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvDonGanDay.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDonGanDay.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colMaDon,
+            this.colTenKH,
+            this.colTongTien,
+            this.colNgayTao,
+            this.colTrangThai});
             this.dgvDonGanDay.Location = new System.Drawing.Point(10, 45);
             this.dgvDonGanDay.Name = "dgvDonGanDay";
             this.dgvDonGanDay.RowHeadersVisible = false;
             this.dgvDonGanDay.RowHeadersWidth = 51;
             this.dgvDonGanDay.Size = new System.Drawing.Size(581, 429);
             this.dgvDonGanDay.TabIndex = 2;
+            // 
+            // colMaDon
+            // 
+            this.colMaDon.DataPropertyName = "MaDon";
+            this.colMaDon.HeaderText = "Mã đơn";
+            this.colMaDon.MinimumWidth = 6;
+            this.colMaDon.Name = "colMaDon";
+            this.colMaDon.ReadOnly = true;
+            // 
+            // colTenKH
+            // 
+            this.colTenKH.DataPropertyName = "TenKH";
+            this.colTenKH.HeaderText = "Khách hàng";
+            this.colTenKH.MinimumWidth = 6;
+            this.colTenKH.Name = "colTenKH";
+            this.colTenKH.ReadOnly = true;
+            // 
+            // colTongTien
+            // 
+            this.colTongTien.DataPropertyName = "TongTien";
+            dataGridViewCellStyle1.Format = "N0";
+            this.colTongTien.DefaultCellStyle = dataGridViewCellStyle1;
+            this.colTongTien.HeaderText = "Tổng tiền";
+            this.colTongTien.MinimumWidth = 6;
+            this.colTongTien.Name = "colTongTien";
+            this.colTongTien.ReadOnly = true;
+            // 
+            // colNgayTao
+            // 
+            this.colNgayTao.DataPropertyName = "NgayTao";
+            dataGridViewCellStyle2.Format = "dd/MM/yyyy HH:mm";
+            this.colNgayTao.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colNgayTao.HeaderText = "Ngày tạo";
+            this.colNgayTao.MinimumWidth = 6;
+            this.colNgayTao.Name = "colNgayTao";
+            this.colNgayTao.ReadOnly = true;
+            // 
+            // colTrangThai
+            // 
+            this.colTrangThai.DataPropertyName = "TrangThai";
+            this.colTrangThai.HeaderText = "Trạng thái";
+            this.colTrangThai.MinimumWidth = 6;
+            this.colTrangThai.Name = "colTrangThai";
+            this.colTrangThai.ReadOnly = true;
             // 
             // pnlRight
             // 
@@ -537,5 +594,10 @@
         private System.Windows.Forms.TextBox txtLookup;
         private System.Windows.Forms.Button btnTimLookup;
         private System.Windows.Forms.DataGridView dgvLookup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMaDon;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTenKH;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTongTien;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNgayTao;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTrangThai;
     }
 }

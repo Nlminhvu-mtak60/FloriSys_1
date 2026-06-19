@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using FloriSys.DataAccess;
@@ -7,8 +7,8 @@ using FloriSys.Models;
 namespace FloriSys.Services
 {
     /// <summary>
-    /// Warehouse service - encapsulates inventory operations.
-    /// Demonstrates: ENCAPSULATION (multi-step warehouse operations hidden from UI).
+    /// Service Kho Hàng - đóng gói các nghiệp vụ quản lý tồn kho.
+    /// Thể hiện: TÍNH ĐÓNG GÓI (các thao tác kho nhiều bước được ẩn khỏi UI).
     /// </summary>
     public class KhoHangService
     {
@@ -24,8 +24,8 @@ namespace FloriSys.Services
         }
 
         /// <summary>
-        /// Create a complete goods receipt: header + detail items.
-        /// ENCAPSULATION: UI passes a DataTable, service handles the rest.
+        /// Tạo một phiếu nhập kho hoàn chỉnh: thông tin chung + các mặt hàng chi tiết.
+        /// TÍNH ĐÓNG GÓI: UI chỉ cần truyền DataTable, Service sẽ tự xử lý phần còn lại.
         /// </summary>
         public string TaoPhieuNhap(string maNV, string ghiChu, DataTable danhSachNhap, out string error)
         {
@@ -37,12 +37,12 @@ namespace FloriSys.Services
                 return null;
             }
 
-            // Delegate to the transactional method in Repository
+            // Ủy thác cho phương thức có hỗ trợ Transaction ở tầng Repository
             return _pnRepo.TaoPhieuNhapHoanChinh(maNV, ghiChu, danhSachNhap);
         }
 
         /// <summary>
-        /// Record damaged goods.
+        /// Ghi nhận hàng hư hỏng.
         /// </summary>
         public bool GhiNhanHangHu(string maSP, int soLuong, string lyDo, string ghiChu, out string error)
         {
@@ -71,7 +71,7 @@ namespace FloriSys.Services
         }
 
         /// <summary>
-        /// Get products with stock alerts.
+        /// Lấy danh sách sản phẩm đang ở mức cảnh báo tồn kho (sắp hết hàng).
         /// </summary>
         public List<SanPham> LaySanPhamCanhBao()
         {

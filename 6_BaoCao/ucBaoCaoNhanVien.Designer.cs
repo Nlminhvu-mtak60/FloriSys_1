@@ -30,12 +30,18 @@ namespace FloriSys._6_BaoCao
             this.dgvNhanVien = new System.Windows.Forms.DataGridView();
             this.lblGridTitle = new System.Windows.Forms.Label();
             this.pnlChartCard = new System.Windows.Forms.Panel();
-            this.pnlChartArea = new System.Windows.Forms.Panel();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            this.chartHieuSuat = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.lblChartTitle = new System.Windows.Forms.Label();
             this.pnlFilter.SuspendLayout();
             this.pnlMain.SuspendLayout();
             this.pnlGridCard.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNhanVien)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartHieuSuat)).BeginInit();
             this.pnlChartCard.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -197,7 +203,7 @@ namespace FloriSys._6_BaoCao
             // pnlChartCard
             // 
             this.pnlChartCard.BackColor = System.Drawing.Color.White;
-            this.pnlChartCard.Controls.Add(this.pnlChartArea);
+            this.pnlChartCard.Controls.Add(this.chartHieuSuat);
             this.pnlChartCard.Controls.Add(this.lblChartTitle);
             this.pnlChartCard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlChartCard.Location = new System.Drawing.Point(473, 3);
@@ -206,16 +212,47 @@ namespace FloriSys._6_BaoCao
             this.pnlChartCard.Size = new System.Drawing.Size(464, 529);
             this.pnlChartCard.TabIndex = 1;
             // 
-            // pnlChartArea
+            // chartHieuSuat
             // 
-            this.pnlChartArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.chartHieuSuat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlChartArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.pnlChartArea.Location = new System.Drawing.Point(20, 60);
-            this.pnlChartArea.Name = "pnlChartArea";
-            this.pnlChartArea.Size = new System.Drawing.Size(424, 449);
-            this.pnlChartArea.TabIndex = 1;
+            this.chartHieuSuat.BackColor = System.Drawing.Color.White;
+            chartArea1.BackColor = System.Drawing.Color.White;
+            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Segoe UI", 7F);
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisY.LabelStyle.Font = new System.Drawing.Font("Segoe UI", 7F);
+            chartArea1.AxisY.LabelStyle.Format = "N0";
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
+            chartArea1.Name = "Main";
+            this.chartHieuSuat.ChartAreas.Add(chartArea1);
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend1.Font = new System.Drawing.Font("Segoe UI", 7F);
+            legend1.Name = "Legend1";
+            this.chartHieuSuat.Legends.Add(legend1);
+            this.chartHieuSuat.Location = new System.Drawing.Point(20, 60);
+            this.chartHieuSuat.Name = "chartHieuSuat";
+            series1.ChartArea = "Main";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
+            series1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            series1.Font = new System.Drawing.Font("Segoe UI", 7F);
+            series1.Legend = "Legend1";
+            series1.Name = "Doanh thu";
+            series2.ChartArea = "Main";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Bar;
+            series2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(186)))), ((int)(((byte)(194)))));
+            series2.Font = new System.Drawing.Font("Segoe UI", 7F);
+            series2.Legend = "Legend1";
+            series2.Name = "Số đơn";
+            this.chartHieuSuat.Series.Add(series1);
+            this.chartHieuSuat.Series.Add(series2);
+            this.chartHieuSuat.Size = new System.Drawing.Size(424, 449);
+            this.chartHieuSuat.TabIndex = 1;
+            title1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            title1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
+            title1.Name = "Title1";
+            title1.Text = "SO SÁNH HIỆU SUẤT NV";
+            this.chartHieuSuat.Titles.Add(title1);
             // 
             // lblChartTitle
             // 
@@ -245,6 +282,7 @@ namespace FloriSys._6_BaoCao
             this.pnlGridCard.ResumeLayout(false);
             this.pnlGridCard.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNhanVien)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartHieuSuat)).EndInit();
             this.pnlChartCard.ResumeLayout(false);
             this.pnlChartCard.PerformLayout();
             this.ResumeLayout(false);
@@ -267,7 +305,7 @@ namespace FloriSys._6_BaoCao
         private System.Windows.Forms.Label lblGridTitle;
         private System.Windows.Forms.DataGridView dgvNhanVien;
         private System.Windows.Forms.Panel pnlChartCard;
-        private System.Windows.Forms.Panel pnlChartArea;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartHieuSuat;
         private System.Windows.Forms.Label lblChartTitle;
     }
 }

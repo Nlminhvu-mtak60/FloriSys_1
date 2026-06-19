@@ -12,6 +12,7 @@ namespace FloriSys._3_BanHang
     public partial class ucChiTietDonHang : BaseUserControl
     {
         private readonly DonHangRepository _dhRepo = new DonHangRepository();
+        private readonly DonHangService _dhService = new DonHangService();
         private string _maDon;
 
         public ucChiTietDonHang()
@@ -50,38 +51,19 @@ namespace FloriSys._3_BanHang
                     string sdtNhan = receiverInfo.SdtNhan;
                     string diaChiNhan = receiverInfo.DiaChiNhan;
 
-                    // Remove dynamically added label if any
-                    var oldLabels = grpKhachHang.Controls.OfType<Label>().Where(l => l.Name == "lblNguoiNhanDynamic").ToList();
-                    foreach (var l in oldLabels) grpKhachHang.Controls.Remove(l);
-
-                    int currentY = 110; // Default Y for Hình thức
-
                     if (!string.IsNullOrEmpty(tenNhan))
                     {
-                        Label lblNguoiNhan = new Label();
-                        lblNguoiNhan.Name = "lblNguoiNhanDynamic";
-                        lblNguoiNhan.AutoSize = true;
-                        lblNguoiNhan.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-                        lblNguoiNhan.ForeColor = System.Drawing.Color.FromArgb(232, 57, 77); // Red-ish highlight for receiver
-                        lblNguoiNhan.Location = new System.Drawing.Point(15, currentY);
                         lblNguoiNhan.Text = "Người nhận: " + tenNhan + " — SĐT: " + sdtNhan;
-                        grpKhachHang.Controls.Add(lblNguoiNhan);
-                        currentY += 35;
+                        lblNguoiNhan.Visible = true;
+                    }
+                    else
+                    {
+                        lblNguoiNhan.Visible = false;
                     }
 
-                    lblHinhThuc.Location = new System.Drawing.Point(15, currentY);
                     lblHinhThuc.Text = "Hình thức: " + dh.HinhThucDisplay;
-                    currentY += 35;
-
-                    lblDiaChi.Location = new System.Drawing.Point(15, currentY);
                     lblDiaChi.Text = "Địa chỉ: " + diaChiNhan;
-                    currentY += 35;
-
-                    lblGhiChu.Location = new System.Drawing.Point(15, currentY);
                     lblGhiChu.Text = "Ghi chú: " + ghiChu;
-                    currentY += 40;
-
-                    grpKhachHang.Height = currentY;
 
                     lblTongTien.Text = string.Format("{0:#,##0}đ", dh.TongTien);
                     
@@ -267,9 +249,20 @@ namespace FloriSys._3_BanHang
             try
             {
                 string newStatus = cboStatus.SelectedItem.ToString();
-                _dhRepo.CapNhatTrangThai(_maDon, newStatus);
-                ShowSuccess("Cập nhật trạng thái thành công!");
-                LoadInfo();
+                string error;
+                
+                // Gọi qua Service để đảm bảo tuân thủ luật kinh doanh (Business Rules)
+                bool success = _dhService.CapNhatTrangThai(_maDon, newStatus, out error);
+                
+                if (!success)
+                {
+                    ShowWarning(error);
+                }
+                else
+                {
+                    ShowSuccess("Cập nhật trạng thái thành công!");
+                    LoadInfo();
+                }
             }
             catch (Exception ex)
             {

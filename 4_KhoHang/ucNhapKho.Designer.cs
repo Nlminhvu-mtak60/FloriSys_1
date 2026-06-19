@@ -1,4 +1,4 @@
-﻿namespace FloriSys._4_KhoHang
+namespace FloriSys._4_KhoHang
 {
     partial class ucNhapKho
     {
@@ -8,7 +8,9 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.lblSubTitle = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
@@ -29,6 +31,10 @@
             this.btnLuu = new System.Windows.Forms.Button();
             this.grpDanhSach = new System.Windows.Forms.GroupBox();
             this.dgvNhap = new System.Windows.Forms.DataGridView();
+            this.colMaSP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTenSP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoLuong = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colGiaNhap = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnXoaDong = new System.Windows.Forms.Button();
             this.pnlHeader.SuspendLayout();
             this.pnlInput.SuspendLayout();
@@ -330,14 +336,19 @@
             this.dgvNhap.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvNhap.ColumnHeadersHeight = 40;
             this.dgvNhap.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(242)))), ((int)(((byte)(244)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvNhap.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgvNhap.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colMaSP,
+            this.colTenSP,
+            this.colSoLuong,
+            this.colGiaNhap});
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(24)))), ((int)(((byte)(39)))));
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(242)))), ((int)(((byte)(244)))));
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvNhap.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvNhap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvNhap.EnableHeadersVisualStyles = false;
             this.dgvNhap.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
@@ -350,6 +361,47 @@
             this.dgvNhap.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvNhap.Size = new System.Drawing.Size(960, 251);
             this.dgvNhap.TabIndex = 0;
+            // 
+            // colMaSP
+            // 
+            this.colMaSP.DataPropertyName = "MaSP";
+            this.colMaSP.HeaderText = "Mã sản phẩm";
+            this.colMaSP.MinimumWidth = 6;
+            this.colMaSP.Name = "colMaSP";
+            this.colMaSP.ReadOnly = true;
+            this.colMaSP.Width = 140;
+            // 
+            // colTenSP
+            // 
+            this.colTenSP.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colTenSP.DataPropertyName = "TenSP";
+            this.colTenSP.HeaderText = "Tên sản phẩm";
+            this.colTenSP.MinimumWidth = 6;
+            this.colTenSP.Name = "colTenSP";
+            this.colTenSP.ReadOnly = true;
+            // 
+            // colSoLuong
+            // 
+            this.colSoLuong.DataPropertyName = "SoLuong";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colSoLuong.DefaultCellStyle = dataGridViewCellStyle2;
+            this.colSoLuong.HeaderText = "Số lượng";
+            this.colSoLuong.MinimumWidth = 6;
+            this.colSoLuong.Name = "colSoLuong";
+            this.colSoLuong.ReadOnly = true;
+            this.colSoLuong.Width = 125;
+            // 
+            // colGiaNhap
+            // 
+            this.colGiaNhap.DataPropertyName = "GiaNhap";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "N0";
+            this.colGiaNhap.DefaultCellStyle = dataGridViewCellStyle3;
+            this.colGiaNhap.HeaderText = "Giá nhập (đ)";
+            this.colGiaNhap.MinimumWidth = 6;
+            this.colGiaNhap.Name = "colGiaNhap";
+            this.colGiaNhap.ReadOnly = true;
+            this.colGiaNhap.Width = 150;
             // 
             // btnXoaDong
             // 
@@ -415,6 +467,10 @@
         private System.Windows.Forms.TextBox txtGhiChu;
         private System.Windows.Forms.GroupBox grpDanhSach;
         private System.Windows.Forms.DataGridView dgvNhap;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMaSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTenSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoLuong;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colGiaNhap;
         private System.Windows.Forms.Button btnXoaDong;
         private System.Windows.Forms.Panel pnlBottom;
         private System.Windows.Forms.Label lblTongCong;

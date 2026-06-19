@@ -23,11 +23,11 @@ namespace FloriSys._2_QuanLy
             ucThanhMenu1.CapNhatNguoiDung(SessionManager.HoTen, SessionManager.ChucVuDisplay, SessionManager.AvatarChar);
             ucThanhMenu1.PhanQuyen();
 
-            // Đăng ký sự kiện điều hướng
+           
             ucThanhMenu1.MenuClicked += OnMenuClicked;
 
-            // Hiển thị Dashboard mặc định
-            LoadUC(new ucDashboard());
+          
+            OnMenuClicked("Dashboard");
         }
 
         public void RefreshPermissions()

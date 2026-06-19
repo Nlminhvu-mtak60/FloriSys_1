@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -30,28 +30,10 @@ namespace FloriSys._4_KhoHang
         private void ucNhapKho_Load(object sender, EventArgs e)
         {
             LoadSanPham();
+            dgvNhap.AutoGenerateColumns = false;
             dgvNhap.DataSource = _danhSachNhap;
-            FormatDataGridView();
-        }
-
-        private void FormatDataGridView()
-        {
-            if (dgvNhap.Columns.Count == 0) return;
-
-            dgvNhap.Columns["MaSP"].HeaderText = "Mã sản phẩm";
-            dgvNhap.Columns["MaSP"].Width = 140;
-
-            dgvNhap.Columns["TenSP"].HeaderText = "Tên sản phẩm";
-            dgvNhap.Columns["TenSP"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            dgvNhap.Columns["SoLuong"].HeaderText = "Số lượng";
-            dgvNhap.Columns["SoLuong"].Width = 100;
-            dgvNhap.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
-            dgvNhap.Columns["GiaNhap"].HeaderText = "Giá nhập (đ)";
-            dgvNhap.Columns["GiaNhap"].Width = 150;
-            dgvNhap.Columns["GiaNhap"].DefaultCellStyle.Format = "N0";
-            dgvNhap.Columns["GiaNhap"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvNhap.AutoGenerateColumns = false;
+            dgvNhap.DataSource = _danhSachNhap;
         }
 
         private void LoadSanPham()
@@ -86,7 +68,6 @@ namespace FloriSys._4_KhoHang
                 }
             }
             _danhSachNhap.Rows.Add(maSP, cboSanPham.Text, soLuong, giaNhap);
-            FormatDataGridView();
             CapNhatTongCong();
         }
 

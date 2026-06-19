@@ -7,18 +7,18 @@ using FloriSys.Models;
 namespace FloriSys.Services
 {
     /// <summary>
-    /// Session manager - proper Singleton pattern with encapsulation.
-    /// Demonstrates: ENCAPSULATION (private setter, controlled access),
-    /// ABSTRACTION (IsAdmin/IsCashier hide ChucVu string comparison),
-    /// INHERITANCE (sealed prevents further inheritance).
+    /// Quản lý phiên làm việc - theo mẫu Singleton chuẩn với tính đóng gói.
+    /// Thể hiện: TÍNH ĐÓNG GÓI (setter private, kiểm soát truy cập),
+    /// TÍNH TRỪU TƯỢNG (IsAdmin/IsCashier ẩn đi phép so sánh chuỗi ChucVu),
+    /// TÍNH KẾ THỪA (sealed ngăn chặn việc kế thừa tiếp theo).
     /// 
-    /// Backward-compatible static API is preserved so existing UI code compiles.
-    /// New code can use Instance.Login(), Instance.Logout(), Instance.OnUserChanged.
+    /// API static tương thích ngược được giữ nguyên để code UI hiện tại vẫn biên dịch được.
+    /// Code mới có thể dùng Instance.Login(), Instance.Logout(), Instance.OnUserChanged.
     /// </summary>
     public sealed class SessionManager
     {
         // ============================================================
-        // SINGLETON: Lazy thread-safe initialization
+        // SINGLETON: Khởi tạo lười (lazy) an toàn với thread
         // ============================================================
 
         private static readonly Lazy<SessionManager> _instance =
@@ -30,16 +30,16 @@ namespace FloriSys.Services
         private List<PhanQuyen> _permissions = new List<PhanQuyen>();
         private event Action _onUserChanged;
 
-        // Private constructor = singleton
+        // Constructor private = singleton
         private SessionManager() { }
 
         // ============================================================
-        // Instance methods for OOP usage
+        // Các phương thức instance để sử dụng theo hướng đối tượng (OOP)
         // ============================================================
 
         public NhanVien GetCurrentUser() => _currentUser;
 
-        /// <summary>Login: sets current user, permissions and fires event.</summary>
+        /// <summary>Đăng nhập: thiết lập người dùng hiện tại, quyền và kích hoạt sự kiện.</summary>
         public void Login(NhanVien nv, List<PhanQuyen> permissions)
         {
             _currentUser = nv;
@@ -47,7 +47,7 @@ namespace FloriSys.Services
             _onUserChanged?.Invoke();
         }
 
-        /// <summary>Logout: clears state and fires event.</summary>
+        /// <summary>Đăng xuất: xóa trạng thái và kích hoạt sự kiện.</summary>
         public void Logout()
         {
             _currentUser = null;
@@ -55,7 +55,7 @@ namespace FloriSys.Services
             _onUserChanged?.Invoke();
         }
 
-        /// <summary>Update permissions for the current user session.</summary>
+        /// <summary>Cập nhật quyền cho phiên làm việc của người dùng hiện tại.</summary>
         public void UpdatePermissions(List<PhanQuyen> permissions)
         {
             _permissions = permissions ?? new List<PhanQuyen>();
@@ -63,8 +63,8 @@ namespace FloriSys.Services
         }
 
         /// <summary>
-        /// Check if current user has specific permission for a module.
-        /// ENCAPSULATION: Centralizes permission logic.
+        /// Kiểm tra xem người dùng hiện tại có quyền cụ thể cho một chức năng (module) hay không.
+        /// TÍNH ĐÓNG GÓI: Tập trung hóa logic phân quyền.
         /// </summary>
         public bool HasPermission(string module, string action)
         {
@@ -84,7 +84,7 @@ namespace FloriSys.Services
 
         public List<PhanQuyen> GetPermissions() => _permissions;
 
-        /// <summary>Event fired when user logs in or out.</summary>
+        /// <summary>Sự kiện được kích hoạt khi người dùng đăng nhập hoặc đăng xuất.</summary>
         public event Action OnUserChanged
         {
             add { _onUserChanged += value; }
@@ -92,7 +92,7 @@ namespace FloriSys.Services
         }
 
         // ============================================================
-        // Static hashing utility (stateless)
+        // Tiện ích băm static (không trạng thái - stateless)
         // ============================================================
 
         public static string HashSHA256(string input)
@@ -107,9 +107,6 @@ namespace FloriSys.Services
             }
         }
 
-        // ============================================================
-        // Backward-compatible static API
-        // ============================================================
 
         /// <summary>
         /// FIX: Getter giữ nguyên để tương thích ngược.
@@ -137,7 +134,7 @@ namespace FloriSys.Services
         public static string TaiKhoan => Instance._currentUser?.TaiKhoan;
         public static string SoDienThoai => Instance._currentUser?.SoDienThoai;
 
-        // ABSTRACTION: Boolean role checks hide string comparison
+        // TÍNH TRỪU TƯỢNG: Các kiểm tra vai trò kiểu Boolean ẩn đi phép so sánh chuỗi
         public static bool IsAdmin => ChucVu == "Admin";
         public static bool IsCashier => ChucVu == "Cashier";
         public static bool IsWarehouse => ChucVu == "Warehouse";
@@ -155,7 +152,7 @@ namespace FloriSys.Services
 
         public static string ChucVuDisplay => Instance._currentUser?.ChucVuDisplay ?? ChucVu;
 
-        /// <summary>Backward compat - old: SessionManager.Clear()</summary>
+        /// <summary>Tương thích ngược - cũ: SessionManager.Clear()</summary>
         public static void Clear() => Instance.Logout();
     }
 }

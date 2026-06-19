@@ -1,4 +1,4 @@
-﻿namespace FloriSys._4_KhoHang
+namespace FloriSys._4_KhoHang
 {
     partial class ucCauHinhTonKho
     {
@@ -17,6 +17,7 @@
 
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.btnLuu = new System.Windows.Forms.Button();
             this.lblSubTitle = new System.Windows.Forms.Label();
@@ -24,6 +25,11 @@
             this.pnlFilter = new System.Windows.Forms.Panel();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
             this.dgvSanPham = new System.Windows.Forms.DataGridView();
+            this.colMaSP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTenSP = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLoaiHoa = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoLuongTon = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMucTonToiThieu = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlHeader.SuspendLayout();
             this.pnlFilter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSanPham)).BeginInit();
@@ -108,6 +114,12 @@
             this.dgvSanPham.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvSanPham.BackgroundColor = System.Drawing.Color.White;
             this.dgvSanPham.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvSanPham.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colMaSP,
+            this.colTenSP,
+            this.colLoaiHoa,
+            this.colSoLuongTon,
+            this.colMucTonToiThieu});
             this.dgvSanPham.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvSanPham.Location = new System.Drawing.Point(0, 130);
             this.dgvSanPham.Name = "dgvSanPham";
@@ -117,6 +129,43 @@
             this.dgvSanPham.Size = new System.Drawing.Size(1000, 590);
             this.dgvSanPham.TabIndex = 2;
             this.dgvSanPham.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvSanPham_CellFormatting);
+            // 
+            // colMaSP
+            // 
+            this.colMaSP.DataPropertyName = "MaSP";
+            this.colMaSP.HeaderText = "Mã SP";
+            this.colMaSP.Name = "colMaSP";
+            this.colMaSP.ReadOnly = true;
+            // 
+            // colTenSP
+            // 
+            this.colTenSP.DataPropertyName = "TenSP";
+            this.colTenSP.HeaderText = "Tên sản phẩm";
+            this.colTenSP.Name = "colTenSP";
+            this.colTenSP.ReadOnly = true;
+            // 
+            // colLoaiHoa
+            // 
+            this.colLoaiHoa.DataPropertyName = "LoaiHoa";
+            this.colLoaiHoa.HeaderText = "Loại";
+            this.colLoaiHoa.Name = "colLoaiHoa";
+            this.colLoaiHoa.ReadOnly = true;
+            // 
+            // colSoLuongTon
+            // 
+            this.colSoLuongTon.DataPropertyName = "SoLuongTon";
+            this.colSoLuongTon.HeaderText = "Tồn thực tế";
+            this.colSoLuongTon.Name = "colSoLuongTon";
+            this.colSoLuongTon.ReadOnly = true;
+            // 
+            // colMucTonToiThieu
+            // 
+            this.colMucTonToiThieu.DataPropertyName = "MucTonToiThieu";
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.LightYellow;
+            this.colMucTonToiThieu.DefaultCellStyle = dataGridViewCellStyle1;
+            this.colMucTonToiThieu.HeaderText = "Ngưỡng tối thiểu";
+            this.colMucTonToiThieu.Name = "colMucTonToiThieu";
+            //
             // 
             // ucCauHinhTonKho
             // 
@@ -146,5 +195,10 @@
         private System.Windows.Forms.Panel pnlFilter;
         private System.Windows.Forms.TextBox txtTimKiem;
         private System.Windows.Forms.DataGridView dgvSanPham;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMaSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTenSP;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLoaiHoa;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSoLuongTon;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMucTonToiThieu;
     }
 }

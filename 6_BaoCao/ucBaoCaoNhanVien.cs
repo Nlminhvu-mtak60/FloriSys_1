@@ -59,45 +59,10 @@ namespace FloriSys._6_BaoCao
 
         private void DrawBarChart(List<HieuSuatNhanVien> dsNV)
         {
-            pnlChartArea.Controls.Clear();
+            chartHieuSuat.Series["Doanh thu"].Points.Clear();
+            chartHieuSuat.Series["Số đơn"].Points.Clear();
 
             if (dsNV.Count == 0) return;
-
-            Chart chart = new Chart();
-            chart.Name = "chartNV";
-            chart.Dock = DockStyle.Fill;
-            chart.BackColor = Color.White;
-
-            ChartArea area = new ChartArea("Main");
-            area.BackColor = Color.White;
-            area.AxisX.MajorGrid.Enabled = false;
-            area.AxisY.MajorGrid.LineColor = Color.FromArgb(243, 244, 246);
-            area.AxisX.LabelStyle.Font = new Font("Segoe UI", 7f);
-            area.AxisY.LabelStyle.Font = new Font("Segoe UI", 7f);
-            area.AxisY.LabelStyle.Format = "N0";
-            chart.ChartAreas.Add(area);
-
-            // Revenue series
-            Series sDT = new Series("Doanh thu");
-            sDT.ChartType = SeriesChartType.Bar;
-            sDT.Color = Color.FromArgb(232, 57, 77);
-            sDT.Font = new Font("Segoe UI", 7f);
-            chart.Series.Add(sDT);
-
-            // Orders series
-            Series sDon = new Series("Số đơn");
-            sDon.ChartType = SeriesChartType.Bar;
-            sDon.Color = Color.FromArgb(253, 186, 194);
-            sDon.Font = new Font("Segoe UI", 7f);
-            chart.Series.Add(sDon);
-
-            Legend legend = new Legend();
-            legend.Font = new Font("Segoe UI", 7f);
-            legend.Docking = Docking.Bottom;
-            chart.Legends.Add(legend);
-
-            Title title = new Title("SO SÁNH HIỆU SUẤT NV", Docking.Top, new Font("Segoe UI", 10f, FontStyle.Bold), Color.FromArgb(31, 41, 55));
-            chart.Titles.Add(title);
 
             int count = 0;
             foreach (HieuSuatNhanVien nv in dsNV)
@@ -105,12 +70,10 @@ namespace FloriSys._6_BaoCao
                 if (count >= 8) break;
                 string name = nv.HoTen;
                 if (name.Length > 12) name = name.Substring(0, 12) + "…";
-                sDT.Points.AddXY(name, nv.TongDoanhThu);
-                sDon.Points.AddXY(name, nv.SoDonTao * 100000); // scale for visibility
+                chartHieuSuat.Series["Doanh thu"].Points.AddXY(name, nv.TongDoanhThu);
+                chartHieuSuat.Series["Số đơn"].Points.AddXY(name, nv.SoDonTao * 100000); // scale for visibility
                 count++;
             }
-
-            pnlChartArea.Controls.Add(chart);
         }
 
         private void btnLoc_Click(object sender, EventArgs e)
@@ -125,10 +88,10 @@ namespace FloriSys._6_BaoCao
             List<HieuSuatNhanVien> dsNV = _bcRepo.HieuSuatNhanVien(thang, nam);
 
             System.IO.MemoryStream chartStream = null;
-            if (pnlChartArea.Controls.Count > 0 && pnlChartArea.Controls[0] is Chart chart)
+            if (chartHieuSuat.Series["Doanh thu"].Points.Count > 0)
             {
                 chartStream = new System.IO.MemoryStream();
-                chart.SaveImage(chartStream, ChartImageFormat.Png);
+                chartHieuSuat.SaveImage(chartStream, ChartImageFormat.Png);
             }
 
             FloriSys.Services.ReportPdfHelper.ExportBaoCaoHieuSuatNhanVien(thang, nam, dsNV, "Quản trị viên", chartStream);

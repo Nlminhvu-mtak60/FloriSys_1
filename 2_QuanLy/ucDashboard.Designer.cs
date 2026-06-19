@@ -1,4 +1,4 @@
-﻿namespace FloriSys._2_QuanLy
+namespace FloriSys._2_QuanLy
 {
     partial class ucDashboard
     {
@@ -28,8 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.pnlContent = new System.Windows.Forms.Panel();
             this.pnlBieuDo = new System.Windows.Forms.Panel();
+            this.chartDoanhThu = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.lblTitleBieuDo = new System.Windows.Forms.Label();
             this.pnlDonHang = new System.Windows.Forms.Panel();
             this.dgvDonHang = new System.Windows.Forms.DataGridView();
@@ -58,6 +62,7 @@
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlContent.SuspendLayout();
             this.pnlBieuDo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDoanhThu)).BeginInit();
             this.pnlDonHang.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvDonHang)).BeginInit();
             this.pnlKPI.SuspendLayout();
@@ -91,11 +96,46 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlBieuDo.BackColor = System.Drawing.Color.White;
+            this.pnlBieuDo.Controls.Add(this.chartDoanhThu);
             this.pnlBieuDo.Controls.Add(this.lblTitleBieuDo);
             this.pnlBieuDo.Location = new System.Drawing.Point(548, 264);
             this.pnlBieuDo.Name = "pnlBieuDo";
             this.pnlBieuDo.Size = new System.Drawing.Size(436, 420);
             this.pnlBieuDo.TabIndex = 16;
+            // 
+            // chartDoanhThu
+            // 
+            this.chartDoanhThu.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisX.LineColor = System.Drawing.Color.LightGray;
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisY.LabelStyle.ForeColor = System.Drawing.Color.DimGray;
+            chartArea1.AxisY.LabelStyle.Format = "{0:N0}";
+            chartArea1.AxisY.LineColor = System.Drawing.Color.Transparent;
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            chartArea1.Name = "MainArea";
+            this.chartDoanhThu.ChartAreas.Add(chartArea1);
+            this.chartDoanhThu.Location = new System.Drawing.Point(3, 41);
+            this.chartDoanhThu.Name = "chartDoanhThu";
+            series1.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
+            series1.BackSecondaryColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(182)))), ((int)(((byte)(193)))));
+            series1.ChartArea = "MainArea";
+            series1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            series1.CustomProperties = "PointWidth=0.6";
+            series1.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
+            series1.IsValueShownAsLabel = true;
+            series1.LabelFormat = "{0:N0}";
+            series1.Name = "Doanh Thu";
+            this.chartDoanhThu.Series.Add(series1);
+            this.chartDoanhThu.Size = new System.Drawing.Size(430, 374);
+            this.chartDoanhThu.TabIndex = 1;
+            title1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            title1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            title1.Name = "Title1";
+            title1.Text = "HOẠT ĐỘNG 7 NGÀY GẦN NHẤT";
+            this.chartDoanhThu.Titles.Add(title1);
             // 
             // lblTitleBieuDo
             // 
@@ -144,6 +184,7 @@
             this.dgvDonHang.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDonHang.Size = new System.Drawing.Size(468, 360);
             this.dgvDonHang.TabIndex = 1;
+            //this.dgvDonHang.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDonHang_CellContentClick);
             // 
             // lblTitleDonHang
             // 
@@ -421,6 +462,7 @@
             this.Size = new System.Drawing.Size(1024, 720);
             this.pnlContent.ResumeLayout(false);
             this.pnlBieuDo.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartDoanhThu)).EndInit();
             this.pnlDonHang.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvDonHang)).EndInit();
             this.pnlKPI.ResumeLayout(false);
@@ -466,5 +508,7 @@
         private System.Windows.Forms.Label lblDate;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.TableLayoutPanel pnlKPI;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartDoanhThu;
+       // private System.Windows.Forms.Button button1;
     }
 }

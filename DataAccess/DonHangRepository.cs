@@ -6,18 +6,14 @@ using FloriSys.Models;
 
 namespace FloriSys.DataAccess
 {
-    /// <summary>
-    /// DonHang repository - inherits BaseRepository&lt;DonHang&gt;.
-    /// Demonstrates: INHERITANCE, POLYMORPHISM (complex LayDanhSach with 4 filters + JOIN),
-    /// ENCAPSULATION (TaoDonHangHoanChinh wraps full transaction).
-    /// </summary>
+  
     public class DonHangRepository : BaseRepository<DonHang>
     {
         public override string TableName => "DON_HANG";
         public override string IdColumn => "MaDon";
         public override string IdPrefix => "DH";
 
-        // POLYMORPHISM: Override with complex 4-filter JOIN query
+        
         public List<DonHang> LayDanhSach(string keyword = "", string trangThai = "", string maNV = "", DateTime? ngay = null)
         {
             return LayDanhSachPhanTrang(1, 1000000, keyword, trangThai, maNV, ngay).Data;
@@ -56,7 +52,7 @@ namespace FloriSys.DataAccess
             int totalCount = (int)DatabaseHelper.ExecuteRawScalar(countSql, parms.ToArray());
 
             // 2. Lấy dữ liệu theo trang
-            string dataSql = @"SELECT dh.MaDon, dh.NgayTao, kh.HoTen AS TenKH, kh.SoDienThoai, 
+            string dataSql = @"SELECT dh.MaDon, dh.NgayTao, kh.HoTen AS TenKH, kh.SoDienThoai,
                              dh.HinhThucNhanHang, dh.TongTien, dh.TrangThai, nv.HoTen AS TenNV, dh.GhiChu " + 
                              baseSql + 
                              " ORDER BY dh.MaDon DESC " + 
@@ -93,7 +89,7 @@ namespace FloriSys.DataAccess
 
         public string TaoDonHang(string maKH, string maNV, string hinhThuc, string ghiChu)
         {
-            string maDon = TaoMoi();  // INHERITANCE: Uses base class method
+            string maDon = TaoMoi();  
             ExecuteSP("sp_TaoDonHang", new SqlParameter[]
             {
                 new SqlParameter("@MaDon", maDon),
@@ -116,11 +112,6 @@ namespace FloriSys.DataAccess
             });
         }
 
-        /// <summary>
-        /// ENCAPSULATION: Full order creation in a single transaction.
-        /// SinhMa → TaoDonHang → ThemChiTiet (N times) → TaoGiaoHang (if delivery).
-        /// Auto-rollback on any error.
-        /// </summary>
         public string TaoDonHangHoanChinh(string maKH, string maNV, string hinhThuc, string ghiChu, DataTable gioHang)
         {
             using (SqlConnection conn = DatabaseHelper.GetConnection())

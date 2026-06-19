@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -45,15 +45,7 @@ namespace FloriSys._3_BanHang
         {
             try
             {
-                // Lấy các đơn ở trạng thái HoanHang (Shipper vừa mang về) nhưng CHƯA lập phiếu trả
-                string sql = @"SELECT dh.MaDon, kh.HoTen AS TenKH, dh.NgayTao, dh.TongTien
-                              FROM DON_HANG dh
-                              JOIN KHACH_HANG kh ON dh.MaKH = kh.MaKH
-                              WHERE dh.TrangThai = N'HoanHang'
-                                AND dh.MaDon NOT IN (SELECT MaDon FROM TRA_HANG)
-                              ORDER BY dh.NgayTao DESC";
-                
-                DataTable dt = DatabaseHelper.ExecuteRawQuery(sql);
+                DataTable dt = _thRepo.LayDanhSachDonChoTra();
                 dgvChoTra.DataSource = dt;
                 
                 if (dgvChoTra.Columns.Count > 0)

@@ -32,11 +32,14 @@ namespace FloriSys._3_BanHang
             this.lblTongTien = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.grpKhachHang = new System.Windows.Forms.GroupBox();
-            this.lblGhiChu = new System.Windows.Forms.Label();
-            this.lblDiaChi = new System.Windows.Forms.Label();
-            this.lblHinhThuc = new System.Windows.Forms.Label();
-            this.lblSDT = new System.Windows.Forms.Label();
+            this.flpKhachHang = new System.Windows.Forms.FlowLayoutPanel();
             this.lblTenKH = new System.Windows.Forms.Label();
+            this.lblSDT = new System.Windows.Forms.Label();
+            this.lblNguoiNhan = new System.Windows.Forms.Label();
+            this.lblHinhThuc = new System.Windows.Forms.Label();
+            this.lblDiaChi = new System.Windows.Forms.Label();
+            this.lblGhiChu = new System.Windows.Forms.Label();
+
             this.pnlRight = new System.Windows.Forms.Panel();
             this.grpAction = new System.Windows.Forms.GroupBox();
             this.btnUpdateStatus = new System.Windows.Forms.Button();
@@ -53,6 +56,7 @@ namespace FloriSys._3_BanHang
             ((System.ComponentModel.ISupportInitialize)(this.dgvChiTiet)).BeginInit();
             this.pnlSummary.SuspendLayout();
             this.grpKhachHang.SuspendLayout();
+            this.flpKhachHang.SuspendLayout();
             this.pnlRight.SuspendLayout();
             this.grpAction.SuspendLayout();
             this.grpTimeline.SuspendLayout();
@@ -240,11 +244,8 @@ namespace FloriSys._3_BanHang
             // 
             // grpKhachHang
             // 
-            this.grpKhachHang.Controls.Add(this.lblGhiChu);
-            this.grpKhachHang.Controls.Add(this.lblDiaChi);
-            this.grpKhachHang.Controls.Add(this.lblHinhThuc);
-            this.grpKhachHang.Controls.Add(this.lblSDT);
-            this.grpKhachHang.Controls.Add(this.lblTenKH);
+            this.grpKhachHang.AutoSize = true;
+            this.grpKhachHang.Controls.Add(this.flpKhachHang);
             this.grpKhachHang.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpKhachHang.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.grpKhachHang.Location = new System.Drawing.Point(0, 0);
@@ -254,55 +255,92 @@ namespace FloriSys._3_BanHang
             this.grpKhachHang.TabStop = false;
             this.grpKhachHang.Text = "👤 Thông tin khách hàng";
             // 
-            // lblGhiChu
+            // flpKhachHang
             // 
-            this.lblGhiChu.AutoSize = true;
-            this.lblGhiChu.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblGhiChu.Location = new System.Drawing.Point(15, 180);
-            this.lblGhiChu.Name = "lblGhiChu";
-            this.lblGhiChu.Size = new System.Drawing.Size(243, 23);
-            this.lblGhiChu.TabIndex = 4;
-            this.lblGhiChu.Text = "Ghi chú: Gói quà đẹp, có thiệp";
+            this.flpKhachHang.AutoSize = true;
+            this.flpKhachHang.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpKhachHang.Controls.Add(this.lblTenKH);
+            this.flpKhachHang.Controls.Add(this.lblSDT);
+            this.flpKhachHang.Controls.Add(this.lblNguoiNhan);
+            this.flpKhachHang.Controls.Add(this.lblHinhThuc);
+            this.flpKhachHang.Controls.Add(this.lblDiaChi);
+            this.flpKhachHang.Controls.Add(this.lblGhiChu);
+            this.flpKhachHang.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpKhachHang.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flpKhachHang.Location = new System.Drawing.Point(3, 26);
+            this.flpKhachHang.Name = "flpKhachHang";
+            this.flpKhachHang.Padding = new System.Windows.Forms.Padding(12, 10, 12, 15);
+            this.flpKhachHang.Size = new System.Drawing.Size(689, 191);
+            this.flpKhachHang.TabIndex = 0;
+            this.flpKhachHang.WrapContents = false;
             // 
-            // lblDiaChi
-            // 
-            this.lblDiaChi.AutoSize = true;
-            this.lblDiaChi.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblDiaChi.Location = new System.Drawing.Point(15, 145);
-            this.lblDiaChi.Name = "lblDiaChi";
-            this.lblDiaChi.Size = new System.Drawing.Size(220, 23);
-            this.lblDiaChi.TabIndex = 3;
-            this.lblDiaChi.Text = "Địa chỉ: 45 Lê Lợi, Q.1, HCM";
-            // 
-            // lblHinhThuc
-            // 
-            this.lblHinhThuc.AutoSize = true;
-            this.lblHinhThuc.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblHinhThuc.Location = new System.Drawing.Point(15, 110);
-            this.lblHinhThuc.Name = "lblHinhThuc";
-            this.lblHinhThuc.Size = new System.Drawing.Size(188, 23);
-            this.lblHinhThuc.TabIndex = 2;
-            this.lblHinhThuc.Text = "Hình thức: Giao tận nơi";
-            // 
-            // lblSDT
-            // 
-            this.lblSDT.AutoSize = true;
-            this.lblSDT.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.lblSDT.Location = new System.Drawing.Point(15, 75);
-            this.lblSDT.Name = "lblSDT";
-            this.lblSDT.Size = new System.Drawing.Size(149, 23);
-            this.lblSDT.TabIndex = 1;
-            this.lblSDT.Text = "SĐT: 0912 345 678";
             // 
             // lblTenKH
             // 
             this.lblTenKH.AutoSize = true;
             this.lblTenKH.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.lblTenKH.Location = new System.Drawing.Point(15, 40);
+            this.lblTenKH.Location = new System.Drawing.Point(15, 10);
+            this.lblTenKH.Margin = new System.Windows.Forms.Padding(3, 0, 3, 5);
             this.lblTenKH.Name = "lblTenKH";
             this.lblTenKH.Size = new System.Drawing.Size(151, 28);
             this.lblTenKH.TabIndex = 0;
             this.lblTenKH.Text = "Trần Văn Hùng";
+            // 
+            // lblSDT
+            // 
+            this.lblSDT.AutoSize = true;
+            this.lblSDT.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblSDT.Location = new System.Drawing.Point(15, 43);
+            this.lblSDT.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.lblSDT.Name = "lblSDT";
+            this.lblSDT.Size = new System.Drawing.Size(149, 23);
+            this.lblSDT.TabIndex = 1;
+            this.lblSDT.Text = "SĐT: 0912 345 678";
+            // 
+            // lblNguoiNhan
+            // 
+            this.lblNguoiNhan.AutoSize = true;
+            this.lblNguoiNhan.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblNguoiNhan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(57)))), ((int)(((byte)(77)))));
+            this.lblNguoiNhan.Location = new System.Drawing.Point(15, 76);
+            this.lblNguoiNhan.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.lblNguoiNhan.Name = "lblNguoiNhan";
+            this.lblNguoiNhan.Size = new System.Drawing.Size(117, 23);
+            this.lblNguoiNhan.TabIndex = 2;
+            this.lblNguoiNhan.Text = "Người nhận: ";
+            // 
+            // lblHinhThuc
+            // 
+            this.lblHinhThuc.AutoSize = true;
+            this.lblHinhThuc.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblHinhThuc.Location = new System.Drawing.Point(15, 109);
+            this.lblHinhThuc.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.lblHinhThuc.Name = "lblHinhThuc";
+            this.lblHinhThuc.Size = new System.Drawing.Size(188, 23);
+            this.lblHinhThuc.TabIndex = 3;
+            this.lblHinhThuc.Text = "Hình thức: Giao tận nơi";
+            // 
+            // lblDiaChi
+            // 
+            this.lblDiaChi.AutoSize = true;
+            this.lblDiaChi.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblDiaChi.Location = new System.Drawing.Point(15, 142);
+            this.lblDiaChi.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.lblDiaChi.Name = "lblDiaChi";
+            this.lblDiaChi.Size = new System.Drawing.Size(220, 23);
+            this.lblDiaChi.TabIndex = 4;
+            this.lblDiaChi.Text = "Địa chỉ: 45 Lê Lợi, Q.1, HCM";
+            // 
+            // lblGhiChu
+            // 
+            this.lblGhiChu.AutoSize = true;
+            this.lblGhiChu.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblGhiChu.Location = new System.Drawing.Point(15, 175);
+            this.lblGhiChu.Margin = new System.Windows.Forms.Padding(3, 0, 3, 10);
+            this.lblGhiChu.Name = "lblGhiChu";
+            this.lblGhiChu.Size = new System.Drawing.Size(243, 23);
+            this.lblGhiChu.TabIndex = 5;
+            this.lblGhiChu.Text = "Ghi chú: Gói quà đẹp, có thiệp";
             // 
             // pnlRight
             // 
@@ -425,6 +463,8 @@ namespace FloriSys._3_BanHang
             this.pnlSummary.PerformLayout();
             this.grpKhachHang.ResumeLayout(false);
             this.grpKhachHang.PerformLayout();
+            this.flpKhachHang.ResumeLayout(false);
+            this.flpKhachHang.PerformLayout();
             this.pnlRight.ResumeLayout(false);
             this.grpAction.ResumeLayout(false);
             this.grpAction.PerformLayout();
@@ -444,11 +484,13 @@ namespace FloriSys._3_BanHang
         private System.Windows.Forms.TableLayoutPanel pnlMain;
         private System.Windows.Forms.Panel pnlLeft;
         private System.Windows.Forms.GroupBox grpKhachHang;
-        private System.Windows.Forms.Label lblGhiChu;
-        private System.Windows.Forms.Label lblDiaChi;
-        private System.Windows.Forms.Label lblHinhThuc;
-        private System.Windows.Forms.Label lblSDT;
+        private System.Windows.Forms.FlowLayoutPanel flpKhachHang;
         private System.Windows.Forms.Label lblTenKH;
+        private System.Windows.Forms.Label lblSDT;
+        private System.Windows.Forms.Label lblNguoiNhan;
+        private System.Windows.Forms.Label lblHinhThuc;
+        private System.Windows.Forms.Label lblDiaChi;
+        private System.Windows.Forms.Label lblGhiChu;
         private System.Windows.Forms.GroupBox grpSanPham;
         private System.Windows.Forms.DataGridView dgvChiTiet;
         private System.Windows.Forms.Panel pnlSummary;

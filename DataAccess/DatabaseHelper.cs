@@ -19,31 +19,22 @@ namespace FloriSys.DataAccess
             }
         }
 
-        // =====================================================
-        // Generic Mapping Helpers (OOP)
-        // =====================================================
 
-        /// <summary>
-        /// Thực thi Stored Procedure và map kết quả thành danh sách đối tượng.
-        /// </summary>
+        // Thực thi Stored Procedure và map kết quả thành danh sách đối tượng
         public static List<T> ExecuteList<T>(string spName, SqlParameter[] parameters = null) where T : new()
         {
             DataTable dt = ExecuteQuery(spName, parameters);
             return MapDataTable<T>(dt);
         }
 
-        /// <summary>
-        /// Thực thi Raw SQL và map kết quả thành danh sách đối tượng.
-        /// </summary>
+        // Thực thi Raw SQL và map kết quả thành danh sách đối tượng
         public static List<T> ExecuteRawList<T>(string sql, SqlParameter[] parameters = null) where T : new()
         {
             DataTable dt = ExecuteRawQuery(sql, parameters);
             return MapDataTable<T>(dt);
         }
 
-        /// <summary>
-        /// Thực thi Stored Procedure và map dòng đầu tiên thành đối tượng (hoặc null).
-        /// </summary>
+        // Thực thi Stored Procedure và map dòng đầu tiên thành đối tượng (hoặc null)
         public static T ExecuteSingle<T>(string spName, SqlParameter[] parameters = null) where T : class, new()
         {
             DataTable dt = ExecuteQuery(spName, parameters);
@@ -51,9 +42,7 @@ namespace FloriSys.DataAccess
             return MapDataRow<T>(dt.Rows[0], dt.Columns);
         }
 
-        /// <summary>
-        /// Thực thi Raw SQL và map dòng đầu tiên thành đối tượng (hoặc null).
-        /// </summary>
+        // Thực thi Raw SQL và map dòng đầu tiên thành đối tượng (hoặc null)
         public static T ExecuteRawSingle<T>(string sql, SqlParameter[] parameters = null) where T : class, new()
         {
             DataTable dt = ExecuteRawQuery(sql, parameters);
@@ -61,9 +50,7 @@ namespace FloriSys.DataAccess
             return MapDataRow<T>(dt.Rows[0], dt.Columns);
         }
 
-        /// <summary>
-        /// Map toàn bộ DataTable thành List of T bằng Reflection.
-        /// </summary>
+        // Map toàn bộ DataTable thành List of T bằng Reflection
         private static List<T> MapDataTable<T>(DataTable dt) where T : new()
         {
             List<T> list = new List<T>();
@@ -76,9 +63,7 @@ namespace FloriSys.DataAccess
             return list;
         }
 
-        /// <summary>
-        /// Map 1 DataRow thành 1 object T bằng Reflection.
-        /// </summary>
+        // Map 1 DataRow thành 1 object T bằng Reflection
         private static T MapDataRow<T>(DataRow row, DataColumnCollection columns, PropertyInfo[] props = null) where T : new()
         {
             T obj = new T();

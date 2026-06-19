@@ -98,18 +98,7 @@ namespace FloriSys._5_GiaoHang
         {
             try
             {
-                string sql = @"SELECT nv.MaNV, nv.HoTen, 
-                    (SELECT COUNT(*) FROM GIAO_HANG gh WHERE gh.MaNV_Shipper = nv.MaNV AND gh.TrangThai = N'DangGiao') AS DangGiao,
-                    (SELECT COUNT(*) FROM GIAO_HANG gh WHERE gh.MaNV_Shipper = nv.MaNV AND gh.TrangThai = N'GiaoThanhCong' AND CAST(gh.NgayGiao AS DATE) = CAST(GETDATE() AS DATE)) AS DaGiaoHomNay,
-                    CASE 
-                        WHEN (SELECT COUNT(*) FROM GIAO_HANG gh WHERE gh.MaNV_Shipper = nv.MaNV AND gh.TrangThai = N'DangGiao') = 0 THEN N'Rảnh'
-                        ELSE N'Đang giao'
-                    END AS TrangThai
-                    FROM NHAN_VIEN nv
-                    WHERE nv.ChucVu = N'Shipper' AND nv.TrangThai = N'DangLam'
-                    ORDER BY DangGiao ASC";
-
-                dtShippers = DatabaseHelper.ExecuteRawQuery(sql);
+                dtShippers = _nvRepo.LayDanhSachShipperDePhanCong();
 
                 dgvShipper.AutoGenerateColumns = false;
                 

@@ -1,4 +1,4 @@
-﻿namespace FloriSys._6_BaoCao
+namespace FloriSys._6_BaoCao
 {
     partial class ucBaoCaoNgay
     {
@@ -32,7 +32,11 @@
             this.pnlMain = new System.Windows.Forms.TableLayoutPanel();
             this.pnlChartCard = new System.Windows.Forms.Panel();
             this.lblChartTitle = new System.Windows.Forms.Label();
-            this.pnlChartMock = new System.Windows.Forms.Panel();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title1 = new System.Windows.Forms.DataVisualization.Charting.Title();
+            this.chartDoanhThu = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.pnlTableCard = new System.Windows.Forms.Panel();
             this.dgvTopSP = new System.Windows.Forms.DataGridView();
             this.lblTableTitle = new System.Windows.Forms.Label();
@@ -46,6 +50,7 @@
             this.pnlChartCard.SuspendLayout();
             this.pnlTableCard.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTopSP)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDoanhThu)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -199,7 +204,7 @@
             // 
             this.pnlChartCard.BackColor = System.Drawing.Color.White;
             this.pnlChartCard.Controls.Add(this.lblChartTitle);
-            this.pnlChartCard.Controls.Add(this.pnlChartMock);
+            this.pnlChartCard.Controls.Add(this.chartDoanhThu);
             this.pnlChartCard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlChartCard.Location = new System.Drawing.Point(3, 3);
             this.pnlChartCard.Name = "pnlChartCard";
@@ -218,16 +223,40 @@
             this.lblChartTitle.TabIndex = 0;
             this.lblChartTitle.Text = "📊 Doanh thu theo giờ (đ)";
             // 
-            // pnlChartMock
+            // chartDoanhThu
             // 
-            this.pnlChartMock.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.chartDoanhThu.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlChartMock.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
-            this.pnlChartMock.Location = new System.Drawing.Point(20, 60);
-            this.pnlChartMock.Name = "pnlChartMock";
-            this.pnlChartMock.Size = new System.Drawing.Size(424, 374);
-            this.pnlChartMock.TabIndex = 1;
+            this.chartDoanhThu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            chartArea1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(250)))), ((int)(((byte)(251)))));
+            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Segoe UI", 8F);
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisY.LabelStyle.Font = new System.Drawing.Font("Segoe UI", 8F);
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(231)))), ((int)(((byte)(235)))));
+            chartArea1.Name = "MainArea";
+            this.chartDoanhThu.ChartAreas.Add(chartArea1);
+            legend1.Alignment = System.Drawing.StringAlignment.Center;
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend1.Font = new System.Drawing.Font("Segoe UI", 8F);
+            legend1.Name = "MainLegend";
+            this.chartDoanhThu.Legends.Add(legend1);
+            this.chartDoanhThu.Location = new System.Drawing.Point(20, 60);
+            this.chartDoanhThu.Name = "chartDoanhThu";
+            series1.ChartArea = "MainArea";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Doughnut;
+            series1.CustomProperties = "PieLabelStyle=Disabled";
+            series1.Legend = "MainLegend";
+            series1.LegendText = "#VALX";
+            series1.Name = "DoanhThu";
+            this.chartDoanhThu.Series.Add(series1);
+            this.chartDoanhThu.Size = new System.Drawing.Size(424, 374);
+            this.chartDoanhThu.TabIndex = 1;
+            title1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            title1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            title1.Name = "Title1";
+            title1.Text = "TỶ TRỌNG DOANH THU SẢN PHẨM";
+            this.chartDoanhThu.Titles.Add(title1);
             // 
             // pnlTableCard
             // 
@@ -334,6 +363,7 @@
             this.pnlTableCard.ResumeLayout(false);
             this.pnlTableCard.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTopSP)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDoanhThu)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -356,7 +386,7 @@
         private System.Windows.Forms.TableLayoutPanel pnlMain;
         private System.Windows.Forms.Panel pnlChartCard;
         private System.Windows.Forms.Label lblChartTitle;
-        private System.Windows.Forms.Panel pnlChartMock;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartDoanhThu;
         private System.Windows.Forms.Panel pnlTableCard;
         private System.Windows.Forms.Label lblTableTitle;
         private System.Windows.Forms.DataGridView dgvTopSP;

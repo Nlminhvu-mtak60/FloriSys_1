@@ -1,160 +1,284 @@
-# TÀI LIỆU BẢO VỆ DỰ ÁN
-## Tên đề tài: FloriSys - Hệ Thống Quản Lý Cửa Hàng Hoa
+# TÀI LIỆU HƯỚNG DẪN BẢO VỆ ĐỒ ÁN CHI TIẾT (FLORISYS)
+
+Tài liệu này bao gồm hai phần chính:
+* **PHẦN I:** Hướng dẫn code chi tiết cho các dạng câu hỏi thực hành (Copy-Paste trực tiếp).
+* **PHẦN II:** Hướng dẫn thuyết trình nghiệp vụ và trả lời phản biện với giảng viên để đạt điểm tối đa.
 
 ---
 
-### MỤC LỤC
-1. [Tổng quan dự án](#1-tổng-quan-dự-án)
-2. [Công nghệ sử dụng](#2-công-nghệ-sử-dụng)
-3. [Kiến trúc phần mềm](#3-kiến-trúc-phần-mềm)
-4. [Thiết kế Cơ sở dữ liệu](#4-thiết-kế-cơ-sở-dữ-liệu)
-5. [Các chức năng chính](#5-các-chức-năng-chính)
-6. [Các quy trình nghiệp vụ trọng tâm](#6-các-quy-trình-nghiệp-vụ-trọng-tâm)
-7. [Điểm nổi bật về kỹ thuật](#7-điểm-nổi-bật-về-kỹ-thuật)
+# PHẦN I: HƯỚNG DẪN CODE CHI TIẾT CÁC DẠNG CÂU HỎI THỰC HÀNH
+
+<a name="dang-1-them-sua-thuoc-tinh-moi-3-tier-csdl"></a>
+## 🛠️ Dạng 1: Thêm/Sửa thuộc tính mới (3-Tier & CSDL)
+*Thầy yêu cầu: "Hãy thêm thuộc tính **Email** vào Khách hàng (hoặc **Đơn vị tính** cho Sản phẩm) và hiển thị lên giao diện."*
+
+### Bước 1: Chạy câu lệnh SQL (Thêm cột vào CSDL)
+Mở SSMS hoặc chạy Script bổ sung cột:
+```sql
+ALTER TABLE KHACH_HANG ADD Email NVARCHAR(100) NULL;
+-- Hoặc đối với sản phẩm:
+-- ALTER TABLE SAN_PHAM ADD DonViTinh NVARCHAR(50) DEFAULT N'Cành';
+```
+
+### Bước 2: Sửa Model trong C#
+Mở file [KhachHang.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/Models/KhachHang.cs) và thêm thuộc tính:
+```csharp
+public string Email { get; set; }
+```
+
+### Bước 3: Sửa DataAccess (Repository)
+Mở file [KhachHangRepository.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/DataAccess/KhachHangRepository.cs):
+* **Sửa hàm `LayDanhSach`**: Thêm cột `kh.Email` vào câu SELECT và `kh.Email` vào phần `GROUP BY`.
+* **Sửa hàm `ThemKhachHang`**:
+```csharp
+string sql = @"INSERT INTO KHACH_HANG (MaKH, HoTen, SoDienThoai, DiaChi, Email) 
+              VALUES (@MaKH, @HoTen, @SDT, @DiaChi, @Email)";
+// Thêm tham số: NullableParam("@Email", kh.Email)
+```
+* **Sửa hàm `CapNhatKhachHang`**:
+```csharp
+string sql = @"UPDATE KHACH_HANG SET HoTen=@HoTen, SoDienThoai=@SDT, DiaChi=@DiaChi, Email=@Email 
+              WHERE MaKH=@MaKH";
+// Thêm tham số: NullableParam("@Email", kh.Email)
+```
+
+### Bước 4: Sửa giao diện Form Nhập liệu (UI)
+Mở file Code-behind của form chỉnh sửa [frmThemSuaKhachHang.cs](file:///d:/Learning/C%23/BAI_TAP_LON/FloriSys/7_DanhMuc/frmThemSuaKhachHang.cs):
+* **Khi hiển thị dữ liệu lên Form (Hàm Load dữ liệu / Edit):**
+```csharp
+txtEmail.Text = khachHang.Email;
+```
+* **Khi lưu dữ liệu (Hàm Save / Lưu):**
+```csharp
+khachHang.Email = txtEmail.Text.Trim();
+```
 
 ---
 
-### 1. TỔNG QUAN DỰ ÁN
-**FloriSys** là một ứng dụng Desktop (Windows Forms) được xây dựng để phục vụ công tác quản lý toàn diện cho một cửa hàng kinh doanh hoa. Hệ thống bao quát các quy trình từ bán hàng (Point-of-Sale), quản lý đơn hàng, vận hành kho bãi, theo dõi giao hàng cho đến báo cáo thống kê kinh doanh.
-- **Mục tiêu:** Tự động hóa và tối ưu hóa quy trình quản lý cửa hàng hoa, giảm thiểu sai sót trong khâu tính toán, theo dõi chặt chẽ lượng hàng tồn kho và cung cấp các báo cáo doanh thu trực quan.
-- **Đối tượng sử dụng:** Quản lý (Admin), Thu ngân (Cashier), Nhân viên kho (Warehouse), Nhân viên giao hàng (Shipper).
+<a name="dang-2-su-kien-click-dong-tren-datagridview-hien-thi-du-lieu-len-textbox"></a>
+## 🖱️ Dạng 2: Sự kiện Click dòng trên DataGridView hiển thị dữ liệu lên TextBox
+*Thầy yêu cầu: "Khi tôi click chuột vào một hàng trên bảng Sản phẩm/Khách hàng, hãy hiển thị thông tin hàng đó lên các TextBox ở bên cạnh."*
+
+Mở file UI tương ứng (ví dụ: [ucKhachHang.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/7_DanhMuc/ucKhachHang.cs)), đăng ký sự kiện `CellClick` của DataGridView (ví dụ `dgvKhachHang`), sau đó viết code sau:
+
+```csharp
+private void dgvKhachHang_CellClick(object sender, DataGridViewCellEventArgs e)
+{
+    // Kiểm tra để tránh lỗi khi người dùng click vào dòng tiêu đề (Header Row)
+    if (e.RowIndex >= 0)
+    {
+        // Lấy dòng hiện tại đang được click
+        DataGridViewRow row = dgvKhachHang.Rows[e.RowIndex];
+
+        // Lấy giá trị từng ô gán lên các TextBox/Label bên cạnh
+        txtMaKH.Text = row.Cells["MaKH"].Value?.ToString();
+        txtHoTen.Text = row.Cells["HoTen"].Value?.ToString();
+        txtSDT.Text = row.Cells["SoDienThoai"].Value?.ToString();
+        txtDiaChi.Text = row.Cells["DiaChi"].Value?.ToString();
+        
+        // Nếu có thuộc tính mới (ví dụ Email)
+        txtEmail.Text = row.Cells["Email"].Value?.ToString();
+    }
+}
+```
 
 ---
 
-### 2. CÔNG NGHỆ SỬ DỤNG
-Hệ thống được phát triển dựa trên nền tảng .NET và SQL Server với các công nghệ và thư viện như sau:
-- **Ngôn ngữ lập trình:** C# (.NET Framework 4.7.2)
-- **Framework Giao diện:** Windows Forms (WinForms)
-- **Hệ quản trị Cơ sở dữ liệu:** SQL Server 2022 (Developer Edition)
-- **Công nghệ truy xuất dữ liệu:** ADO.NET (SqlClient) kết hợp Reflection ORM tự xây dựng và Repository Pattern.
-- **Báo cáo và biểu đồ:**
-  - `System.Windows.Forms.DataVisualization` (Vẽ biểu đồ doanh thu).
-  - Thư viện `EPPlus` (v4.5.3.3) (Xuất báo cáo ra file Excel).
-- **Bảo mật:** Mã hóa mật khẩu SHA-256 (`System.Security.Cryptography`).
+<a name="dang-3-su-kien-cellformatting-doi-mau-dong-o-trong-datagridview-theo-dieu-kien"></a>
+## 🎨 Dạng 3: Sự kiện CellFormatting (Đổi màu dòng/ô trong DataGridView theo điều kiện)
+*Thầy yêu cầu: "Hãy tô màu ĐỎ các sản phẩm có số lượng tồn kho bằng 0 (hết hàng) và tô màu VÀNG cho sản phẩm sắp hết hàng (tồn <= mức tối thiểu)."*
+
+Mở file code của UserControl (ví dụ: [ucSanPham.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/7_DanhMuc/ucSanPham.cs)), đăng ký sự kiện `CellFormatting` của DataGridView (`dgvSanPham`):
+
+```csharp
+private void dgvSanPham_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+{
+    if (e.RowIndex >= 0 && dgvSanPham.Columns[e.ColumnIndex].Name == "SoLuongTon")
+    {
+        var sp = dgvSanPham.Rows[e.RowIndex].DataBoundItem as FloriSys.Models.SanPham;
+        
+        if (sp != null)
+        {
+            if (sp.SoLuongTon == 0) // Hết hàng hoàn toàn (Tô màu Đỏ nhạt)
+            {
+                e.CellStyle.BackColor = System.Drawing.Color.LightCoral;
+                e.CellStyle.ForeColor = System.Drawing.Color.DarkRed;
+            }
+            else if (sp.SoLuongTon <= sp.MucTonToiThieu) // Sắp hết hàng (Tô màu Vàng nhạt)
+            {
+                e.CellStyle.BackColor = System.Drawing.Color.Khaki;
+                e.CellStyle.ForeColor = System.Drawing.Color.DarkGoldenrod;
+            }
+        }
+    }
+}
+```
 
 ---
 
-### 3. KIẾN TRÚC PHẦN MỀM
-Hệ thống tuân thủ chặt chẽ **Kiến trúc 3 lớp (3-Tier Architecture)**:
-1. **Lớp Giao diện (UI Layer - WinForms):** Trình bày dữ liệu và tiếp nhận thao tác người dùng. Hệ thống áp dụng mô hình **SPA (Single Page Application) trên WinForms**, sử dụng một Form chính (`frmMain`) làm container và chuyển đổi qua lại giữa các `UserControl` mà không cần mở nhiều cửa sổ nhỏ.
-2. **Lớp Truy xuất dữ liệu (Repository Layer):** 
-   - Kế thừa từ `BaseRepository<T>` theo chuẩn OOP để tái sử dụng mã nguồn.
-   - Quản lý các thao tác Create, Read, Update, Delete (CRUD).
-3. **Lớp Cơ sở dữ liệu (Database Layer - SQL Server):** Lưu trữ dữ liệu, thực hiện các tính toán logic tự động thông qua Stored Procedures và Triggers (như cập nhật tồn kho, tính tổng tiền đơn hàng).
+<a name="dang-4-tim-kiem-loc-dong-tuc-thi-textchanged-selectedindexchanged"></a>
+## 🔍 Dạng 4: Tìm kiếm / Lọc động tức thời (TextChanged & SelectedIndexChanged)
+*Thầy yêu cầu: "Tôi muốn khi gõ bất cứ ký tự nào vào TextBox tìm kiếm là danh sách tự động lọc luôn."*
 
-**Giao tiếp qua Event-Driven:** Sự kiện click từ thanh Menu sẽ thông báo cho `frmMain` để tự động khởi tạo và hiển thị `UserControl` tương ứng lên màn hình.
+### 1. Lọc động qua sự kiện TextChanged của TextBox
+Mở file [ucSanPham.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/7_DanhMuc/ucSanPham.cs), double-click vào `txtTimKiem`:
+```csharp
+private void txtTimKiem_TextChanged(object sender, EventArgs e)
+{
+    LoadData(txtTimKiem.Text.Trim());
+}
 
----
-
-### 4. THIẾT KẾ CƠ SỞ DỮ LIỆU
-Hệ thống sử dụng **14 bảng** có mối quan hệ logic chặt chẽ với nhau.
-
-**Các nhóm bảng chính:**
-- **Quản lý con người:** `NHAN_VIEN` (Nhân viên), `KHACH_HANG` (Khách hàng), `PHAN_QUYEN` (Phân quyền).
-- **Sản phẩm & Danh mục:** `SAN_PHAM` (Sản phẩm hoa, phụ kiện).
-- **Quản lý Bán hàng:** `DON_HANG` (Đơn hàng), `CHI_TIET_DON_HANG` (Chi tiết), `LICH_SU_DON_HANG` (Lịch sử trạng thái).
-- **Giao hàng:** `GIAO_HANG` (Phiếu giao hàng).
-- **Kho hàng:** `PHIEU_NHAP_KHO` (Phiếu nhập), `CT_NHAP_KHO` (Chi tiết nhập), `HANG_HU` (Hàng hư hỏng).
-- **Sau bán hàng:** `PHAN_HOI` (Phản hồi), `TRA_HANG` (Phiếu trả), `CT_TRA_HANG` (Chi tiết trả).
+private void LoadData(string keyword = "")
+{
+    var repo = new SanPhamRepository();
+    dgvSanPham.DataSource = repo.LayDanhSach(keyword, "", "");
+}
+```
 
 ---
 
-### 5. CÁC CHỨC NĂNG CHÍNH
-Hệ thống được chia thành các phân hệ tương ứng với các nghiệp vụ thực tế của cửa hàng hoa:
+<a name="dang-5-rang-buoc-du-lieu-validation-truoc-khi-themsua"></a>
+## ⚠️ Dạng 5: Ràng buộc dữ liệu (Validation) trước khi Thêm/Sửa
+*Thầy yêu cầu: "Trước khi lưu thông tin Khách hàng, phải kiểm tra SĐT phải đúng 10 chữ số, tên không được rỗng."*
 
-1. **Phân hệ Đăng nhập và Phân quyền:**
-   - Xác thực người dùng bằng tài khoản và mật khẩu (mã hóa SHA-256).
-   - Phân quyền chi tiết (Xem, Thêm, Sửa, Xóa, Export) theo từng module cho 4 chức vụ: Admin, Thu ngân, Thủ kho, Shipper.
+Mở hàm lưu dữ liệu ở Form [frmThemSuaKhachHang.cs](file:///d:/Learning/C%23/BAI_TAP_LON/FloriSys/7_DanhMuc/frmThemSuaKhachHang.cs):
+```csharp
+private bool ValidDuaLieu()
+{
+    if (string.IsNullOrWhiteSpace(txtHoTen.Text))
+    {
+        MessageBox.Show("Tên khách hàng không được để trống!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        txtHoTen.Focus();
+        return false;
+    }
 
-2. **Phân hệ Bán hàng (Sales):**
-   - **Tạo đơn hàng:** Lên đơn theo dạng giỏ hàng, xác thực số lượng tồn kho theo thời gian thực (Real-time).
-   - **Quản lý đơn:** Tìm kiếm, lọc đơn hàng theo từ khóa, trạng thái, ngày tháng, nhân viên. Xem chi tiết thông tin đơn hàng, khách hàng, giao hàng.
-   - **Xử lý sau bán:** Theo dõi phản hồi khách hàng, quy trình xử lý trả hàng và tùy chọn nhập lại kho đối với hàng hóa còn nguyên vẹn.
+    string sdt = txtSDT.Text.Trim();
+    if (string.IsNullOrEmpty(sdt) || sdt.Length != 10 || !long.TryParse(sdt, out _))
+    {
+        MessageBox.Show("Số điện thoại phải đúng 10 số!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        txtSDT.Focus();
+        return false;
+    }
+    return true;
+}
 
-3. **Phân hệ Kho hàng (Inventory):**
-   - **Kiểm soát Tồn kho:** Xem danh sách hàng tồn, cảnh báo khi hàng sắp hết (dưới mức tối thiểu).
-   - **Nhập/Xuất kho:** Ghi nhận phiếu nhập hàng (tự động cộng tồn kho). Xuất kho tương ứng với đơn hàng (tự động trừ tồn kho).
-   - **Hàng hư hỏng:** Ghi nhận hàng lỗi, hàng hỏng và tự động giảm số lượng trong kho.
-
-4. **Phân hệ Giao hàng (Delivery):**
-   - Phân công shipper cho từng đơn hàng giao tận nơi.
-   - Cập nhật trạng thái giao hàng theo luồng: Đang chờ -> Đang giao -> Đã giao -> Hoàn hàng.
-
-5. **Phân hệ Báo cáo Thống kê (Reports):**
-   - Doanh thu theo Ngày (kèm số lượng đơn).
-   - Doanh thu theo Tháng (có biểu đồ minh họa trực quan).
-   - Báo cáo Sản phẩm Bán chạy (Top 10 sản phẩm).
-   - Đánh giá hiệu suất Nhân viên (Tổng đơn, doanh thu mang lại, tỷ lệ hủy đơn).
-   - Cảnh báo Tồn kho.
-   - *(Hỗ trợ xuất tất cả báo cáo ra định dạng Excel).*
-
-6. **Phân hệ Quản lý Danh mục (Master Data):**
-   - Quản lý thông tin Nhân viên, Khách hàng, Sản phẩm. 
-   - Tự động điền/tra cứu khách hàng bằng Số điện thoại.
-
----
-
-### 6. CÁC QUY TRÌNH NGHIỆP VỤ TRỌNG TÂM
-
-#### 6.1. Quy trình Tạo và Xử lý Đơn Hàng (Sử dụng Transaction)
-Đây là quy trình quan trọng nhất, kết hợp nhiều thao tác CSDL đảm bảo tính toàn vẹn dữ liệu:
-1. Thu ngân thêm hoa/phụ kiện vào giỏ, hệ thống kiểm tra tồn kho (`SoLuongTon > 0`).
-2. Nhập số điện thoại khách hàng, nếu chưa có sẽ tự động thêm mới vào bảng `KHACH_HANG`.
-3. Khi bấm "Thanh toán", hệ thống khởi tạo **SqlTransaction**:
-   - Tự động sinh `MaDon` và `INSERT` vào bảng `DON_HANG`.
-   - Lặp qua từng sản phẩm trong giỏ để `INSERT` vào `CHI_TIET_DON_HANG`.
-   - Các thao tác này sẽ kích hoạt Trigger trên SQL Server để tính Thành tiền (`Thành Tiền = Số Lượng * Đơn Giá`) và cập nhật Tổng tiền đơn hàng.
-   - Nếu là đơn cần giao hàng, hệ thống tự động sinh `MaGiaoHang` và `INSERT` vào bảng `GIAO_HANG`.
-4. Nếu tất cả thành công, Commit Transaction. Nếu có bất kỳ lỗi nào (như hết hàng giữa chừng), Rollback Transaction.
-
-#### 6.2. Vòng đời Trạng Thái Đơn Hàng (State Machine)
-- **Mới tạo:** Đơn hàng vừa lập.
-- **Đang xử lý:** Đơn hàng được xác nhận, hệ thống **tự động trừ số lượng tồn kho** trong bảng `SAN_PHAM`.
-- **Đã giao:** Shipper đã giao thành công.
-- **Hoàn thành:** Khách hàng xác nhận không có vấn đề.
-- **Hoàn hàng:** Khách hàng trả lại hàng (Hệ thống sẽ **cộng lại tồn kho** cho các sản phẩm hợp lệ).
-- **Hủy:** Đơn hàng bị hủy trước khi xử lý (Không thay đổi tồn kho).
+private void btnLuu_Click(object sender, EventArgs e)
+{
+    if (!ValidDuaLieu()) return; // Dừng lại nếu lỗi validation
+    
+    // Tiếp tục lưu dữ liệu...
+}
+```
 
 ---
 
-### 7. ĐIỂM NỔI BẬT VỀ KỸ THUẬT
+# PHẦN II: HƯỚNG DẪN TRÌNH BÀY VÀ PHẢN BIỆN VỚI GIẢNG VIÊN
 
-1. **Auto Code Generation (Tự động sinh mã ID):** 
-   - Mọi thực thể trong hệ thống đều tự động sinh mã định danh (Ví dụ: `NV000006`, `SP000009`, `DH000006`) dựa vào Stored Procedure `sp_SinhMa`, giúp quản lý ID thống nhất và chuyên nghiệp.
-2. **Reflection ORM Tự Xây Dựng:** 
-   - Thay vì dùng Entity Framework nặng nề, dự án tự code một bộ Generic ORM (`MapDataTable<T>`) sử dụng Reflection trong C# để ánh xạ kết quả từ SQL (`DataTable`) trực tiếp vào List các object C#, đảm bảo ứng dụng chạy cực nhẹ, nhanh và dễ bảo trì.
-3. **Mô hình SPA trên WinForms:** 
-   - Chuyển đổi giữa các màn hình bằng cách thêm/xóa `UserControl` vào trong một Panel duy nhất (`frmMain.Panel.Controls.Clear()`), mang lại trải nghiệm mượt mà không bị "nháy" cửa sổ như WinForms truyền thống.
-4. **Xử lý Logic dữ liệu dưới Database (Trigger/Stored Procedure):** 
-   - **19 Stored Procedures** và **3 Triggers** đảm nhận các công việc tính toán an toàn (như cập nhật tự động số lượng tồn kho, tính tổng tiền đơn hàng). Tránh sai sót và đồng bộ dữ liệu hoàn hảo dù có nhiều Client truy cập cùng lúc.
-5. **BaseRepository & OOP:**
-   - Ứng dụng nhuần nhuyễn tính Kế thừa (Inheritance) và Đa hình (Polymorphism) bằng cách xây dựng class `BaseRepository<T>`. 11 Repository khác nhau (như `DonHangRepository`, `SanPhamRepository`) chỉ việc kế thừa và tận dụng lại các hàm dùng chung (Thêm, Sửa, Xóa, Lấy danh sách).
-6. **Bảo mật và Phân quyền động:** 
-   - Mật khẩu lưu ở DB là mã Hash (SHA-256). Bảng `PHAN_QUYEN` cho phép tùy biến linh hoạt việc "đóng/mở" từng nút Thêm/Sửa/Xóa tùy theo chức vụ đăng nhập.
+Phần này hướng dẫn bạn cách giới thiệu đề tài, giải thích kiến trúc phần mềm, và cách trả lời các câu hỏi phản biện lý thuyết khó từ thầy cô để khẳng định bạn tự làm đồ án 100%.
 
 ---
 
-### 8. ĐÁNH GIÁ ƯU - NHƯỢC ĐIỂM & HƯỚNG PHÁT TRIỂN
+## 🎯 1. Kịch bản Thuyết trình Đồ án trong 3 Phút đầu
+Khi bắt đầu, đừng chỉ click lung tung trên giao diện. Hãy nói theo kịch bản thông minh sau:
 
-#### 8.1. Ưu điểm (Kết quả đạt được)
-1. **Kiến trúc rõ ràng, chuyên nghiệp:** Áp dụng chặt chẽ mô hình 3 lớp (3-Tier) và Repository Pattern, giúp code dễ đọc, dễ bảo trì và dễ mở rộng.
-2. **Hiệu năng cao, nhẹ mượt:** Sử dụng Custom Reflection ORM tự thiết kế thay vì các framework nặng nề, kết hợp với cơ chế SPA (Single Page Application) trên WinForms giúp ứng dụng chạy cực kỳ nhanh và không bị giật lag giao diện.
-3. **Tính toàn vẹn dữ liệu cao:** Sử dụng SqlTransaction trong quá trình thanh toán và tận dụng tối đa sức mạnh của SQL Server (Stored Procedures, Triggers) để xử lý logic phức tạp (tính tiền, trừ/cộng tồn kho), hạn chế tối đa sai sót số liệu.
-4. **Có cơ chế phân quyền động cơ bản:** Hệ thống đã xây dựng được bảng phân quyền động (Xem, Thêm, Sửa, Xóa, Xuất file) theo từng module cho các chức vụ quản lý.
-5. **Nghiệp vụ đầy đủ, thực tế:** Bao quát được toàn bộ vòng đời kinh doanh: từ bán hàng, xuất/nhập/hủy kho, giao hàng, đến xử lý phản hồi và hoàn trả.
-
-#### 8.2. Nhược điểm (Hạn chế còn tồn tại)
-1. **Phân quyền chưa tối ưu:** Mặc dù có cơ chế phân quyền, nhưng vẫn bị gộp chung vào "Chức vụ" (Role-based) thay vì chi tiết đến từng "Người dùng" (User-based) cụ thể. Đồng thời hệ thống thiếu cơ chế phân quyền theo dòng dữ liệu (Row-level Security - VD: Thu ngân A có thể xem được tất cả đơn hàng của Thu ngân B, thay vì chỉ xem được đơn do chính mình tạo).
-2. **Thiếu module Khuyến mãi/Giảm giá:** Đặc thù hoa tươi là mặt hàng có thời hạn sử dụng ngắn, cần các chương trình giảm giá (voucher, chiết khấu % cho hoa sắp héo) để kích cầu và xả hàng nhanh, nhưng hệ thống hiện tại chưa hỗ trợ ghi nhận giảm giá.
-3. **Chưa có hệ thống Chăm sóc Khách hàng (CRM):** Chưa có tính năng tích điểm hội viên, phân hạng khách hàng (VIP, Thường) dựa trên tổng chi tiêu để giữ chân khách hàng cũ.
-4. **Hoạt động Offline:** Vì là ứng dụng Desktop kết nối mạng LAN/Cục bộ, khách hàng không thể tự đặt hàng Online hay theo dõi trạng thái đơn hàng từ xa qua điện thoại. Mọi thao tác đều phụ thuộc vào nhân viên tại cửa hàng.
-5. **Quản lý kho chưa chi tiết theo lô (Batch/Lot):** Hoa nhập về các ngày khác nhau sẽ có độ tươi khác nhau, nhưng hệ thống hiện gộp chung vào tổng số lượng tồn kho (SoLuongTon), gây khó khăn cho việc quản lý xuất hàng theo nguyên tắc FIFO (Nhập trước Xuất trước).
-
-#### 8.3. Hướng phát triển tương lai
-1. **Tối ưu hóa Phân quyền:** Cho phép phân quyền chi tiết xuống từng tài khoản nhân viên ngoại lệ. Áp dụng Row-level Security để giới hạn phạm vi truy cập dữ liệu (VD: nhân viên chỉ thấy/sửa đơn hàng do chính mình phụ trách) để tăng tính bảo mật.
-2. **Tích hợp tính năng Khuyến mãi & Tích điểm:** Thêm các trường dữ liệu xử lý Voucher/Mã giảm giá và tính điểm thưởng cho thẻ thành viên.
-3. **Nâng cấp quản lý kho theo Lô (Lot-tracking):** Tách biệt số lượng tồn kho theo từng đợt nhập để dễ dàng theo dõi hạn sử dụng (độ tươi) của hoa.
-4. **Mở rộng đa nền tảng:** Xây dựng thêm một Website hoặc Mobile App (sử dụng chung Database API) dành riêng cho khách hàng để họ tự xem menu hoa, đặt mua và tra cứu đơn hàng trực tuyến.
+> *"Kính thưa thầy/cô, hệ thống **FloriSys** là phần mềm Quản lý Cửa hàng Hoa tươi được xây dựng trên nền tảng **C# WinForms** kết hợp cơ sở dữ liệu **SQL Server**. Phần mềm của em giải quyết 3 bài toán lớn:*
+> 1. **Quản lý bán hàng & in hóa đơn**: Cho phép chọn hoa trực quan, tự động tạo hóa đơn và xuất file PDF chuyên nghiệp.
+> 2. **Kiểm soát kho hàng chặt chẽ**: Có tính năng cảnh báo tồn kho tối thiểu, cảnh báo đơn hàng xuất kho bị trễ hạn.
+> 3. **Hệ thống phân quyền chi tiết**: Chia rõ vai trò Admin, Thu ngân, Thủ kho, và Nhân viên giao hàng để bảo mật thông tin tối đa.
+> 
+> *Về mặt kỹ thuật, hệ thống được thiết kế theo kiến trúc **3-Tier (3 lớp)** chuẩn chỉ, giúp mã nguồn sạch sẽ, dễ bảo trì và có khả năng chống tấn công SQL Injection thông qua Parameterized Queries."*
 
 ---
-*Tài liệu này tổng hợp toàn bộ các ý tưởng, kiến trúc, giải pháp kỹ thuật và những đánh giá khách quan về dự án FloriSys. Dùng làm tài liệu tham khảo để viết báo cáo và thuyết trình bảo vệ đề tài.*
+
+## 🏗️ 2. Cách giải thích Kiến trúc 3-Tier (3 lớp) trong Dự án
+Khi thầy yêu cầu: *"Em hãy giải thích kiến trúc 3 lớp của dự án nằm ở đâu trong code và nó hoạt động như thế nào?"*
+
+Hãy chỉ vào cấu trúc thư mục của dự án và giải thích:
+1. **Lớp Giao Diện (Presentation Layer / UI)**:
+   * **Nơi lưu trữ:** Các thư mục như `2_QuanLy`, `3_BanHang`, `4_KhoHang`, `5_GiaoHang`, `7_DanhMuc` chứa các UserControl (`uc`) và Form (`frm`).
+   * **Nhiệm vụ:** Chỉ lo việc hiển thị dữ liệu lên màn hình (DataGridView, TextBox, ComboBox) và bắt sự kiện của người dùng (Click nút, Gõ phím). Lớp này **không trực tiếp gọi xuống Database**.
+2. **Lớp Nghiệp Vụ & Kết Nối (DataAccess Layer / Repository)**:
+   * **Nơi lưu trữ:** Thư mục [DataAccess](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/DataAccess/).
+   * **Nhiệm vụ:** Chứa các class Repository như `SanPhamRepository`, `KhachHangRepository`, `DonHangRepository`. Đây là nơi viết các câu lệnh SQL truy vấn dữ liệu hoặc gọi Stored Procedure.
+3. **Lớp Thực Thể (Business Object / Model)**:
+   * **Nơi lưu trữ:** Thư mục [Models](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/Models/).
+   * **Nhiệm vụ:** Chứa cấu trúc dữ liệu mô phỏng các bảng trong Database dưới dạng các class C# (ví dụ: class `SanPham`, `KhachHang`, `DonHang`). Các tầng khác sẽ dùng các Model này để truyền dữ liệu qua lại.
+
+### 🔄 Luồng Đi của Dữ Liệu (Ví dụ khi Thêm Khách hàng):
+1. Người dùng nhập thông tin lên `frmThemSuaKhachHang` (tầng UI).
+2. Khi bấm "Lưu", UI sẽ đóng gói dữ liệu vào một đối tượng Model `KhachHang` và gọi hàm của tầng DataAccess: `_khachHangRepository.ThemKhachHang(kh)`.
+3. Tầng DataAccess nhận đối tượng `KhachHang`, thực hiện biên dịch thành câu lệnh SQL chứa các `SqlParameter` và gửi xuống SQL Server để thực thi.
+4. Kết quả trả về từ DB sẽ được truyền ngược lại qua các tầng để UI hiển thị thông báo thành công cho người dùng.
+
+---
+
+## 🔒 3. Trả lời về Bảo mật và Phòng chống SQL Injection
+Thầy cô cực kỳ thích hỏi về vấn đề bảo mật cơ sở dữ liệu: *"Làm thế nào để phần mềm của em không bị hack dữ liệu qua lỗi SQL Injection?"*
+
+### Cách trả lời:
+> *"Trong toàn bộ dự án, em tuyệt đối không sử dụng phương pháp cộng chuỗi trực tiếp để tạo câu lệnh SQL (Ví dụ: không viết `SELECT * FROM SAN_PHAM WHERE TenSP = '` + txtTen.Text + `'`). Cách viết đó rất nguy hiểm vì hacker có thể nhập các ký tự đặc biệt như `' OR '1'='1` để phá hủy cơ sở dữ liệu.
+> 
+> Thay vào đó, em sử dụng **Parameterized Query (Truy vấn có tham số)** thông qua đối tượng **SqlParameter** của ADO.NET."*
+
+### Dẫn chứng trong code (Hãy mở [SanPhamRepository.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/DataAccess/SanPhamRepository.cs) hàm `CapNhatSanPham`):
+```csharp
+string sql = @"UPDATE SAN_PHAM SET TenSP=@TenSP WHERE MaSP=@MaSP";
+ExecuteSql(sql, new SqlParameter[]
+{
+    new SqlParameter("@MaSP", sp.MaSP),
+    new SqlParameter("@TenSP", sp.TenSP) // Giá trị truyền qua Parameter sẽ tự động được làm sạch (escape)
+});
+```
+> *"Khi sử dụng `SqlParameter`, SQL Server sẽ xử lý giá trị truyền vào thuần túy là dữ liệu dạng text chứ không biên dịch nó thành lệnh thực thi, giúp loại bỏ hoàn toàn nguy cơ tấn công SQL Injection."*
+
+---
+
+## 👤 4. Giải thích cơ chế Phân quyền người dùng (Role-based)
+Thầy hỏi: *"Hệ thống phân quyền như thế nào? Thủ kho vào có thấy màn hình bán hàng không?"*
+
+### Cách trả lời:
+1. Hệ thống quản lý tài khoản dựa trên cột `VaiTro` trong bảng `NHAN_VIEN` (Admin, Thu ngân, Thủ kho, Giao hàng).
+2. Khi người dùng đăng nhập thành công, thông tin tài khoản và vai trò của họ được lưu trữ tập trung vào lớp tĩnh **[SessionManager.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/Services/SessionManager.cs)**.
+3. Khi Form chính ([frmMain.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/frmMain.cs)) được tải lên, hệ thống sẽ kiểm tra vai trò hiện tại trong Session để ẩn/hiện hoặc vô hiệu hóa các menu chức năng tương ứng:
+
+```csharp
+// Ví dụ minh họa phân quyền trong frmMain:
+private void ApDungPhanQuyen()
+{
+    string vaiTro = SessionManager.CurrentUser?.VaiTro;
+
+    if (vaiTro == "ThuKho")
+    {
+        btnBanHang.Visible = false; // Thủ kho không nhìn thấy nút bán hàng
+        btnBaoCao.Visible = false;  // Không xem được báo cáo doanh thu
+        btnKhoHang.Visible = true;
+    }
+    else if (vaiTro == "ThuNgan")
+    {
+        btnBanHang.Visible = true;
+        btnKhoHang.Visible = false; // Thu ngân không được vào quản lý kho
+    }
+}
+```
+
+---
+
+## 📈 5. Trình bày Chức năng Báo cáo Thống kê & Xuất PDF
+Thầy hỏi: *"Chức năng báo cáo của em hoạt động như thế nào? Xuất hóa đơn ra sao?"*
+
+### Cách trả lời:
+* **Vẽ biểu đồ**: Em sử dụng thư viện trực quan hóa dữ liệu **Microsoft Chart Control** có sẵn trong .NET (`System.Windows.Forms.DataVisualization.Charting`). Dữ liệu thống kê theo ngày/tháng được Repository truy vấn bằng câu lệnh `SUM`, `GROUP BY` rồi gán trực tiếp vào thuộc tính `Series.Points.AddXY()` để hiển thị biểu đồ cột hoặc hình tròn trực quan.
+* **Xuất hóa đơn PDF**: Em sử dụng thư viện **iTextSharp**. Khi khách hàng thanh toán thành công, hệ thống sẽ lấy dữ liệu đơn hàng và chi tiết đơn hàng, gọi helper **[ReportPdfHelper.cs](file:///D:/Learning/C%23/BAI_TAP_LON/FloriSys/Services/ReportPdfHelper.cs)**. Hàm này sẽ khởi tạo một tài liệu PDF (định dạng hóa đơn nhiệt khổ 80mm), vẽ bảng danh sách sản phẩm, tự động tính tổng tiền, thuế VAT và ghi trực tiếp ra tệp PDF trên máy tính.
+
+---
+
+## 🚑 6. Mẹo cứu nguy khi chương trình bị Lỗi (Crash) khi đang Demo
+Trong buổi bảo vệ, nếu phần mềm đột ngột báo lỗi đỏ (Crash) hoặc chạy sai dữ liệu, hãy bình tĩnh thực hiện theo các bước sau để ghi điểm "kỹ năng xử lý sự cố":
+
+1. **Tuyệt đối không bối rối**. Hãy nói: *"Thưa thầy cô, hệ thống đang gặp lỗi bất ngờ do dữ liệu kiểm thử thực tế chưa đồng bộ. Em xin phép đặt Breakpoint (điểm dừng) để debug trực tiếp luồng chạy của chức năng này."*
+2. **Đặt Breakpoint**: Bấm phím **F9** tại dòng đầu tiên của hàm xử lý sự kiện click nút bấm trên UI.
+3. **Chạy Debug**: Nhấn nút Start (F5), thực hiện lại thao tác lỗi trên giao diện. Khi chương trình dừng lại tại dòng màu vàng:
+   * Bấm **F10** để đi qua từng dòng lệnh độc lập.
+   * Di chuột vào các biến để xem giá trị thực tế của chúng có bị `null` hoặc sai định dạng không.
+   * Bấm **F11** để nhảy vào chi tiết bên trong các hàm của Repository.
+4. **Giải thích nguyên nhân**: Khi phát hiện ra biến bị trống hoặc câu lệnh SQL sai tên cột, hãy sửa trực tiếp, bấm **F5** để chạy tiếp và nói: *"Lỗi xảy ra do dữ liệu chưa đồng bộ, em đã sửa lại biến này và hệ thống đã hoạt động bình thường."* Giảng viên sẽ đánh giá cực kỳ cao kỹ năng gỡ lỗi thực tế này của bạn.
